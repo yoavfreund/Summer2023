@@ -1,0 +1,141 @@
+%\theoremstyle{plain}
+\usepackage{amsmath,bm}
+
+% \newtheorem{lemma}{Lemma}
+% \newtheorem{claim}[lemma]{Claim}
+% \newtheorem{theorem}[lemma]{Theorem}
+% \newtheorem{corollary}[lemma]{Corollary}
+% \newtheorem{definition}{Definition}
+% \newtheorem{question}{Question}
+
+\newcommand{\note}[1]{\par{\bf Note:}#1\par}
+\newcommand{\notem}[1]{{\marginpar{\tiny #1}}}
+
+\newcommand{\figline}{\rule{\textwidth}{1pt}}
+
+%\newcommand{\proof}{\noindent{\bf Proof:} }
+\newcommand{\qed}{\rule{0.7em}{0.7em}}
+
+\newcommand{\newmcommand}[2]{\newcommand{#1}{{\ifmmode {#2}\else\mbox{${#2}$}\fi}}}
+\newcommand{\newmcommandi}[2]{\newcommand{#1}[1]{{\ifmmode {#2}\else\mbox{${#2}$}\fi}}}
+\newcommand{\newmcommandii}[2]{\newcommand{#1}[2]{{\ifmmode {#2}\else\mbox{${#2}$}\fi}}}
+\newcommand{\newmcommandiii}[2]{\newcommand{#1}[3]{{\ifmmode {#2}\else\mbox{${#2}$}\fi}}}
+
+\newcommand{\E}[2]{{\bf E}_{#1}\left[ #2 \right]}
+%\newcommand{\D}[2]{{\bf D}_{#1}\left[ #2 \right]}
+\newcommand{\D}{{\cal D}}
+
+\renewcommand{\P}[2]{{\bf P}_{#1}\left[ #2 \right]}
+\newcommand{\reals}{\mathbb{R}}
+
+\newcommand{\argmin}{\mbox{argmin}}
+\newcommand{\argmax}{\mbox{argmax}}
+\newcommand{\SP}[1]{{\cal P}^{#1}} % strictly positive function of
+                                   % order i
+\newcommand{\R}{R}      % Cumulative regret
+\newcommand{\vR}{\mathbf{R}} %regret vector
+
+\renewcommand{\r}{r}      % Instantaneuous regret
+\newcommand{\state}{{\bf \Psi}}
+\newcommand{\1}[1]{{\mathbf 1}\left[#1\right]} % point mass at #1
+
+\newcommand{\pot}{\phi}
+\newcommand{\potPQ}{\pot_{\learnerM,\adversM}}
+\newcommand{\potLA}{\pot_{\l,\a}}
+\newcommand{\finalPot}[1]{\pmb{\phi}_{#1}}
+\newcommand{\finalPotT}{\finalPot{T}}
+\newcommand{\finalPotR}{\finalPot{\realT}}
+\newcommand{\finalPotTau}{\finalPot{\tau}}
+\newcommand{\upperpot}{\pot_{\learnerM}^{\downarrow}}
+\newcommand{\upperpotb}{\pot_{\learnerMb}^{\downarrow}}
+\newcommand{\upperpotd}{\pot_{\learnerMd}^{\downarrow}}
+%\newcommand{\upperpotj}{\pot_{\learnerM(j)}^{\downarrow}}
+\newcommand{\upperpotMdk}{\pot_{\learnerMdk}^{\downarrow}}
+\newcommand{\upperpotMdj}{\pot_{\learnerMdj}^{\downarrow}}
+
+\newcommand{\lowerpot}{\pot_{\adversM}^{\uparrow}}
+\newcommand{\lowerpotb}{\pot_{\adversMb}^{\uparrow}}
+\newcommand{\lowerpotd}{\pot_{\adversMd}^{\uparrow}}
+\newcommand{\lowerpotj}{\pot_{\adversM(j)}^{\uparrow}}
+\newcommand{\lowerpotMdk}{\pot_{\adversMdk}^{\uparrow}}
+\newcommand{\lowerpotMdkp}{\pot_{\adversMdkp}^{\uparrow}}
+\newcommand{\lowerpotMdkpar}[1]{\pot_{\adversMdkpar{#1}}^{\uparrow}}
+\newcommand{\lowerpoteven}{\lowerpot_{\evensplit}}
+
+\newcommand{\realT}{\mathcal{T}}  % the final time for the real-time
+% game
+\newcommand{\Tset}[1]{\pmb{T}_{#1}}
+\newcommand{\Ilat}[1]{\pmb{I}_{#1}}
+\newcommand{\Klat}[1]{\pmb{K}_{#1}}
+\newcommand{\score}{\Phi}
+\newcommand{\upperscore}[1]{\score_{#1}^{\downarrow}}
+\newcommand{\lowerscore}[1]{\score_{#1}^{\uparrow}}
+
+\newcommand{\upperscoreM}{\upperscore{\learnerM}}
+\newcommand{\upperscoreMd}{\upperscore{\learnerMd}}
+\newcommand{\upperscoreMdk}{\upperscore{\learnerMdk}}
+
+\newcommand{\lowerscoreM}{\lowerscore{\adversM}}
+\newcommand{\lowerscoreMd}{\lowerscore{\adversMd}}
+\newcommand{\learnerM}{P}
+\newcommand{\learnerMb}{P_I}
+\newcommand{\learnerMd}{P_D}
+\renewcommand{\l}{\learnerM}
+\newcommand{\learnerMdk}{P_{D(k)}}
+\newcommand{\learnerMdj}{P_{D(j)}}
+\newcommand{\legalLearner}{{\cal L}}
+
+\newcommand{\adversM}{Q}
+\newcommand{\adversMb}{Q_I}  %Integer time game
+\newcommand{\adversMd}{Q_D}  % Discrete time game
+\newcommand{\adversMdkpar}[1]{Q_{D(#1)}}
+\newcommand{\adversMdk}{\adversMdkpar{k}}  %Discrete time game with step of
+% size 2^{-k}
+
+\newcommand{\adversMdkp}{\adversMdkpar{k+1}}  %\adversMdk with k+1
+
+% \renewcommand{\a}{\adversM}
+%\newcommand{\legalAdversary}{{\cal A}}
+\newcommand{\agloss}{v}
+\newcommand{\Bias}{B}
+\newcommand{\deltat}{\Delta t}
+
+\newcommand{\diffweight}{\l^d}   % learner strategy based on taking a difference
+\newcommand{\upperpotdiff}{\upperpot_{\diffweight}}
+
+
+\newcommand{\Binom}{\mathbb{B}}
+\newcommand{\radsum}{\Binom(s_1,\ldots,s_T)}
+\newcommand{\var}{\mbox{Var}}
+\newcommand{\V}{V}
+
+
+\newcommand{\at}[1]{\left\{ \left. #1
+    \right|_{\begin{tiny}\begin{matrix}
+          \tau,\rho=\\t_i,\R \end{matrix} \end{tiny}}
+    \pot(\tau,\rho)\right\}}
+\newcommand{\att}[1]{\left\{ \left. #1  
+\right|_{\begin{tiny}\begin{matrix} \tau,\rho=\\t_i+g \deltat_i,\R_i+g
+      r_i \end{matrix} \end{tiny}}
+\pot(\tau, \rho)\right\}}
+
+
+\newcommand{\atI}[1]{\left\{ \left. #1  
+\right|_{\begin{tiny}\begin{matrix}
+      x,y=\\x_0,y_0 \end{matrix} \end{tiny}}
+f(x,y) \right\}}
+\newcommand{\atII}[1]{\left\{ \left. #1
+\right|_{\begin{tiny}\begin{matrix}
+      x,y=\\x_0+t\Dx,y_0+t\Dy \end{matrix} \end{tiny}}
+f(x,y) \right\}}
+
+
+\newmcommandi{\paren}{\left({#1}\right)}
+\newmcommandi{\brac}{\left[{#1}\right]}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "BrownianIsWorstCase"
+%%% End:

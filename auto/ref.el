@@ -1,0 +1,38 @@
+(TeX-add-style-hook
+ "ref"
+ (lambda ()
+   (LaTeX-add-bibitems
+    "kac1947random"
+    "bellman1952theory"
+    "littlestone1994weighted"
+    "vovk1990aggregating"
+    "chernov2010prediction"
+    "chaudhuri2009parameter"
+    "orabona2016coin"
+    "cutkosky2018black"
+    "NEURIPS2021_dcd2f3f3"
+    "cesa1997use"
+    "feder1992universal"
+    "freund1997decision"
+    "freund1999adaptive"
+    "cesa2006prediction"
+    "kalai2005efficient"
+    "cesa2007improved"
+    "gaillard2014second"
+    "hazan2010extracting"
+    "chernov2009prediction"
+    "cesa1996line"
+    "abernethy2006continuous"
+    "abernethy2008optimal"
+    "luo2015achieving"
+    "erven2011adaptive"
+    "koolen2015second"
+    "schapire2001drifting"
+    "popoviciu1965certaines"
+    "de2005divided"
+    "butt2016generalization"
+    "freund2002drifting"
+    "billingsley1995central"
+    "grimmett2020probability"))
+ '(or :bibtex :latex))
+
