@@ -328,9 +328,13 @@ but not the learner. Thus any upper bound on the regret that holds for DTG holds
 We now explain the elements of DGT in Figure~\ref{fig:discrete-Time-Game}
 \begin{itemize}
 \item the loss $l_j^i$ associated with action is generalized to a measureble function that maps 
-\item At the beginning of iteration $i$ the adversary chooses a step-size $1 \geq s_i \geq 0$ which sets the range of instatanous losss/gains to $[-s_i,+s_i]$
-\item A ``time'' variable associates a non-negative real number $t_i$
-  with each iteration $i$. $t_i = t_{i-1}+s_i^2$
+\item At the beginning of iteration $i$ the adversary chooses a
+  step-size $1 \geq s_i \geq 0$ which sets the range of instatanous
+  losss/gains to $[-s_i,+s_i]$
+\item We replace the iteration number $i$ with $U_i$ that is an upper
+  bound on the cumulative variance that is updated according to the recursion:
+  $U_i = U_{i-1}+s_i^2$.
+\item  
 \end{itemize}
 
 
@@ -387,7 +391,7 @@ action before it is split.
 \begin{figure}[ht!]
 \framebox{
 \begin{minipage}[t]{6.4in}
-Initialization: $t_0=0$ \newline
+Initialization: $U_0=0$ \newline
 Length of game (Horizon): $\realT>0$\newline
 
 On iteration $i=1,2,\ldots$
@@ -401,12 +405,12 @@ On iteration $i=1,2,\ldots$
   
 \item The aggregate loss is calculated:
   \begin{equation} \label{eqn:ell-discrete}
-    \ell(t_i)=\E{\R \sim \state(t_i)}{\learnerM(t_i,\R) \Bias(t_i,\R)}
-    \mbox{ where } \Bias(t_i,\R) \doteq \E{y \sim \adversM(t_i,\R)}{y}
+    \ell(U_i)=\E{\R \sim \state(U_i)}{\learnerM(U_i,\R) \Bias(U_i,\R)}
+    \mbox{ where } \Bias(U_i,\R) \doteq \E{y \sim \adversM(U_i,\R)}{y}
   \end{equation}
-  Such that $|\ell(t_i)| \leq s_i^2$
+  Such that $|\ell(U_i)| \leq s_i^2$
 \item The state is updated. 
-  $$\state(t_i) = \E{\R \sim \state(t_{i})}{\adversM(t_i,\R) \oplus (\R-\ell(t_i))}
+  $$\state(U_i) = \E{\R \sim \state(U_{i})}{\adversM(U_i,\R) \oplus (\R-\ell(U_i))}
   $$
   Where $\oplus$ is a convolution as defined in the preliminaries.
 \end{enumerate}
@@ -462,22 +466,20 @@ to the discrete time game (section~\ref{sec:discrete}) and to the
 continuous time game (\ref{sec:continuous}).
 
 {\bf Justification of bounding average loss} Suppose the game is
-  played for $T$ iterations and that the adversary uses the strategy
-  $\adversMd\brac{s,\frac{1}{2}+\epsilon}\paren{t,\R}$ and that
-  $s=\frac{1}{\sqrt{T}}$. In this case the loss of the learner in
-  iteration $i$ is $\ell(i)=2s\epsilon$ and the total loss is
-    $$L_\ell^T=\sum_{i=0}^{T-1} \ell(i) = T 2 \epsilon s = \frac{2 \epsilon}{s}$$.
-
-    If $\epsilon$ is kept constant as $s \to 0$
-    then $\lim_{T \to \infty}L_\ell^T=\infty$, biasing the game towards the adversary. On the other
-    hand, if $\epsilon =s^{\alpha}$ for $\alpha<1$ then $L_\ell^T
-    \to 0$, biasing the game towards the learner. To keep the game
-    balanced we have to set $\epsilon=cs$ for some constant
-    $c$. Without loss of generality we set $c=1$.
-
-    Generalizing this to the game where the adversary can choose a
-    different $s_i$ in each iteration we get the constraint 
-    $|\ell(i)| \leq s_i^2$
+played for $T$ iterations and that the adversary uses the strategy
+$\adversMd\brac{s,\frac{1}{2}+\epsilon}\paren{t,\R}$ and that
+$s=\frac{1}{\sqrt{T}}$. In this case the loss of the learner in
+iteration $i$ is $\ell(i)=2s\epsilon$ and the total loss is
+$$L_\ell^T=\sum_{i=0}^{T-1} \ell(i) = T 2 \epsilon s = \frac{2 \epsilon}{s}$$.
+If $\epsilon$ is kept constant as $s \to 0$ then
+$\lim_{T \to \infty}L_\ell^T=\infty$, biasing the game towards the
+adversary. On the other hand, if $\epsilon =s^{\alpha}$ for $\alpha<1$
+then $L_\ell^T \to 0$, biasing the game towards the learner. To keep
+the game balanced we have to set $\epsilon=cs$ for some constant
+$c$. Without loss of generality we set $c=1$.
+Generalizing this to the game where the adversary can choose a
+different $s_i$ in each iteration we get the constraint
+$|\ell(i)| \leq s_i^2$
 
 \subsection{Strategies for discrete time}
 \label{sec:disc-game-strategies}

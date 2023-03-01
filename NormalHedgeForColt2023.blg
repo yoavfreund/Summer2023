@@ -1,47 +1,53 @@
 This is BibTeX, Version 0.99d (TeX Live 2020)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: NormalHedgeForColt2023.aux
-The style file: plainnat.bst
+The style file: plain.bst
 Database file #1: ref.bib
+Repeated entry---line 86 of file ref.bib
+ : @article{orabona2016coin
+ :                         ,
+I'm skipping whatever remains of this entry
 Database file #2: bib.bib
-You've used 19 entries,
-            2773 wiz_defined-function locations,
-            922 strings with 14921 characters,
-and the built_in function-call counts, 9336 in all, are:
-= -- 901
-> -- 407
-< -- 19
-+ -- 140
-- -- 120
-* -- 713
-:= -- 1360
-add.period$ -- 63
-call.type$ -- 19
-change.case$ -- 97
-chr.to.int$ -- 18
-cite$ -- 38
-duplicate$ -- 452
-empty$ -- 823
-format.name$ -- 155
-if$ -- 2023
-int.to.chr$ -- 2
-int.to.str$ -- 1
-missing$ -- 19
-newline$ -- 104
-num.names$ -- 76
-pop$ -- 189
+Warning--I didn't find a database entry for "sec:NormalHedgeAlg"
+You've used 23 entries,
+            2118 wiz_defined-function locations,
+            848 strings with 14813 characters,
+and the built_in function-call counts, 8667 in all, are:
+= -- 923
+> -- 309
+< -- 9
++ -- 126
+- -- 98
+* -- 564
+:= -- 1347
+add.period$ -- 77
+call.type$ -- 23
+change.case$ -- 118
+chr.to.int$ -- 0
+cite$ -- 23
+duplicate$ -- 357
+empty$ -- 711
+format.name$ -- 98
+if$ -- 1892
+int.to.chr$ -- 0
+int.to.str$ -- 23
+missing$ -- 23
+newline$ -- 119
+num.names$ -- 46
+pop$ -- 115
 preamble$ -- 1
-purify$ -- 78
+purify$ -- 95
 quote$ -- 0
-skip$ -- 345
+skip$ -- 278
 stack$ -- 0
-substring$ -- 521
-swap$ -- 79
-text.length$ -- 6
+substring$ -- 694
+swap$ -- 114
+text.length$ -- 9
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 209
+type$ -- 92
 warning$ -- 0
-while$ -- 98
-width$ -- 0
-write$ -- 260
+while$ -- 95
+width$ -- 25
+write$ -- 263
+(There was 1 error message)

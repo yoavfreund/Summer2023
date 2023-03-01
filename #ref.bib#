@@ -1,0 +1,315 @@
+@article{kac1947random,
+  title={Random walk and the theory of Brownian motion},
+  author={Kac, Mark},
+  journal={The American Mathematical Monthly},
+  volume={54},
+  number={7P1},
+  pages={369--391},
+  year={1947},
+  publisher={Taylor \& Francis}
+}
+
+@article{bellman1952theory,
+  title={On the theory of dynamic programming},
+  author={Bellman, Richard},
+  journal={Proceedings of the National Academy of Sciences of the United States of America},
+  volume={38},
+  number={8},
+  pages={716},
+  year={1952},
+  publisher={National Academy of Sciences}
+}
+
+@article{littlestone1994weighted,
+  title={The weighted majority algorithm},
+  author={Littlestone, Nick and Warmuth, Manfred K},
+  journal={Information and computation},
+  volume={108},
+  number={2},
+  pages={212--261},
+  year={1994},
+  publisher={Elsevier}
+}
+
+@article{vovk1990aggregating,
+  title={Aggregating strategies},
+  author={Vovk, Volodimir G},
+  journal={Proc. of Computational Learning Theory, 1990},
+  year={1990}
+}
+
+@inproceedings{chernov2010prediction,
+  title={Prediction with advice of unknown number of experts},
+  author={Chernov, Alexey and Vovk, Vladimir},
+  booktitle={Proceedings of the Twenty-Sixth Conference on Uncertainty in Artificial Intelligence},
+  pages={117--125},
+  year={2010}
+}
+
+@article{chaudhuri2009parameter,
+  title={A parameter-free hedging algorithm},
+  author={Chaudhuri, Kamalika and Freund, Yoav and Hsu, Daniel J},
+  journal={Advances in neural information processing systems},
+  volume={22},
+  year={2009}
+}
+
+@article{orabona2016coin,
+  title={Coin betting and parameter-free online learning},
+  author={Orabona, Francesco and P{\'a}l, D{\'a}vid},
+  journal={Advances in Neural Information Processing Systems},
+  volume={29},
+  year={2016}
+}
+
+@inproceedings{cutkosky2018black,
+  title={Black-box reductions for parameter-free online learning in banach spaces},
+  author={Cutkosky, Ashok and Orabona, Francesco},
+  booktitle={Conference On Learning Theory},
+  pages={1493--1529},
+  year={2018},
+  organization={PMLR}
+}
+
+@inproceedings{NEURIPS2021_dcd2f3f3,
+ author = {Negrea, Jeffrey and Bilodeau, Blair and Campolongo, Nicol\`{o} and Orabona, Francesco and Roy, Dan},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {M. Ranzato and A. Beygelzimer and Y. Dauphin and P.S. Liang and J. Wortman Vaughan},
+ pages = {26237--26249},
+ publisher = {Curran Associates, Inc.},
+ title = {Minimax Optimal Quantile and Semi-Adversarial Regret via Root-Logarithmic Regularizers},
+ url = {https://proceedings.neurips.cc/paper/2021/file/dcd2f3f312b6705fb06f4f9f1b55b55c-Paper.pdf},
+ volume = {34},
+ year = {2021}
+}
+
+@article{orabona2016coin,
+  title={Coin betting and parameter-free online learning},
+  author={Orabona, Francesco and P{\'a}l, D{\'a}vid},
+  journal={Advances in Neural Information Processing Systems},
+  volume={29},
+  year={2016}
+}
+
+@article{cesa1997use,
+  title={How to use expert advice},
+  author={Cesa-Bianchi, Nicolo and Freund, Yoav and Haussler, David and Helmbold, David P and Schapire, Robert E and Warmuth, Manfred K},
+  journal={Journal of the ACM (JACM)},
+  volume={44},
+  number={3},
+  pages={427--485},
+  year={1997},
+  publisher={ACM New York, NY, USA}
+}
+
+@article{feder1992universal,
+  title={Universal prediction of individual sequences},
+  author={Feder, Meir and Merhav, Neri and Gutman, Michael},
+  journal={IEEE transactions on Information Theory},
+  volume={38},
+  number={4},
+  pages={1258--1270},
+  year={1992},
+  publisher={IEEE}
+}
+@article{freund1997decision,
+  title={A decision-theoretic generalization of on-line learning and an application to boosting},
+  author={Freund, Yoav and Schapire, Robert E},
+  journal={Journal of computer and system sciences},
+  volume={55},
+  number={1},
+  pages={119--139},
+  year={1997},
+  publisher={Elsevier}
+}
+
+@article{freund1999adaptive,
+  title={Adaptive game playing using multiplicative weights},
+  author={Freund, Yoav and Schapire, Robert E},
+  journal={Games and Economic Behavior},
+  volume={29},
+  number={1-2},
+  pages={79--103},
+  year={1999},
+  publisher={Elsevier}
+}
+
+@book{cesa2006prediction,
+  title={Prediction, learning, and games},
+  author={Cesa-Bianchi, Nicolo and Lugosi, G{\'a}bor},
+  year={2006},
+  publisher={Cambridge university press}
+}
+
+@article{kalai2005efficient,
+  title={Efficient algorithms for online decision problems},
+  author={Kalai, Adam and Vempala, Santosh},
+  journal={Journal of Computer and System Sciences},
+  volume=71,
+  number=3,
+  pages={291--307},
+  year=2005,
+  publisher={Elsevier}
+}
+
+%% Second order bound
+@article{cesa2007improved,
+  title={Improved second-order bounds for prediction with expert advice},
+  author={Cesa-Bianchi, Nicolo and Mansour, Yishay and Stoltz, Gilles},
+  journal={Machine Learning},
+  volume={66},
+  number={2},
+  pages={321--352},
+  year={2007},
+  publisher={Springer}
+}
+
+@inproceedings{gaillard2014second,
+  title={A second-order bound with excess losses},
+  author={Gaillard, Pierre and Stoltz, Gilles and Van Erven, Tim},
+  booktitle={Conference on Learning Theory},
+  pages={176--196},
+  year={2014},
+  organization={PMLR}
+}
+
+@article{hazan2010extracting,
+  title={Extracting certainty from uncertainty: Regret bounded by variation in costs},
+  author={Hazan, Elad and Kale, Satyen},
+  journal={Machine learning},
+  volume={80},
+  number={2},
+  pages={165--188},
+  year={2010},
+  publisher={Springer}
+}
+
+@inproceedings{chernov2009prediction,
+  title={Prediction with expert evaluators’ advice},
+  author={Chernov, Alexey and Vovk, Vladimir},
+  booktitle={International Conference on Algorithmic Learning Theory},
+  pages={8--22},
+  year={2009},
+  organization={Springer}
+}
+
+@article{cesa1996line,
+  title={On-line prediction and conversion strategies},
+  author={Cesa-Bianchi, Nicolo and Freund, Yoav and Helmbold, David P and Warmuth, Manfred K},
+  journal={Machine Learning},
+  volume={25},
+  number={1},
+  pages={71--110},
+  year={1996},
+  publisher={Springer}
+}
+
+@inproceedings{abernethy2006continuous,
+  title={Continuous experts and the binning algorithm},
+  author={Abernethy, Jacob and Langford, John and Warmuth, Manfred K},
+  booktitle={International Conference on Computational Learning Theory},
+  pages={544--558},
+  year={2006},
+  organization={Springer}
+}
+
+@inproceedings{abernethy2008optimal,
+  title={Optimal strategies from random walks},
+  author={Abernethy, Jacob and Warmuth, Manfred K and Yellin, Joel},
+  booktitle={Proceedings of The 21st Annual Conference on Learning Theory},
+  pages={437--446},
+  year={2008},
+  organization={Citeseer}
+}
+
+@inproceedings{luo2015achieving,
+  title={Achieving all with no parameters: Adanormalhedge},
+  author={Luo, Haipeng and Schapire, Robert E},
+  booktitle={Conference on Learning Theory},
+  pages={1286--1304},
+  year={2015},
+  organization={PMLR}
+}
+
+@article{erven2011adaptive,
+  title={Adaptive hedge},
+  author={Erven, Tim and Koolen, Wouter M and Rooij, Steven and Gr{\"u}nwald, Peter},
+  journal={Advances in Neural Information Processing Systems},
+  volume={24},
+  year={2011}
+}
+
+@inproceedings{koolen2015second,
+  title={Second-order quantile methods for experts and combinatorial games},
+  author={Koolen, Wouter M and Van Erven, Tim},
+  booktitle={Conference on Learning Theory},
+  pages={1155--1175},
+  year={2015},
+  organization={PMLR}
+}
+
+@article{schapire2001drifting,
+  title={Drifting games},
+  author={Schapire, Robert E},
+  journal={Machine Learning},
+  volume={43},
+  number={3},
+  pages={265--291},
+  year={2001},
+  publisher={Springer}
+}
+
+@article{popoviciu1965certaines,
+  title={Sur certaines in{\'e}galit{\'e}s qui caract{\'e}risent les fonctions convexes},
+  author={Popoviciu, Tiberiu},
+  journal={Analele Stiintifice Univ.“Al. I. Cuza”, Iasi, Sectia Mat},
+  volume={11},
+  pages={155--164},
+  year={1965}
+}
+
+@article{de2005divided,
+  title={Divided differences},
+  author={de Boor, Carl},
+  journal={arXiv preprint math/0502036},
+  year={2005}
+}
+
+@article{butt2016generalization,
+  title={Generalization of Popoviciu-Type Inequalities Via Fink’s Identity},
+  author={Butt, Saad Ihsan and Pe{\v{c}}ari{\'c}, Josip and Vukeli{\'c}, Ana},
+  journal={Mediterranean journal of mathematics},
+  volume={13},
+  number={4},
+  pages={1495--1511},
+  year={2016},
+  publisher={Springer}
+}
+
+@article{freund2002drifting,
+  title={Drifting games and Brownian motion},
+  author={Freund, Yoav and Opper, Manfred},
+  journal={Journal of Computer and System Sciences},
+  volume={64},
+  number={1},
+  pages={113--132},
+  year={2002},
+  publisher={Elsevier}
+}
+
+@article{billingsley1995central,
+  title={The central limit theorem},
+  author={Billingsley, P},
+  journal={Probability and Measure, 3rd ed.; John Wiley \& Sons, Inc.: Toronto, ON, Canada},
+  pages={357--363},
+  year=1995,
+  note={Reference for Lyapunov CLT}
+}
+
+@book{grimmett2020probability,
+  title={Probability and random processes},
+  author={Grimmett, Geoffrey and Stirzaker, David},
+  year=2020,
+  publisher={Oxford university press},
+  note={Reference for Mills Ratio}
+}

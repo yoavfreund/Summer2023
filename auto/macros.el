@@ -27,7 +27,6 @@
     '("notem" 1)
     '("note" 1)
     "figline"
-    "qed"
     "D"
     "reals"
     "argmin"
@@ -35,6 +34,7 @@
     "R"
     "vR"
     "state"
+    "fstate"
     "pot"
     "potPQ"
     "potLA"
@@ -80,7 +80,12 @@
     "radsum"
     "var"
     "V")
-   (LaTeX-add-environments
-    '("proof" LaTeX-env-args ["argument"] 0)))
+   (LaTeX-add-amsthm-newtheorems
+    "lemma"
+    "claim"
+    "theorem"
+    "corollary"
+    "definition"
+    "question"))
  :latex)
 

@@ -1,12 +1,12 @@
 %\theoremstyle{plain}
 \usepackage{amsmath,bm}
 
-% \newtheorem{lemma}{Lemma}
-% \newtheorem{claim}[lemma]{Claim}
-% \newtheorem{theorem}[lemma]{Theorem}
-% \newtheorem{corollary}[lemma]{Corollary}
-% \newtheorem{definition}{Definition}
-% \newtheorem{question}{Question}
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{corollary}[lemma]{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{question}{Question}
 
 \newcommand{\note}[1]{\par{\bf Note:}#1\par}
 \newcommand{\notem}[1]{{\marginpar{\tiny #1}}}
@@ -14,7 +14,7 @@
 \newcommand{\figline}{\rule{\textwidth}{1pt}}
 
 %\newcommand{\proof}{\noindent{\bf Proof:} }
-\newcommand{\qed}{\rule{0.7em}{0.7em}}
+%\newcommand{\qed}{\rule{0.7em}{0.7em}}
 
 \newcommand{\newmcommand}[2]{\newcommand{#1}{{\ifmmode {#2}\else\mbox{${#2}$}\fi}}}
 \newcommand{\newmcommandi}[2]{\newcommand{#1}[1]{{\ifmmode {#2}\else\mbox{${#2}$}\fi}}}
@@ -37,6 +37,7 @@
 
 \renewcommand{\r}{r}      % Instantaneuous regret
 \newcommand{\state}{{\bf \Psi}}
+\newcommand{\fstate}{{\bf \hat{\Psi}}}
 \newcommand{\1}[1]{{\mathbf 1}\left[#1\right]} % point mass at #1
 
 \newcommand{\pot}{\phi}
