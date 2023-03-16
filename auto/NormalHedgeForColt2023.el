@@ -16,6 +16,9 @@
     '("fIter" 1)
     '("iter" 1)
     '("pospart" 1)
+    '("Rdist" 1)
+    '("Lvec" 1)
+    '("Pvec" 1)
     "iterzero"
     "fIterzero"
     "gIterzero"
@@ -39,14 +42,20 @@
     "sec:preliminaries"
     "lemma:SP-pos-comb"
     "sec:PotentialGame"
-    "eqn:ell-discrete"
-    "fig:discrete-Time-Game"
+    "eqn:percentile-bound"
+    "def:averagePotential"
+    "eqn:potential-bound"
     "sec:potentialRecursion"
+    "eqn:back-induction"
+    "eqn:induction"
+    "thm:backward-recursion"
     "eqn:upperPotentials"
     "eqn:lowerPotentials"
     "eqn:upper-recursion"
     "eqn:lower-recursion"
     "eqn:limitPotential"
+    "eqn:ell-discrete"
+    "fig:discrete-Time-Game"
     "sec:disc-game-strategies"
     "eqn:backward-iteration-lower-discrete"
     "eqn:backward-iteration-upper-recursion-discrete"
@@ -133,9 +142,6 @@
     "sec:int-time-game"
     "fig:integerTimeGame"
     "sec:potentials"
-    "eqn:back-induction"
-    "eqn:induction"
-    "thm:backward-recursion"
     "sec:strat-integer"
     "eqn:adv-strat-p"
     "eqn:learner-strat-1"

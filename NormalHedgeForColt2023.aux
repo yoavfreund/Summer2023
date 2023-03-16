@@ -2,11 +2,11 @@
 \citation{freund1997decision}
 \citation{freund1997decision}
 \citation{LittlestoneWa94}
-\citation{freund1999adaptive}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Decision theoretic online learning }}{1}\protected@file@percent }
 \newlabel{fig:DTOL}{{1}{1}}
 \newlabel{eqn:0-order-bound}{{1}{1}}
+\citation{freund1999adaptive}
 \citation{chaudhuri2009parameter}
 \citation{chernov2010prediction}
 \citation{orabona2016coin}
@@ -45,69 +45,77 @@
 \@writefile{toc}{\contentsline {section}{\numberline {3}Preliminaries}{4}\protected@file@percent }
 \newlabel{sec:preliminaries}{{3}{4}}
 \newlabel{lemma:SP-pos-comb}{{3}{4}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}The potential game}{4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Analysis using potential function}{4}\protected@file@percent }
 \newlabel{sec:PotentialGame}{{4}{4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}State symmetries}{5}\protected@file@percent }
-\newlabel{eqn:ell-discrete}{{10}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The discrete time potential game }}{6}\protected@file@percent }
-\newlabel{fig:discrete-Time-Game}{{3}{6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Potential Based analysis}{6}\protected@file@percent }
-\newlabel{sec:potentialRecursion}{{4.2}{6}}
-\newlabel{eqn:upperPotentials}{{11}{6}}
-\newlabel{eqn:lowerPotentials}{{12}{6}}
-\newlabel{eqn:upper-recursion}{{13}{6}}
-\newlabel{eqn:lower-recursion}{{14}{6}}
-\newlabel{eqn:limitPotential}{{15}{6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Strategies for discrete time}{7}\protected@file@percent }
-\newlabel{sec:disc-game-strategies}{{4.3}{7}}
-\newlabel{eqn:backward-iteration-lower-discrete}{{16}{7}}
-\newlabel{eqn:backward-iteration-upper-recursion-discrete}{{17}{7}}
-\newlabel{eqn:adv-strat-dk}{{18}{7}}
-\newlabel{eqn:learner-strat-1c}{{19}{7}}
-\newlabel{eqn:game-lattice}{{20}{8}}
-\newlabel{lemma:discrete-step-bound}{{4}{8}}
-\newlabel{thm:DescreteGameExactValues}{{5}{8}}
-\newlabel{eqn:lower-potential-exact}{{21}{8}}
-\newlabel{eqn:upper-potential-exact}{{22}{8}}
-\newlabel{thm:seq-of-adv-strategies}{{6}{8}}
-\newlabel{eqn:k-limit}{{23}{8}}
-\newlabel{eqn:upper-potential-exact-j}{{24}{9}}
-\newlabel{eqn:upper-potential-exact-k}{{25}{9}}
-\newlabel{eqn:conergence-for-k}{{26}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}The adversary prefers smaller steps}{9}\protected@file@percent }
-\newlabel{sec:smallsteps}{{4.4}{9}}
-\newlabel{thm:smallerSteps}{{7}{9}}
-\newlabel{lemma:half-step}{{8}{9}}
-\newlabel{eqn:pot-recursion-0}{{27}{10}}
-\newlabel{eqn:lowerpotquarterstep}{{28}{10}}
-\newlabel{eqn:pot-recursion-1}{{29}{10}}
-\newlabel{eqn:pot-recursion-diff}{{30}{10}}
-\newlabel{eqn:recursion-as-difference}{{31}{10}}
-\newlabel{lemma:divdiff}{{9}{10}}
-\newlabel{eqn:generalized-half-step}{{32}{10}}
-\newlabel{thm:min-max-limit}{{10}{10}}
+\newlabel{eqn:percentile-bound}{{10}{4}}
+\newlabel{def:averagePotential}{{3}{5}}
+\newlabel{eqn:potential-bound}{{11}{5}}
+\@writefile{toc}{\contentsline {paragraph}{The divisibility super-power allows the adversary to remove dependense on history}{5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Upper and lower potentials}{6}\protected@file@percent }
+\newlabel{sec:potentialRecursion}{{4.1}{6}}
+\newlabel{eqn:back-induction}{{13}{6}}
+\newlabel{eqn:induction}{{14}{6}}
+\newlabel{thm:backward-recursion}{{5}{7}}
+\newlabel{eqn:upperPotentials}{{15}{7}}
+\newlabel{eqn:lowerPotentials}{{16}{7}}
+\newlabel{eqn:upper-recursion}{{17}{7}}
+\newlabel{eqn:lower-recursion}{{18}{7}}
+\newlabel{eqn:limitPotential}{{19}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Potential-based analysis of DTOL}{7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}State symmetries}{9}\protected@file@percent }
+\newlabel{eqn:ell-discrete}{{20}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The discrete time potential game }}{9}\protected@file@percent }
+\newlabel{fig:discrete-Time-Game}{{3}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Strategies for discrete time}{10}\protected@file@percent }
+\newlabel{sec:disc-game-strategies}{{4.4}{10}}
+\newlabel{eqn:backward-iteration-lower-discrete}{{21}{10}}
+\newlabel{eqn:backward-iteration-upper-recursion-discrete}{{22}{10}}
+\newlabel{eqn:adv-strat-dk}{{23}{10}}
+\newlabel{eqn:learner-strat-1c}{{24}{10}}
+\newlabel{eqn:game-lattice}{{25}{10}}
+\newlabel{lemma:discrete-step-bound}{{6}{11}}
+\newlabel{thm:DescreteGameExactValues}{{7}{11}}
+\newlabel{eqn:lower-potential-exact}{{26}{11}}
+\newlabel{eqn:upper-potential-exact}{{27}{11}}
+\newlabel{thm:seq-of-adv-strategies}{{8}{11}}
+\newlabel{eqn:k-limit}{{28}{11}}
+\newlabel{eqn:upper-potential-exact-j}{{29}{11}}
+\newlabel{eqn:upper-potential-exact-k}{{30}{11}}
+\newlabel{eqn:conergence-for-k}{{31}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}The adversary prefers smaller steps}{12}\protected@file@percent }
+\newlabel{sec:smallsteps}{{4.5}{12}}
+\newlabel{thm:smallerSteps}{{9}{12}}
+\newlabel{lemma:half-step}{{10}{12}}
+\newlabel{eqn:pot-recursion-0}{{32}{12}}
+\newlabel{eqn:lowerpotquarterstep}{{33}{12}}
+\newlabel{eqn:pot-recursion-1}{{34}{12}}
 \citation{kac1947random}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Characterizing the limit $s \to 0$}{11}\protected@file@percent }
-\newlabel{sec:continuous}{{5}{11}}
-\newlabel{eqn:Kolmogorov}{{33}{11}}
-\newlabel{eqn:convol-with-normal}{{34}{11}}
-\newlabel{eqn:exponential-potential}{{35}{11}}
+\newlabel{eqn:pot-recursion-diff}{{35}{13}}
+\newlabel{eqn:recursion-as-difference}{{36}{13}}
+\newlabel{lemma:divdiff}{{11}{13}}
+\newlabel{eqn:generalized-half-step}{{37}{13}}
+\newlabel{thm:min-max-limit}{{12}{13}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Characterizing the limit $s \to 0$}{13}\protected@file@percent }
+\newlabel{sec:continuous}{{5}{13}}
+\newlabel{eqn:Kolmogorov}{{38}{14}}
+\newlabel{eqn:convol-with-normal}{{39}{14}}
+\newlabel{eqn:exponential-potential}{{40}{14}}
+\newlabel{eqn:NormalHedge}{{42}{14}}
 \citation{billingsley1995central}
 \bibstyle{plain}
 \bibdata{ref.bib,bib.bib}
 \bibcite{abernethy2006continuous}{1}
-\newlabel{eqn:NormalHedge}{{37}{12}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}The continuous time game and bounds for easy sequences}{12}\protected@file@percent }
-\newlabel{sec:easy}{{6}{12}}
-\newlabel{thm:variancebound}{{11}{12}}
-\newlabel{eqn:Vn}{{38}{12}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Lower bound}{12}\protected@file@percent }
-\newlabel{sec:lowerbound}{{7}{12}}
 \bibcite{abernethy2008optimal}{2}
 \bibcite{billingsley1995central}{3}
 \bibcite{butt2016generalization}{4}
 \bibcite{cesa1996line}{5}
 \bibcite{cesa2007improved}{6}
+\@writefile{toc}{\contentsline {section}{\numberline {6}The continuous time game and bounds for easy sequences}{15}\protected@file@percent }
+\newlabel{sec:easy}{{6}{15}}
+\newlabel{thm:variancebound}{{13}{15}}
+\newlabel{eqn:Vn}{{43}{15}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Lower bound}{15}\protected@file@percent }
+\newlabel{sec:lowerbound}{{7}{15}}
 \bibcite{chaudhuri2009parameter}{7}
 \bibcite{chernov2009prediction}{8}
 \bibcite{chernov2010prediction}{9}
@@ -125,54 +133,54 @@
 \bibcite{orabona2016coin}{21}
 \bibcite{popoviciu1965certaines}{22}
 \bibcite{schapire2001drifting}{23}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Proof of Theorem\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `thm:IntegerGameBounds' on page 14 undefined}}{14}\protected@file@percent }
-\newlabel{lemma:first-order-bound}{{12}{14}}
-\newlabel{eqn:lower}{{39}{14}}
-\newlabel{eqn:ell-optimal-learner}{{40}{14}}
-\newlabel{eqn:Pot-Update}{{41}{14}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Proof of Theorem\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `thm:IntegerGameBounds' on page 17 undefined}}{17}\protected@file@percent }
+\newlabel{lemma:first-order-bound}{{14}{17}}
+\newlabel{eqn:lower}{{44}{17}}
+\newlabel{eqn:ell-optimal-learner}{{45}{17}}
+\newlabel{eqn:Pot-Update}{{46}{17}}
+\newlabel{eqn:pot-upper}{{47}{17}}
+\newlabel{eqn:zero-term}{{50}{17}}
 \citation{popoviciu1965certaines}
 \citation{butt2016generalization}
 \citation{de2005divided}
-\newlabel{eqn:pot-upper}{{42}{15}}
-\newlabel{eqn:zero-term}{{45}{15}}
-\newlabel{proof:simulBoundAveragePot}{{B}{15}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Proof of Theorem\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `thm:simulBoundAveragePot' on page 15 undefined} }{15}\protected@file@percent }
 \citation{butt2016generalization}
 \citation{butt2016generalization}
+\newlabel{proof:simulBoundAveragePot}{{B}{18}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Proof of Theorem\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `thm:simulBoundAveragePot' on page 18 undefined} }{18}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {C}Divided differences of a function}{18}\protected@file@percent }
+\newlabel{sec:divdiff}{{C}{18}}
 \citation{popoviciu1965certaines}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Divided differences of a function}{16}\protected@file@percent }
-\newlabel{sec:divdiff}{{C}{16}}
-\newlabel{thm:popo}{{13}{16}}
-\@writefile{toc}{\contentsline {section}{\numberline {D}Proof of Theorem\nobreakspace  {}11\hbox {}}{17}\protected@file@percent }
-\newlabel{appendix:ProofOfVarianceBound}{{D}{17}}
-\newlabel{lemma:infiniteexpectations}{{14}{17}}
-\newlabel{lemma:Taylor2D}{{15}{17}}
-\newlabel{eqn:d.dn.F}{{55}{17}}
-\newlabel{eqn:Taylor.F}{{56}{17}}
-\newlabel{proof:onestep}{{57}{18}}
-\newlabel{proof:allsteps}{{58}{18}}
-\newlabel{term:Taylor_rdt}{{63}{18}}
-\newlabel{term:Taylor_dtsquare}{{64}{18}}
-\newlabel{term:Taylor_r3}{{65}{18}}
-\newlabel{term:Taylor_r2t}{{66}{18}}
-\newlabel{term:Taylor_rt2}{{67}{18}}
-\newlabel{term:Taylor_t3}{{68}{18}}
-\newlabel{term:coll1}{{70}{19}}
-\newlabel{term:coll2}{{71}{19}}
-\newlabel{term:coll3}{{72}{19}}
-\newlabel{term:coll4}{{73}{19}}
-\newlabel{term:coll5}{{74}{19}}
-\newlabel{term:coll6}{{75}{19}}
-\newlabel{term:coll7}{{76}{19}}
-\newlabel{term:coll8}{{77}{19}}
-\newlabel{term:Taylor_collected_rdt}{{78}{20}}
-\newlabel{term:Taylor_collected_r3}{{78}{20}}
-\newlabel{eqn:Taylor}{{78}{20}}
-\newlabel{eqn:deltatislargeenough}{{79}{20}}
-\newlabel{eqn:contin0}{{81}{20}}
-\newlabel{eqn:contin1}{{82}{20}}
-\newlabel{eqn:contin2}{{83}{20}}
-\newlabel{eqn:contin3}{{84}{20}}
-\newlabel{eqnterm1.1}{{85}{21}}
-\newlabel{eqnterm1.2}{{86}{21}}
-\newlabel{eqn:term2.1}{{87}{21}}
+\newlabel{thm:popo}{{15}{19}}
+\@writefile{toc}{\contentsline {section}{\numberline {D}Proof of Theorem\nobreakspace  {}13\hbox {}}{20}\protected@file@percent }
+\newlabel{appendix:ProofOfVarianceBound}{{D}{20}}
+\newlabel{lemma:infiniteexpectations}{{16}{20}}
+\newlabel{lemma:Taylor2D}{{17}{20}}
+\newlabel{eqn:d.dn.F}{{60}{20}}
+\newlabel{eqn:Taylor.F}{{61}{20}}
+\newlabel{proof:onestep}{{62}{20}}
+\newlabel{proof:allsteps}{{63}{21}}
+\newlabel{term:Taylor_rdt}{{68}{21}}
+\newlabel{term:Taylor_dtsquare}{{69}{21}}
+\newlabel{term:Taylor_r3}{{70}{21}}
+\newlabel{term:Taylor_r2t}{{71}{21}}
+\newlabel{term:Taylor_rt2}{{72}{21}}
+\newlabel{term:Taylor_t3}{{73}{21}}
+\newlabel{term:coll1}{{75}{22}}
+\newlabel{term:coll2}{{76}{22}}
+\newlabel{term:coll3}{{77}{22}}
+\newlabel{term:coll4}{{78}{22}}
+\newlabel{term:coll5}{{79}{22}}
+\newlabel{term:coll6}{{80}{22}}
+\newlabel{term:coll7}{{81}{22}}
+\newlabel{term:coll8}{{82}{22}}
+\newlabel{term:Taylor_collected_rdt}{{83}{23}}
+\newlabel{term:Taylor_collected_r3}{{83}{23}}
+\newlabel{eqn:Taylor}{{83}{23}}
+\newlabel{eqn:deltatislargeenough}{{84}{23}}
+\newlabel{eqn:contin0}{{86}{23}}
+\newlabel{eqn:contin1}{{87}{23}}
+\newlabel{eqn:contin2}{{88}{23}}
+\newlabel{eqn:contin3}{{89}{23}}
+\newlabel{eqnterm1.1}{{90}{24}}
+\newlabel{eqnterm1.2}{{91}{24}}
+\newlabel{eqn:term2.1}{{92}{24}}

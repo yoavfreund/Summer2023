@@ -13,6 +13,7 @@
 \author{Yoav Freund}
 \begin{document}
 
+
 \maketitle
 \begin{abstract}
   We study potential-based online learning algorithms in a game
@@ -31,28 +32,39 @@ In this paper we study the {\em the decision-theoretic online learning game}
 repeated zero sum game between a {\em learner} and an {\em
   adversary}. The adversary controls the losses of $N$ actions, while
 the learner controls a distribution over the actions.
+\newcommand{\Pvec}[1]{\vec{P}^{#1}}
+\newcommand{\Lvec}[1]{\vec{L}^{#1}}
+\newcommand{\Rdist}[1]{\bar{R}^{#1}}
 
 \begin{figure}[ht!]
 \framebox{
 \begin{minipage}[t]{6.4in}
-For $t=1,\ldots,T$
+  {\bf Initialization:}\\
+  $N$ actions with associated prior weights
+  $\left\{\omega_1,\ldots,\omega_N\right\}$,
+  $\omega_j \geq 0$, $\sum_j \omega_j =1$\\
+  {\bf Algorithm} \\
+
+  For $i=1,\ldots,T$
 \begin{enumerate}
-\item The learner chooses a weight function $P_j^t$ over the
-  actions $j \in \{1,\ldots,N\}$ \\
-      such that $\sum_{j=1}^N P_j^t=1$  
-    \item The adversary chooses an {\em instantaneous loss} for each
-      of the $N$ actions: \\
-      $l_j^t \in [-1,+1]$ for $j \in \{1,\ldots,N\}$.
-    \item The {\em cumulative loss of action $j$} 
-    is  $L^t_j = \sum_{s=1}^t l_j^s$. 
-    \item The learner incurs an {\em instantaneous average loss} defined as
-      $\ell^t = \sum_{j=1}^N P^t_j l_j^t$
-    \item The {\em cumulative loss of the learner} is
-      $L_\ell^t = \sum_{s=1}^t \ell^s$
-    \item The {\em cumulative regret} of the learner with respect to
-      action $j$ is
-      $\R_j^t = L_\ell^t -L_j^t $.
+\item The learner chooses a distribution function $P_j^i$ over the actions
+  $j \in \{1,\ldots,N\}$ such that $\sum_{j=1}^N P_j^i \omega_j=1$. We
+  denote the vector of $N$ weights by $\Pvec{i}$
+\item The adversary chooses an {\em instantaneous loss} for each
+  of the $N$ actions: \\
+  $l_j^t \in [-1,+1]$ for $j \in \{1,\ldots,N\}$. we defnote the
+  vector of $N$ losses by $\Lvec{i}$
+\item The {\em cumulative loss of action $j$} is
+  $L^i_j = \sum_{s=1}^i l_j^s$.
+\item The learner incurs an {\em instantaneous average loss} defined
+  as $\ell^i = \sum_{s=1}^i \omega_jP^i_j l_j^i = \Pvec{i} \cdot \Lvec{i}$
+\item The {\em cumulative loss of the learner} is
+  $L_\ell^i = \sum_{s=1}^i \ell^s$
+\item The {\em cumulative regret} of the learner with respect to
+  action $j$ is $\R_j^i = L_\ell^i -L_j^i $. \\
+  $\Rdist{i}$ represents the {\em distribution} of the regrets.
 \end{enumerate}
+      
 \end{minipage}}
 \caption{Decision theoretic online learning \label{fig:DTOL}}
 \end{figure}
@@ -109,12 +121,7 @@ functions with real valued parameters.
 \item {\bf Potential based Online learning algorithms} There are two
   main paradigms for designing online learning algorithms: the {\em
     follow the leader} paradigm and the {\em potential function}
-  paradigm.  Our work here is in the potential function paradigm. A
-  potential function is a positive increasing function
-  $\pot:\reals \to \reals$. The main quantity that is analyzed is the
-  score, the average potential the actions,
-  $\score^t = \frac{1}{N} \sum_{j=1}^N \phi(R_j^t)$. The regret buonds
-  are proven by combining an upper and lower bound on $\score^t $.
+  paradigm.  The second is the paradigm we study here.  
 \end{itemize}
 
 \subsection{Main Results}
@@ -290,17 +297,318 @@ The following useful lemma states that $\SP{k}$ is closed under positive conbina
 \end{lemma}
 
 
-\section{The potential game}  \label{sec:PotentialGame}
+\section{Analysis using potential function}\label{sec:PotentialGame}
 
-Our analysis is based on modeling decision theoretic learning as a
-full information, deterministic, iterative game.  Central to our model
-is the concept of {\em state}. Roughly speaking, the state of the game
-is a summary of the history which holds all of the relevant past
-information. From Figure~\ref{fig:DTOL} it is clear that the state on
-iteration $i$ can be defined as the combination of the cumulative loss
-of the algorithm $L_\ell^i$ and the cumulative regret of the $N$
-actions: $\left\langle L^i_\ell,R_1^i,\ldots,R_N^i \right\rangle$. As
-the indices of the actions can be arbitrarily permuted, the cumulative
+The goal of the learner in the DTOL game (Fig.~\ref{fig:DTOL}) is to
+minimize the regret relative to the $\alpha>0$ percentile of the
+regret distribution $\Rdist{T}$ which we define as follows
+\begin{definition}{\bf Bound on percentile regret} Let $\epsilon>0$.
+  If the set of actions is finite (size ($N$) then
+  $\alpha$ is regret bound relative to the $\epsilon$ percentile  iff
+  \begin{equation} \label{eqn:percentile-bound}
+    \alpha\geq R_{\lfloor \epsilon N\rfloor}^T \mbox{ where } R^T_1 \geq R^T_2 \geq \ldots \geq R^T_N
+  \end{equation}
+  In the general case (infinite set of actions) we require that
+  $\alpha$ is larger the the $\epsilon$-top percentile of the
+  distribution $\Rdist{T}$.
+\end{definition}
+
+We design and analyze algorithms that use participate in the DTOL
+interaction but whose goal is to minimize the final score
+\begin{definition}{\bf The final score} \label{def:averagePotential}
+  The final score in the finite action case is defined as
+  \begin{equation} \label{eqn:potential-bound}
+    \score(T) = \frac{1}{N} \sum_{j=1}^N \finalPotT(R^T_j)
+  \end{equation}
+  where $\finalPotT$ is a potential function that is
+  continuous, positive and increasing.
+  In the general case the final score is defined as $\E{r \sim \Rdist{T}}{\finalPotT(r)}$
+\end{definition}
+
+An upper bound on the final score implies an upper bound on the
+percentile regret. Specifically if $\beta \geq \score(T)$ then a bound
+on the $\epsilon$ percentil regret is
+$\alpha= \finalPotT^{-1}(\beta/\epsilon)$.  This relationship
+motivates our eforts to minimize the final score.
+
+We define {\em the potential game} to be identical to DTOL with the
+only difference being that the goal of the learner is to minimize the
+final score and the goal of the adversary is to maximize it.
+
+To simplify our initial analysis we assume that $T$, the number of
+iterations in game (also called the {\em horizon} of the game) is
+fixed and known a priori.  We will later remove this assumption.
+
+We also assume that the final potential $\finalPotT$ is
+fixed. Intuitively, we want $\finalPotT(R)$ to increase fast with $R$
+so that $\alpha$ decreases quickly with $R$. However, at this point we
+assume only that $\finalPotT(R)$ is in $\SP{2}$.
+
+For our analysis we extend the game by giving the adversary additional
+abilities which we shall refer to as {\em super powers}. These super
+powers will simplify the analysis and allow us to prove min/max
+optimality. As super-powers are given only to the adversary, any
+learner strategy that achieves an upper bound on the final score in
+the extended game will guarantee the same bound or better in the
+original game (without super-powers).
+
+Ultimately, we will show that the potential defined in the NormalHedge
+algorithm is the {\em optimal} potential function that increases in
+the fastest rate without resulting infinite expected values.
+
+\paragraph*{full information game}
+The potential game is a full information, deterministic, iterative,
+finite horizon game between a learner and an adversary. The strategies
+for the player and adverssary are mappings from the history of the
+game: $\Pvec{1},\Lvec{1},\Pvec{2},\Lvec{2},\ldots$ to the next
+choices: $\Pvec{i}$ for the learner and $\Lvec{i}$ for the learner.
+The history implies a distribution over the regrets. In turn, the
+distribution of the regrets determines the tail probability and the
+average potential. There the distribution of the regret is the only
+information we need to determine the result at the {\em end} of the
+game. We will now show that the distribution of the regret at any time
+point holds all of the relevant information about the history up to
+that time point.
+
+\paragraph*{The divisibility super-power}
+The first super-power we give to the adversary is the ability to {\em
+  split} actions. Suppose we have $N$ actions with non-negative
+weights: $\omega_1,\ldots,\omega_N$ that sum to one.  The splitting
+adversary can split any action $j$ into $N_j$ ``sub-actions'' with
+weights $\omega_{j,1},\ldots,\omega_{j,N_j}$ whose sum is
+$\omega_j$.~\footnote{Thes $\omega_j$ are the a-priori or base weights
+  associated with the actions, in particular, they do {\em not}
+  incorporate the weighting by the learner $\Pvec{i}$}
+Clearly, the non-splitting adversary is a special case of the
+splitting adversary. Also, it is not hard to show that any splitting
+adversary can be approximated as a non-splitting adversary by letting
+$N \to \infty$ and using subsets of the actions to represent the
+splitted action.
+
+\paragraph{The divisibility super-power allows the adversary to
+  remove dependense on history}
+As described above, the learner choses $\Pvec{i}$ at iteration $i$, 
+as an arbitrary function of the history before iteration $i$
+$\Pvec{1},\Lvec{1},\Pvec{i-1},\Lvec{i-1}$. Following this choice, the adversary chooses $\Lvec{i}$.
+Let $\Rdist{i-1}$ be the distribution of the regrets before iteration $i$ and $\Rdist{i}$
+be the distribution after iteration $i$. It is not hard to show that $\Rdist{i}$ is a function of
+$\Rdist{i-1}, \Pvec{i}$ and $\Lvec{i}$. However, the full history might be used in the choices
+made by the learner and the adversary.
+
+We will not show that if the adversary has the divisibility super
+power she can always replace $\Lvec{i}$ with $\Lvec{i}$ in a way that
+the dependence on history reduces to a dependence on $\Rdist{i-1}$ and
+$\Rdist{i}$ remains unchanged. Consider the finite actions case (the
+general case holds under appropriate measurability constraints). Focus
+on
+
+
+\paragraph*{A Splitting adversary reduces history to distribution of actions}
+Suppose that the regrets of the $N$ actions at iteration $T$ is
+$\{R_1^T,\ldots,R_N^T\}$, and the corresponding weights are $\{\omega^T\}$
+
+The final score, defined in Equation~(\ref{eqn:potential-bound}) is
+only a function of the values .  As the
+indices of the actions can be arbitrarily permuted, we can represent
+the collection of values as a bag, or a point-mass distribution over
+$\reals$. We will denote distribution by $\state(T)$, and for reasons justified in the following lemma, we call $\state(i)$ the {\em state} at iteration $i$. 
+
+\begin{lemma}
+  Assuming that the adversary has divisibility super power, For every
+  iteration $1\leq i \leq T-1$, every history
+  $\Pvec{1},\Lvec{1},\ldots,\Pvec{i}$ and any $\Lvec{i}$ resulting in
+  distribution $\state(i+1)$ there is an alternative adversarial
+  strategy $\Lvec{i'}$ that results in the same state $\state(i+1)$
+  and in addition, $\state(i+1)$ is a function of
+  $\state(i),\Pvec{i},\Lvec{i'}$
+\end{lemma}
+
+\proof
+\qed
+
+This excludes second order alg based on quadratic variation.
+
+
+\paragraph*{divisibility transtlates into measure}
+
+\paragraph*{potential game}
+
+\paragraph*{A probabilistic representation of strategy and state}
+
+
+  Moreover the history can be reduced to a much smaller {\em state}.
+
+
+
+The adversary in DTOL chooses a loss $l_j^i \in [-1,+1]$ for each action $i$ at
+iteration $j$ as a function of the game so far. We use a probabilistic
+representation of the choice of the adversary, that is ..
+
+\subsection{Upper and lower potentials} \label{sec:potentialRecursion}
+
+The potential game defines the {\em final} potential function
+$\finalPotT$. We will now define {\em upper} and {\em lower}
+potentials for non final iterations $i < T$.
+
+Suppose first that the strategies for both sides are fixed,  Then we
+can define the potential at iteration $i<T$ and regret $R$ to be
+\[
+\phi(i,R) = 
+\]
+
+ A single action defines a path $S_\omega$ (as defined in (\ref{eqn:path})). Fixing
+ the strategies of the learner and the adversary determines
+ a distribution $\D$ over paths.
+We describe two equivalent ways to define $\potPQ(i,\R)$ for $i<T$
+ \begin{enumerate}
+ \item{\bf Using conditional expectation} We can define the potential
+   on iteration $i$ based on the fixed potential at iteration $T$.
+% Using the definition of prefix sum given
+% in Equation~(\ref{eqn:prefix-sum}, we can write this conditional
+% expectation as 
+\begin{equation}
+  \forall i=1,\ldots,T,\; \forall \R \;\;\;
+  \potPQ(i,\R)=\E{\omega\sim \D|\R_\omega^i=\R}{\pot(T,\R_{\omega}^T)}
+\end{equation}
+ \item{\bf Using backward induction} It is sometimes convenient to
+   compute the the potential for time $i$ from the potential at time
+   $i+1$:
+   \begin{equation} \label{eqn:back-induction}
+     \forall i=1,\ldots,T-1, \R\;\;\;
+     \potPQ(i,\R)=\E{\omega\sim \D|M_\omega^i=\R}{\potPQ(i+1,\R_{\omega}^{i+1})}
+   \end{equation}
+by using backwards induction: $i=T-1,T-2,\ldots,1$ we can compute the
+potential for all iterations.
+
+
+We use Equations~(\ref{eqn:Bias},\ref{eqn:aggregate-loss}) and
+marginalizing over $\R$ to express Equation~(\ref{eqn:back-induction})
+in terms of the single step strategies:
+\begin{equation} \label{eqn:induction}
+  \forall i=1,\ldots,T-1, \R\;\;\;
+  \potPQ(i,\R) \doteq \E{r \sim [(\R-\ell(i)) \oplus \adversM(i,\R)]}{\potPQ(i+1,r)}
+\end{equation}
+
+\end{enumerate}
+
+The score at iteration $i$ is defined as
+$\score(i)=\state(i)\odot \pot(i)$. The scores are all different
+expressions for calculating the expected final potential for the fixed strategies
+$\adversM, \learnerM$. Therefor the scores are all equal, as expressed
+in the following theorem:
+
+\begin{theorem} \label{thm:backward-recursion}
+Assuming $ \learnerM(i,\R), \adversM(i,\R)$ are fixed for all
+$i=1,\ldots,T-1$, then
+\[
+  \state(T)\odot \pot(T)=\score(T)=\score(T-1)=\cdots=\score(1)=\potPQ(0,0)
+  \]
+\end{theorem}
+
+A few things worth noting:
+\begin{enumerate}
+\item $\potPQ(i,\R)$ is the the final expected potential
+  given that the paths starts at $(i,\R)$ and that
+  the strategies used by both players in iterations $i,\ldots,T$ are fixed. Note
+  also that which strategies were used in iterations $1,\ldots,i-1$ is
+  of no consequence. The effect of past choices is captured by the
+  state $\state(i)$.
+\item
+  The final expected potential is equal to $\pot(0,0)$ which is the
+  potential at the common starting point: $i=1$, $\R=0$.
+\end{enumerate}
+
+
+Next,we vary the strategies of one side or the other to define upper
+and lower potentials.
+\begin{equation} \label{eqn:upperPotentials}
+  \exists \learnerM, \;\;\; \forall \adversM,\;\; \forall 1\leq i \leq
+  T,\;\; \forall \R \in \reals,\;\; \upperpot(i,\R) \geq \potPQ(i,R)
+\end{equation}
+\begin{equation} \label{eqn:lowerPotentials}
+  \exists \adversM, \;\;\; \forall \learnerM, \;\; \;\; \forall 1\leq i \leq
+  T,\;\; \forall \R \in \reals,\;\; \lowerpot(i,\R) \leq \potPQ(i,R)
+\end{equation}
+
+In words, $\upperpot$ is an upper bound on the potential that is 
+guaranteed by the learner strategy $\learnerM$ while $\lowerpotd$
+is a lower bound that is guaranteed by the adversarial
+strategy $\adversM$.
+
+Following the same argument as the one leading to
+Theorem~\ref{thm:backward-recursion}. We define upper and lower scores
+$\upperscoreM(i),\lowerscoreM(i)$ such that
+\begin{equation} \label{eqn:upper-recursion}
+  \state_{\learnerM}(T)\odot \finalPotT=\upperscoreM(T)=\upperscoreM(T-1)=\cdots=\upperscoreM(0)=\upperpot(0,0)
+\end{equation}
+and
+\begin{equation} \label{eqn:lower-recursion}
+  \state_{\adversM}(T)\odot \finalPotT=\lowerscoreM(T)=\lowerscoreM(T-1)=\cdots=\lowerscoreM(0)=\lowerpot(0,0)
+\end{equation}
+
+Our ultimate goal is to find strategies $\learnerM$ and
+$\adversM$ such that
+\begin{equation} \label{eqn:limitPotential}
+\forall i,\R,\;\;\; \lowerpot(i,\R) = \upperpot(i,\R)
+\end{equation}
+in particular, $\lowerscoreM(0)=\lowerpot(0,0) =
+\upperpot(0,0)=\upperscoreM(0)$. This means that
+$\adversM,\learnerM$ are a min/max pair of strategies and that
+$\lowerscoreM(0)=\upperscoreM(0)$ define the min/max value of the game.
+~\\~\\
+We do not achieve this for the integer game described in the next
+section. To achieve min/max optimality we extend the integer time game
+to the discrete time game (section~\ref{sec:discrete}) and to the
+continuous time game (\ref{sec:continuous}).
+
+\subsection{Potential-based analysis of DTOL}
+
+
+Central to our analysis is the notion of a {\em game state}. From the game
+state at the end of the game $i=T$ the outcome of the game can be calculated.
+
+
+
+$i$, deonted $\state_i$ is a representation of the game at iteration $i$ from which (1) any quantity relevant to iteration $i$ can be calculated.
+
+
+
+DTOL is a full information deterministicc game, if the strategies for
+both sides are also deterministic then the game determines a single history:
+\[
+  \{P^1_1,P^1_2,\ldots,P^1_N\},\{l^1_1,l^1_2,\ldots,l_N^1\},
+  \{P^2_1,P^2_2,\ldots,P^2_N\},\{l^2_1,l^2_2,\ldots,l_N^2\},\ldots 
+\]
+each player deterministically selects their action according to a
+prefix the history which is then appended to the end of the history
+and the other side takes their turn.  It is not hard to verify that
+the vector $\left\langle L^i_\ell,R_1^i,\ldots,R_N^i \right\rangle$
+contains all of the information in the prefix of history up to
+iteration $i$. Moreover, the information does not change if we relabel
+the actions.  We therefor define the {\em state} of the game as
+$\left\langle L^i_\ell, \{R_1^i,\ldots,R_N^i\} \right\rangle$ where the curly brackets define a {\em bag} or a {\em point-mass distribution}.
+
+The first step in extending DTOL to EDTOL is allowing {\em any}
+distribution over the regrets.
+
+and also fix as well as
+the final potential $\finalPotT$, we can calculate the conditional
+expectation of the potential at time $T$ given the that the regret at
+time $ti<T$ is R.  It is natural to define this conditional expected
+value as the potential at $i,R$.
+
+
+
+
+
+Central to our model is the concept of {\em state}. Roughly speaking,
+the state of the game is a summary of the history which holds all of
+the relevant past information. From Figure~\ref{fig:DTOL} it is clear
+that the state on iteration $i$ can be defined as the combination of
+the cumulative loss of the algorithm $L_\ell^i$ and the cumulative
+regret of the $N$ actions:
+$\left\langle L^i_\ell,R_1^i,\ldots,R_N^i \right\rangle$. As the
+indices of the actions can be arbitrarily permuted, the cumulative
 losses of the actions can be represented as a {\em bag} which can also
 be thought of as a point-mass distribution over $\reals$. Here we
 allow arbitrary distribution over the cumulative loss of the
@@ -308,8 +616,8 @@ expert.~\footnote{More precisely, an Borel-Meaure on $\reals$.} This
 does not substrantially expand the setup with $N$ acctions as any
 Borel-measure can approximated by letting $N \to \infty$. We use the
 term {\em state} at time $i$, denoted $\state(i)$, to represent
-distribution or measure, over regrets at iteration $i$.
-The full state at time $i$ is
+distribution or measure, over regrets at iteration $i$.  The full
+state at time $i$ is
 $\fstate(i) \doteq \left\langle L^i_\ell,\state(i)
 \right\rangle$.~\footnote{Note that according to our definitions the
   state is unchanged when exchanging the indices $i \neq j$ when
@@ -328,9 +636,13 @@ but not the learner. Thus any upper bound on the regret that holds for DTG holds
 We now explain the elements of DGT in Figure~\ref{fig:discrete-Time-Game}
 \begin{itemize}
 \item the loss $l_j^i$ associated with action is generalized to a measureble function that maps 
-\item At the beginning of iteration $i$ the adversary chooses a step-size $1 \geq s_i \geq 0$ which sets the range of instatanous losss/gains to $[-s_i,+s_i]$
-\item A ``time'' variable associates a non-negative real number $t_i$
-  with each iteration $i$. $t_i = t_{i-1}+s_i^2$
+\item At the beginning of iteration $i$ the adversary chooses a
+  step-size $1 \geq s_i \geq 0$ which sets the range of instatanous
+  losss/gains to $[-s_i,+s_i]$
+\item We replace the iteration number $i$ with $U_i$ that is an upper
+  bound on the cumulative variance that is updated according to the recursion:
+  $U_i = U_{i-1}+s_i^2$.
+\item  
 \end{itemize}
 
 
@@ -387,7 +699,7 @@ action before it is split.
 \begin{figure}[ht!]
 \framebox{
 \begin{minipage}[t]{6.4in}
-Initialization: $t_0=0$ \newline
+Initialization: $U_0=0$ \newline
 Length of game (Horizon): $\realT>0$\newline
 
 On iteration $i=1,2,\ldots$
@@ -401,12 +713,12 @@ On iteration $i=1,2,\ldots$
   
 \item The aggregate loss is calculated:
   \begin{equation} \label{eqn:ell-discrete}
-    \ell(t_i)=\E{\R \sim \state(t_i)}{\learnerM(t_i,\R) \Bias(t_i,\R)}
-    \mbox{ where } \Bias(t_i,\R) \doteq \E{y \sim \adversM(t_i,\R)}{y}
+    \ell(U_i)=\E{\R \sim \state(U_i)}{\learnerM(U_i,\R) \Bias(U_i,\R)}
+    \mbox{ where } \Bias(U_i,\R) \doteq \E{y \sim \adversM(U_i,\R)}{y}
   \end{equation}
-  Such that $|\ell(t_i)| \leq s_i^2$
+  Such that $|\ell(U_i)| \leq s_i^2$
 \item The state is updated. 
-  $$\state(t_i) = \E{\R \sim \state(t_{i})}{\adversM(t_i,\R) \oplus (\R-\ell(t_i))}
+  $$\state(U_i) = \E{\R \sim \state(U_{i})}{\adversM(U_i,\R) \oplus (\R-\ell(U_i))}
   $$
   Where $\oplus$ is a convolution as defined in the preliminaries.
 \end{enumerate}
@@ -418,66 +730,22 @@ $$\score(\realT) =\state(\realT) \odot \pot(\realT)$$
 \caption{The discrete time potential game  \label{fig:discrete-Time-Game}}
 \end{figure}
 
-\subsection{Potential Based analysis} \label{sec:potentialRecursion}
-Next,we vary the strategies of one side or the other to define upper
-and lower potentials.
-\begin{equation} \label{eqn:upperPotentials}
-  \exists \learnerM, \;\;\; \forall \adversM,\;\; \forall 1\leq i \leq
-  T,\;\; \forall \R \in \reals,\;\; \upperpot(i,\R) \geq \potPQ(i,R)
-\end{equation}
-\begin{equation} \label{eqn:lowerPotentials}
-  \exists \adversM, \;\;\; \forall \learnerM, \;\; \;\; \forall 1\leq i \leq
-  T,\;\; \forall \R \in \reals,\;\; \lowerpot(i,\R) \leq \potPQ(i,R)
-\end{equation}
-
-In words, $\upperpot$ is an upper bound on the potential that is 
-guaranteed by the learner strategy $\learnerM$ while $\lowerpotd$
-is a lower bound that is guaranteed by the adversarial
-strategy $\adversM$.
-
-Following the same argument as the one leading to
-Theorem~\ref{thm:backward-recursion}. We define upper and lower scores
-$\upperscoreM(i),\lowerscoreM(i)$ such that
-\begin{equation} \label{eqn:upper-recursion}
-  \state_{\learnerM}(T)\odot \finalPotT=\upperscoreM(T)=\upperscoreM(T-1)=\cdots=\upperscoreM(0)=\upperpot(0,0)
-\end{equation}
-and
-\begin{equation} \label{eqn:lower-recursion}
-  \state_{\adversM}(T)\odot \finalPotT=\lowerscoreM(T)=\lowerscoreM(T-1)=\cdots=\lowerscoreM(0)=\lowerpot(0,0)
-\end{equation}
-
-Our ultimate goal is to find strategies $\learnerM$ and
-$\adversM$ such that
-\begin{equation} \label{eqn:limitPotential}
-\forall i,\R,\;\;\; \lowerpot(i,\R) = \upperpot(i,\R)
-\end{equation}
-in particular, $\lowerscoreM(0)=\lowerpot(0,0) =
-\upperpot(0,0)=\upperscoreM(0)$. This means that
-$\adversM,\learnerM$ are a min/max pair of strategies and that
-$\lowerscoreM(0)=\upperscoreM(0)$ define the min/max value of the game.
-~\\~\\
-We do not achieve this for the integer game described in the next
-section. To achieve min/max optimality we extend the integer time game
-to the discrete time game (section~\ref{sec:discrete}) and to the
-continuous time game (\ref{sec:continuous}).
 
 {\bf Justification of bounding average loss} Suppose the game is
-  played for $T$ iterations and that the adversary uses the strategy
-  $\adversMd\brac{s,\frac{1}{2}+\epsilon}\paren{t,\R}$ and that
-  $s=\frac{1}{\sqrt{T}}$. In this case the loss of the learner in
-  iteration $i$ is $\ell(i)=2s\epsilon$ and the total loss is
-    $$L_\ell^T=\sum_{i=0}^{T-1} \ell(i) = T 2 \epsilon s = \frac{2 \epsilon}{s}$$.
-
-    If $\epsilon$ is kept constant as $s \to 0$
-    then $\lim_{T \to \infty}L_\ell^T=\infty$, biasing the game towards the adversary. On the other
-    hand, if $\epsilon =s^{\alpha}$ for $\alpha<1$ then $L_\ell^T
-    \to 0$, biasing the game towards the learner. To keep the game
-    balanced we have to set $\epsilon=cs$ for some constant
-    $c$. Without loss of generality we set $c=1$.
-
-    Generalizing this to the game where the adversary can choose a
-    different $s_i$ in each iteration we get the constraint 
-    $|\ell(i)| \leq s_i^2$
+played for $T$ iterations and that the adversary uses the strategy
+$\adversMd\brac{s,\frac{1}{2}+\epsilon}\paren{t,\R}$ and that
+$s=\frac{1}{\sqrt{T}}$. In this case the loss of the learner in
+iteration $i$ is $\ell(i)=2s\epsilon$ and the total loss is
+$$L_\ell^T=\sum_{i=0}^{T-1} \ell(i) = T 2 \epsilon s = \frac{2 \epsilon}{s}$$.
+If $\epsilon$ is kept constant as $s \to 0$ then
+$\lim_{T \to \infty}L_\ell^T=\infty$, biasing the game towards the
+adversary. On the other hand, if $\epsilon =s^{\alpha}$ for $\alpha<1$
+then $L_\ell^T \to 0$, biasing the game towards the learner. To keep
+the game balanced we have to set $\epsilon=cs$ for some constant
+$c$. Without loss of generality we set $c=1$.
+Generalizing this to the game where the adversary can choose a
+different $s_i$ in each iteration we get the constraint
+$|\ell(i)| \leq s_i^2$
 
 \subsection{Strategies for discrete time}
 \label{sec:disc-game-strategies}
@@ -1851,71 +2119,6 @@ of the adversary is to maximize it.
 
 \subsection{Defining potential Functions for all iterations\label{sec:potentials}}
 
-The potential game defines the {\em final} potential function
-$\finalPotT$, at the end of the game. We will now show, that we can
-extend the definition of a potential function to all iterations of the game.
-
- A single action defines a path $S_\omega$ (as defined in (\ref{eqn:path})). Fixing
- the strategies of the learner and the adversary determines
- a distribution $\D$ over paths.
-We describe two equivalent ways to define $\potPQ(i,\R)$ for $i<T$
- \begin{enumerate}
- \item{\bf Using conditional expectation} We can define the potential
-   on iteration $i$ based on the fixed potential at iteration $T$.
-% Using the definition of prefix sum given
-% in Equation~(\ref{eqn:prefix-sum}, we can write this conditional
-% expectation as 
-\begin{equation}
-  \forall i=1,\ldots,T,\; \forall \R \;\;\;
-  \potPQ(i,\R)=\E{\omega\sim \D|\R_\omega^i=\R}{\pot(T,\R_{\omega}^T)}
-\end{equation}
- \item{\bf Using backward induction} It is sometimes convenient to
-   compute the the potential for time $i$ from the potential at time
-   $i+1$:
-   \begin{equation} \label{eqn:back-induction}
-     \forall i=1,\ldots,T-1, \R\;\;\;
-     \potPQ(i,\R)=\E{\omega\sim \D|M_\omega^i=\R}{\potPQ(i+1,\R_{\omega}^{i+1})}
-   \end{equation}
-by using backwards induction: $i=T-1,T-2,\ldots,1$ we can compute the
-potential for all iterations.
-
-
-We use Equations~(\ref{eqn:Bias},\ref{eqn:aggregate-loss}) and
-marginalizing over $\R$ to express Equation~(\ref{eqn:back-induction})
-in terms of the single step strategies:
-\begin{equation} \label{eqn:induction}
-  \forall i=1,\ldots,T-1, \R\;\;\;
-  \potPQ(i,\R) \doteq \E{r \sim [(\R-\ell(i)) \oplus \adversM(i,\R)]}{\potPQ(i+1,r)}
-\end{equation}
-
-\end{enumerate}
-
-The score at iteration $i$ is defined as
-$\score(i)=\state(i)\odot \pot(i)$. The scores are all different
-expressions for calculating the expected final potential for the fixed strategies
-$\adversM, \learnerM$. Therefor the scores are all equal, as expressed
-in the following theorem:
-
-\begin{theorem} \label{thm:backward-recursion}
-Assuming $ \learnerM(i,\R), \adversM(i,\R)$ are fixed for all
-$i=1,\ldots,T-1$, then
-\[
-  \state(T)\odot \pot(T)=\score(T)=\score(T-1)=\cdots=\score(1)=\potPQ(0,0)
-  \]
-\end{theorem}
-
-A few things worth noting:
-\begin{enumerate}
-\item $\potPQ(i,\R)$ is the the final expected potential
-  given that the paths starts at $(i,\R)$ and that
-  the strategies used by both players in iterations $i,\ldots,T$ are fixed. Note
-  also that which strategies were used in iterations $1,\ldots,i-1$ is
-  of no consequence. The effect of past choices is captured by the
-  state $\state(i)$.
-\item
-  The final expected potential is equal to $\pot(0,0)$ which is the
-  potential at the common starting point: $i=1$, $\R=0$.
-\end{enumerate}
 
 \subsection{Strategies for the integer time  game} \label{sec:strat-integer}
 We assume that $\finalPotT  \in \SP{2}$, in other words, the final
