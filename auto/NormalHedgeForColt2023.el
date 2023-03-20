@@ -15,10 +15,14 @@
     '("gIter" 1)
     '("fIter" 1)
     '("iter" 1)
+    '("Pomega" 1)
+    '("Eomega" 1)
     '("pospart" 1)
-    '("Rdist" 1)
+    '("Rvec" 1)
     '("Lvec" 1)
+    '("lvec" 1)
     '("Pvec" 1)
+    "Ndist"
     "iterzero"
     "fIterzero"
     "gIterzero"
@@ -41,7 +45,8 @@
     "fig:normalhedge2"
     "sec:preliminaries"
     "lemma:SP-pos-comb"
-    "sec:PotentialGame"
+    "fig:DTOL_prob"
+    "fig:state-based"
     "eqn:percentile-bound"
     "def:averagePotential"
     "eqn:potential-bound"

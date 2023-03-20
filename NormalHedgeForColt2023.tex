@@ -33,38 +33,39 @@ repeated zero sum game between a {\em learner} and an {\em
   adversary}. The adversary controls the losses of $N$ actions, while
 the learner controls a distribution over the actions.
 \newcommand{\Pvec}[1]{\vec{P}^{#1}}
-\newcommand{\Lvec}[1]{\vec{L}^{#1}}
-\newcommand{\Rdist}[1]{\bar{R}^{#1}}
+\newcommand{\lvec}[1]{\vec{l}_{#1}}
+\newcommand{\Lvec}[1]{\vec{L}_{#1}}
+\newcommand{\Rvec}[1]{\vec{R}_{#1}}
 
 \begin{figure}[ht!]
 \framebox{
 \begin{minipage}[t]{6.4in}
   {\bf Initialization:}\\
   $N$ actions with associated prior weights
-  $\left\{\omega_1,\ldots,\omega_N\right\}$,
-  $\omega_j \geq 0$, $\sum_j \omega_j =1$\\
+  $\left\{w_1,\ldots,w_N\right\}$,
+  $w_j \geq 0$, $\sum_j w_j =1$\\
   {\bf Algorithm} \\
-
-  For $i=1,\ldots,T$
+For $i=1,\ldots,T$
 \begin{enumerate}
 \item The learner chooses a distribution function $P_j^i$ over the actions
-  $j \in \{1,\ldots,N\}$ such that $\sum_{j=1}^N P_j^i \omega_j=1$. We
-  denote the vector of $N$ weights by $\Pvec{i}$
+  $j \in \{1,\ldots,N\}$ \\
+  such that $\sum_{j=1}^N P_j^i w_j=1$. We
+  denote the vector of weights on iteration $i$ by $\Pvec{i}$
 \item The adversary chooses an {\em instantaneous loss} for each
   of the $N$ actions: \\
-  $l_j^t \in [-1,+1]$ for $j \in \{1,\ldots,N\}$. we defnote the
-  vector of $N$ losses by $\Lvec{i}$
-\item The {\em cumulative loss of action $j$} is
-  $L^i_j = \sum_{s=1}^i l_j^s$.
+  $l_j^i \in [-1,+1]$ for $j \in \{1,\ldots,N\}$. we denote the
+  vector of $T$ losses for action $j$ by $\lvec{j}$
+ \item The {\em cumulative loss of action $j$} is
+    $L^i_j = \sum_{s=1}^i l_j^s$. we denote the
+   vector of $T$ cumulative losses for action $j$ by $\Lvec{j}$.
 \item The learner incurs an {\em instantaneous average loss} defined
-  as $\ell^i = \sum_{s=1}^i \omega_jP^i_j l_j^i = \Pvec{i} \cdot \Lvec{i}$
+  as $\ell^i = \sum_{s=1}^i w_jP^i_j l_j^i $
 \item The {\em cumulative loss of the learner} is
   $L_\ell^i = \sum_{s=1}^i \ell^s$
 \item The {\em cumulative regret} of the learner with respect to
   action $j$ is $\R_j^i = L_\ell^i -L_j^i $. \\
-  $\Rdist{i}$ represents the {\em distribution} of the regrets.
+  $\Rvec{i}$ represents the regret vector for iteration $i$.
 \end{enumerate}
-      
 \end{minipage}}
 \caption{Decision theoretic online learning \label{fig:DTOL}}
 \end{figure}
@@ -297,11 +298,134 @@ The following useful lemma states that $\SP{k}$ is closed under positive conbina
 \end{lemma}
 
 
-\section{Analysis using potential function}\label{sec:PotentialGame}
+\section{Representing game Instance using distributions}
+For our analysis we need to generalize the DTOL game to infinite sets
+of actions.  To make this transition easier we use a measure-theoretic
+framework. We introduce this framework by first using it for for the
+finite case and then generalizing it to arbitrary probability
+measures.
+
+We consider a {\em single trajectory of the game}. In other words, a
+particular sequence of choices made by the the learner and the
+adversary. It is important to emphasize that in what follows we are
+{\em not} considering the dependence of the actions on previous
+actions, i.e. the {\em strategies} used by the two players. We use
+probability distributions to describe a particular trajectory of the
+game as it unfolds from iteration to iteration.
+
+\newcommand{\Ndist}{{\cal N}}
+
+Each action corresponds to a sequence of $T$ losses
+$\lvec{j} \in [-1,+1]^T$. The set of all possible sequences is an
+outcome space $\Omega$. The {\em set} of $N$ actions is represented
+by a distribution $\Omega$. Specifically, a distribution whose
+support is of size $N$ where the action $\omega_j$ has probabilitiy
+$w_j$. We denote this distribution by $\Ndist$.
+
+Each of the variables $P_j^i, l_j^i, L_j^i, R_j^i$ can be seen as a mappings
+from actions $\omega \in \Omega$ to $\reals$.  In other words, we can
+equate them with {\em random variables}. 
+$P^i(\omega), l^i(\omega), L^i(\omega)$ and $ R^i(\omega)$ are such random variables.
+
+Using this terminology and notation we can rexpress the DTOL game (Fig~\ref{fig:DTOL})
+using a probabilistic formulation (Fig~\ref{fig:DTOL_prob}).
+
+\renewcommand{\D}{{\cal D}}
+
+\begin{figure}[ht!]
+\framebox{
+\begin{minipage}[t]{6.4in}
+  {\bf Initialization:}\\
+  A distribution $\D$ over a set of actions $\Omega$\\~\\
+  {\bf Algorithm} \\
+For $i=1,\ldots,T$
+\begin{enumerate}
+\item The learner chooses a density function $P^i(\omega)$ over $\Omega$
+  such that $\E{\omega \sim \D}{P^i(\omega)}=1$
+\item The adversary chooses an {\em instantaneous loss} for each action:  $l^i: \Omega \to [-1,+1]$
+ \item The {\em cumulative loss of action $j$} is
+    $L^i(\omega) = \sum_{s=1}^i l^s(\omega)$.
+\item The learner incurs an {\em instantaneous average loss} defined
+  as $\ell^i = \E{\omega \sim \D}{P^i(\omega) l^i(\omega)} $
+\item The {\em cumulative loss of the learner} is
+  $L_\ell^i = \sum_{s=1}^i \ell^s$
+\item The {\em cumulative regret} of the learner with respect to
+  action $j$ is $\R^i(\omega) = L_\ell^i -L^i(\omega) $.
+\end{enumerate}
+\end{minipage}}
+\caption{Decision theoretic online learning in probabilistic formulation\label{fig:DTOL_prob}}
+\end{figure}
+
+\begin{figure}[ht!]
+\framebox{
+\begin{minipage}[t]{6.4in}
+Initialization: $\state^0$ is the probability distribution concentrated at $r=0$.\\~\\
+On iteration $i=0,1,\ldots,T-1$
+\begin{enumerate}
+\item The learner chooses a density function $P^i(r)$.
+\item The adversary chooses a mapping from $\reals$ to distributions
+  over $[-1,+1]:\; Q^i(r)$
+\item The aggregate loss is calculated: $\ell^i = \E{r \sim \state^i}{P_i(r) \Bias_i(r)}$ where
+   $\Bias^i(r) = \E{l \sim Q^i(r)}{l}$.
+ \item The state is updated.
+     $\state^{i+1}[A] =  \E{r \sim \state^i}{Q^i(r)[A-r]}$. Where $A-r = \{x-r | x \in A\}$
+\end{enumerate}
+
+\end{minipage}}
+\caption{The state-based game  \label{fig:state-based}}
+\end{figure}
+
+\subsection{Reformulation using marginals}
+
+\newcommand{\Eomega}[1]{\E{\omega \sim \D}{#1}}
+\newcommand{\Pomega}[1]{\P{\omega \sim \D}{#1}}
+
+To simplify the analysis we consider marginal distributions for single iterations.
+
+Let $A$ be an arbitrary borel-measureable subset of $\reals$.
+
+\begin{itemize}
+\item We define the {\em state} of a game as the marginal distribution
+  of $R^i(\omega)$: $\state^i[A] \doteq \Pomega{R^i(\omega) \in A}$.
+  We use the notation $r \sim \state^i$ to indicate that $r$
+  is drawn according to the distribution defined by $\state^i$.
+\item We define the choice of the algorithm to be the random variable over $r$:
+  $P^i(r) = \Eomega{P^i(\omega) \left| R^{i-1}(\omega) = r \right.}$
+\item We define the choice of the adversary to be a distribution over $l^i$ for a given $r$:\\
+  $Q^i(r)[A] = \Pomega{l^i(\omega) \in A  \left| R^{i-1}(\omega) = r \right.}$
+\end{itemize}
+
+
+\subsection{Binomial adversaries}
+In the generalized game we allow any distribution $\D \neq \Ndist$.
+More formally, bla bla ...
+
+In particular, when inferring lower bound we restrict ourselves to binomial adversaries ....
+
+
+\iffalse
+memory-less adversaries. In other words
+adversaries to not depend on history. In other words: for any $1 \leq i \leq T$:
+\begin{eqnarray}
+  && \P{\omega \sim \D}{L^i(\omega)=b_i \left|
+  P^i(\omega)=a_i\wedge (P^{i-1}(\omega)=a_{i-1} \wedge L^{i-1}(\omega)=b_{i-1})
+     \wedge \ldots \wedge (P^{1}(\omega)=a_{1} \wedge L^1(\omega)=b_1) \right.} \nonumber\\
+     &=&   \P{\omega \sim \D}{L^i(\omega)=b_i}
+\end{eqnarray}
+\fi
+
+When the adversary is memomry-less the losses are independent and the cumulative loss at each iteration $i$ depsends only on the cumulative loss on iteration $i-1$. Specifically
+$ R^{i+1}(\omega) = R^{i}(\omega) + \ell^i - l^i(\omega)$. Therefor, when the adversary is memory less we can reduce the complete history to the sequence of cumulative regrets. We call the distribution over $\reals$
+induced by $R_i(\omega)$ the $i$ {\em state} of the game and denote it by
+\begin{equation}
+\end{equation}
+
+
+
 
 The goal of the learner in the DTOL game (Fig.~\ref{fig:DTOL}) is to
 minimize the regret relative to the $\alpha>0$ percentile of the
-regret distribution $\Rdist{T}$ which we define as follows
+regret distribution $\Rvec{T}$ which we define as follows
 \begin{definition}{\bf Bound on percentile regret} Let $\epsilon>0$.
   If the set of actions is finite (size ($N$) then
   $\alpha$ is regret bound relative to the $\epsilon$ percentile  iff
@@ -310,7 +434,7 @@ regret distribution $\Rdist{T}$ which we define as follows
   \end{equation}
   In the general case (infinite set of actions) we require that
   $\alpha$ is larger the the $\epsilon$-top percentile of the
-  distribution $\Rdist{T}$.
+  distribution $\Rvec{T}$.
 \end{definition}
 
 We design and analyze algorithms that use participate in the DTOL
@@ -322,7 +446,7 @@ interaction but whose goal is to minimize the final score
   \end{equation}
   where $\finalPotT$ is a potential function that is
   continuous, positive and increasing.
-  In the general case the final score is defined as $\E{r \sim \Rdist{T}}{\finalPotT(r)}$
+  In the general case the final score is defined as $\E{r \sim \Rvec{T}}{\finalPotT(r)}$
 \end{definition}
 
 An upper bound on the final score implies an upper bound on the
@@ -390,15 +514,15 @@ splitted action.
 As described above, the learner choses $\Pvec{i}$ at iteration $i$, 
 as an arbitrary function of the history before iteration $i$
 $\Pvec{1},\Lvec{1},\Pvec{i-1},\Lvec{i-1}$. Following this choice, the adversary chooses $\Lvec{i}$.
-Let $\Rdist{i-1}$ be the distribution of the regrets before iteration $i$ and $\Rdist{i}$
-be the distribution after iteration $i$. It is not hard to show that $\Rdist{i}$ is a function of
-$\Rdist{i-1}, \Pvec{i}$ and $\Lvec{i}$. However, the full history might be used in the choices
+Let $\Rvec{i-1}$ be the distribution of the regrets before iteration $i$ and $\Rvec{i}$
+be the distribution after iteration $i$. It is not hard to show that $\Rvec{i}$ is a function of
+$\Rvec{i-1}, \Pvec{i}$ and $\Lvec{i}$. However, the full history might be used in the choices
 made by the learner and the adversary.
 
 We will not show that if the adversary has the divisibility super
 power she can always replace $\Lvec{i}$ with $\Lvec{i}$ in a way that
-the dependence on history reduces to a dependence on $\Rdist{i-1}$ and
-$\Rdist{i}$ remains unchanged. Consider the finite actions case (the
+the dependence on history reduces to a dependence on $\Rvec{i-1}$ and
+$\Rvec{i}$ remains unchanged. Consider the finite actions case (the
 general case holds under appropriate measurability constraints). Focus
 on
 
@@ -427,17 +551,6 @@ $\reals$. We will denote distribution by $\state(T)$, and for reasons justified 
 \qed
 
 This excludes second order alg based on quadratic variation.
-
-
-\paragraph*{divisibility transtlates into measure}
-
-\paragraph*{potential game}
-
-\paragraph*{A probabilistic representation of strategy and state}
-
-
-  Moreover the history can be reduced to a much smaller {\em state}.
-
 
 
 The adversary in DTOL chooses a loss $l_j^i \in [-1,+1]$ for each action $i$ at
