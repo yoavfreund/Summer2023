@@ -13,7 +13,6 @@
 \author{Yoav Freund}
 \begin{document}
 
-
 \maketitle
 \begin{abstract}
   We study potential-based online learning algorithms in a game
@@ -274,61 +273,41 @@ W(V,\R) =
 \caption{NormalHedge.2 \label{fig:normalhedge2}}
 \end{figure}
 
-\section{Preliminaries} \label{sec:preliminaries}
+\section{Representing game Instances using measures}
+For our analysis we generalize the DTOL game to uncountably infinite
+sets of actions.  We use a measure-theoretic framework. We introduce
+this framework for the finite case and then generalizing it to
+arbitrary probability measures.
 
-We define some terms and notations that will be used in the rest of the paper.
-
-{\bf  Generalized binomial distribution}
-We denote by $\Binom(n,s)$ the distribution over the reals defined by
-$\sum_{i=1}^n X_i$ where $X_i$ are iid binary random variables which
-attain the values $-s,+s$ with equal probabilities.
-
-{\bf Strict Positivity} We restrict ourselves to potential functions have
-positive derivatives for degrees $0$ to $k$.  To that end we use the
-following definition:
-\begin{definition}[Strict Positivity of degree $k$]
-A function $f:\reals \to \reals$ is strictly positive of degree $k$, 
-denoted $f \in \SP{k}$ if the derivatives of orders 0 to $k$:  
-$f(x), \frac{d}{dx}f(x), \ldots, \frac{d^k}{dx^k}f(x)$ exist and are strictly positive.
-\end{definition}
-The following useful lemma states that $\SP{k}$ is closed under positive conbinations.
-\begin{lemma}  \label{lemma:SP-pos-comb}
-  Suppose that for $i =1,\ldots,n$, $f_i \in \SP{k}$ and $\alpha_i>0$,
-  Then $\sum_{i=1}^k \alpha_i f_i \in \SP{k}$
-\end{lemma}
-
-
-\section{Representing game Instance using distributions}
-For our analysis we need to generalize the DTOL game to infinite sets
-of actions.  To make this transition easier we use a measure-theoretic
-framework. We introduce this framework by first using it for for the
-finite case and then generalizing it to arbitrary probability
-measures.
-
-We consider a {\em single trajectory of the game}. In other words, a
-particular sequence of choices made by the the learner and the
-adversary. It is important to emphasize that in what follows we are
-{\em not} considering the dependence of the actions on previous
-actions, i.e. the {\em strategies} used by the two players. We use
-probability distributions to describe a particular trajectory of the
-game as it unfolds from iteration to iteration.
+It is important to emphsize that our probability measure does not
+correspond to stochasticity of any kind, it is mearly a tool for
+counting actions.  We consider a {\em single trajectory of the
+  game}. In other words, a particular sequence of choices made by the
+the learner and the adversary. It is important to emphasize that in
+what follows the probabities do not encode dependence of the actions
+on previous actions, i.e. the {\em strategies} used by the two
+players. In fact, the min/max strategies we propose are deterministic.
 
 \newcommand{\Ndist}{{\cal N}}
 
-Each action corresponds to a sequence of $T$ losses
-$\lvec{j} \in [-1,+1]^T$. The set of all possible sequences is an
-outcome space $\Omega$. The {\em set} of $N$ actions is represented
-by a distribution $\Omega$. Specifically, a distribution whose
-support is of size $N$ where the action $\omega_j$ has probabilitiy
-$w_j$. We denote this distribution by $\Ndist$.
+The probability space is defined as follows. Each action corresponds
+to a sequence of $T$ losses $\lvec{j} \in [-1,+1]^T$. The set of all
+possible sequences is an outcome space $\Omega$. The {\em set} of
+actions is represented by a distribution over $\Omega$. Specifically,
+the $N$ actions setup defined in (Fig~\ref{fig:DTOL}) corresponds to a
+distribution whose support is of size $N$ where the action $\omega_j$
+has probabilitiy $w_j$. We denote this distribution by $\Ndist$.
 
-Each of the variables $P_j^i, l_j^i, L_j^i, R_j^i$ can be seen as a mappings
-from actions $\omega \in \Omega$ to $\reals$.  In other words, we can
-equate them with {\em random variables}. 
-$P^i(\omega), l^i(\omega), L^i(\omega)$ and $ R^i(\omega)$ are such random variables.
+Each of the variables $P_j^i, l_j^i, L_j^i, R_j^i$ can be seen as a
+mappings from actions $\omega \in \Omega$ to $\reals$.  In other
+words, we can equate them with {\em random variables}.
+$P^i(\omega), l^i(\omega), L^i(\omega)$ and $ R^i(\omega)$ are such
+random variables.  a Using this terminology and notation we can
+rexpress the DTOL game (Fig~\ref{fig:DTOL}) using a probabilistic
+formulation (Fig~\ref{fig:DTOL_prob}).  In the generalized game we
+allow any distribution $\D$ with appropriate measurability
+constraints.
 
-Using this terminology and notation we can rexpress the DTOL game (Fig~\ref{fig:DTOL})
-using a probabilistic formulation (Fig~\ref{fig:DTOL_prob}).
 
 \renewcommand{\D}{{\cal D}}
 
@@ -375,7 +354,7 @@ On iteration $i=0,1,\ldots,T-1$
 \caption{The state-based game  \label{fig:state-based}}
 \end{figure}
 
-\subsection{Reformulation using marginals}
+\subsection{Reformulation using single-state quantities}
 
 \newcommand{\Eomega}[1]{\E{\omega \sim \D}{#1}}
 \newcommand{\Pomega}[1]{\P{\omega \sim \D}{#1}}
@@ -395,34 +374,63 @@ Let $A$ be an arbitrary borel-measureable subset of $\reals$.
   $Q^i(r)[A] = \Pomega{l^i(\omega) \in A  \left| R^{i-1}(\omega) = r \right.}$
 \end{itemize}
 
+Using these single-state quantities we rewrite (Fig~\ref{fig:DTOL_prob})
+as (Fig~\ref{fig:state-based}).
 
 \subsection{Binomial adversaries}
-In the generalized game we allow any distribution $\D \neq \Ndist$.
-More formally, bla bla ...
 
-In particular, when inferring lower bound we restrict ourselves to binomial adversaries ....
+The measure-theoretic formulation provides the adversary with a lot of
+power. However, as we discuss below, the optimal adversarial strategy
+is very simple and does not justify the use of measure theory. The
+reason we need the measure theoretic formulation is in the design of
+the {\em learner's} strategy. We design the learner's strategy to
+perform well against {\em all} adversaries, and for that we need a
+definition of all possible adversaries.
 
-
-\iffalse
-memory-less adversaries. In other words
-adversaries to not depend on history. In other words: for any $1 \leq i \leq T$:
-\begin{eqnarray}
-  && \P{\omega \sim \D}{L^i(\omega)=b_i \left|
-  P^i(\omega)=a_i\wedge (P^{i-1}(\omega)=a_{i-1} \wedge L^{i-1}(\omega)=b_{i-1})
-     \wedge \ldots \wedge (P^{1}(\omega)=a_{1} \wedge L^1(\omega)=b_1) \right.} \nonumber\\
-     &=&   \P{\omega \sim \D}{L^i(\omega)=b_i}
-\end{eqnarray}
-\fi
-
-When the adversary is memomry-less the losses are independent and the cumulative loss at each iteration $i$ depsends only on the cumulative loss on iteration $i-1$. Specifically
-$ R^{i+1}(\omega) = R^{i}(\omega) + \ell^i - l^i(\omega)$. Therefor, when the adversary is memory less we can reduce the complete history to the sequence of cumulative regrets. We call the distribution over $\reals$
-induced by $R_i(\omega)$ the $i$ {\em state} of the game and denote it by
-\begin{equation}
+Intuitively, the adversary follows a symmetric random walk. Formally, the loss distribution is independent of the past and is equal to
+\begin{equation} \label{eqn:adv-strat-p}
+  \adversMb(i,\R) =
+  \begin{cases}
+    +s & \mbox{ w.p. } \frac{1}{2}\\
+    -s & \mbox{ w.p. } \frac{1}{2}\\
+  \end{cases}
 \end{equation}
+for some $0 <s\leq 1$.
 
+The distribution of the cumulative loss $L^T$ is the binomial
+distribution $\Binom(T,s)$ which assigns probability
+${T \choose i}\frac{1}{2^T}$ to $s(2i-T)$ for $0 \leq i \leq T$.  It
+is obvious that the losses of the algoritms are all equal to zero:
+$\forall i,\; \ell^i=0$ and therefor the progression of states
+$\state(0),\state(1),\ldots$ is independent of the choices of the
+learner. In other words, the random walk strategy is an {\em equalizing
+  strategy} in which all choices by the learner lead to the same
+outcome.
 
+As stated above, the decision theoretic framework is not needed to
+define the random walk strategy. Assume the lenght of the game, $T$,
+is finite. We need $2^T$ actions to describe each and every seuqence
+generated by the random walk. Therefor by using $N=2^T$ we can use the
+standard finite action framework.
 
+\subsection{Potential functions}
+Potentials are auxiliary functions used to measure progress and
+perform amortized analysis of the regret.  Typically~\cite{CesaBinachiLugosi}, potential
+functions are positive, increasing and convex. We require somewhat
+stronger conditions which we call strict positivity.
 
+\begin{definition}[Strict Positivity of degree $k$]
+A function $f:\reals \to \reals$ is strictly positive of degree $k$, 
+denoted $f \in \SP{k}$ if the derivatives of orders 0 to $k$:  
+$f(x), \frac{d}{dx}f(x), \ldots, \frac{d^k}{dx^k}f(x)$ exist and are strictly positive.
+\end{definition}
+The following useful lemma states that $\SP{k}$ is closed under positive conbinations.
+\begin{lemma}  \label{lemma:SP-pos-comb}
+  Suppose that for $i =1,\ldots,n$, $f_i \in \SP{k}$ and $\alpha_i>0$,
+  Then $\sum_{i=1}^k \alpha_i f_i \in \SP{k}$
+\end{lemma}
+
+\subsubsection{Using potential to bound regret}
 The goal of the learner in the DTOL game (Fig.~\ref{fig:DTOL}) is to
 minimize the regret relative to the $\alpha>0$ percentile of the
 regret distribution $\Rvec{T}$ which we define as follows
@@ -449,130 +457,29 @@ interaction but whose goal is to minimize the final score
   In the general case the final score is defined as $\E{r \sim \Rvec{T}}{\finalPotT(r)}$
 \end{definition}
 
+
 An upper bound on the final score implies an upper bound on the
 percentile regret. Specifically if $\beta \geq \score(T)$ then a bound
 on the $\epsilon$ percentil regret is
 $\alpha= \finalPotT^{-1}(\beta/\epsilon)$.  This relationship
 motivates our eforts to minimize the final score.
 
-We define {\em the potential game} to be identical to DTOL with the
-only difference being that the goal of the learner is to minimize the
-final score and the goal of the adversary is to maximize it.
+\subsubsection{Recusive definition of the potential}
+We expand on previous work using potnetiaal functions in two ways:
 
-To simplify our initial analysis we assume that $T$, the number of
-iterations in game (also called the {\em horizon} of the game) is
-fixed and known a priori.  We will later remove this assumption.
-
-We also assume that the final potential $\finalPotT$ is
-fixed. Intuitively, we want $\finalPotT(R)$ to increase fast with $R$
-so that $\alpha$ decreases quickly with $R$. However, at this point we
-assume only that $\finalPotT(R)$ is in $\SP{2}$.
-
-For our analysis we extend the game by giving the adversary additional
-abilities which we shall refer to as {\em super powers}. These super
-powers will simplify the analysis and allow us to prove min/max
-optimality. As super-powers are given only to the adversary, any
-learner strategy that achieves an upper bound on the final score in
-the extended game will guarantee the same bound or better in the
-original game (without super-powers).
-
-Ultimately, we will show that the potential defined in the NormalHedge
-algorithm is the {\em optimal} potential function that increases in
-the fastest rate without resulting infinite expected values.
-
-\paragraph*{full information game}
-The potential game is a full information, deterministic, iterative,
-finite horizon game between a learner and an adversary. The strategies
-for the player and adverssary are mappings from the history of the
-game: $\Pvec{1},\Lvec{1},\Pvec{2},\Lvec{2},\ldots$ to the next
-choices: $\Pvec{i}$ for the learner and $\Lvec{i}$ for the learner.
-The history implies a distribution over the regrets. In turn, the
-distribution of the regrets determines the tail probability and the
-average potential. There the distribution of the regret is the only
-information we need to determine the result at the {\em end} of the
-game. We will now show that the distribution of the regret at any time
-point holds all of the relevant information about the history up to
-that time point.
-
-\paragraph*{The divisibility super-power}
-The first super-power we give to the adversary is the ability to {\em
-  split} actions. Suppose we have $N$ actions with non-negative
-weights: $\omega_1,\ldots,\omega_N$ that sum to one.  The splitting
-adversary can split any action $j$ into $N_j$ ``sub-actions'' with
-weights $\omega_{j,1},\ldots,\omega_{j,N_j}$ whose sum is
-$\omega_j$.~\footnote{Thes $\omega_j$ are the a-priori or base weights
-  associated with the actions, in particular, they do {\em not}
-  incorporate the weighting by the learner $\Pvec{i}$}
-Clearly, the non-splitting adversary is a special case of the
-splitting adversary. Also, it is not hard to show that any splitting
-adversary can be approximated as a non-splitting adversary by letting
-$N \to \infty$ and using subsets of the actions to represent the
-splitted action.
-
-\paragraph{The divisibility super-power allows the adversary to
-  remove dependense on history}
-As described above, the learner choses $\Pvec{i}$ at iteration $i$, 
-as an arbitrary function of the history before iteration $i$
-$\Pvec{1},\Lvec{1},\Pvec{i-1},\Lvec{i-1}$. Following this choice, the adversary chooses $\Lvec{i}$.
-Let $\Rvec{i-1}$ be the distribution of the regrets before iteration $i$ and $\Rvec{i}$
-be the distribution after iteration $i$. It is not hard to show that $\Rvec{i}$ is a function of
-$\Rvec{i-1}, \Pvec{i}$ and $\Lvec{i}$. However, the full history might be used in the choices
-made by the learner and the adversary.
-
-We will not show that if the adversary has the divisibility super
-power she can always replace $\Lvec{i}$ with $\Lvec{i}$ in a way that
-the dependence on history reduces to a dependence on $\Rvec{i-1}$ and
-$\Rvec{i}$ remains unchanged. Consider the finite actions case (the
-general case holds under appropriate measurability constraints). Focus
-on
-
-
-\paragraph*{A Splitting adversary reduces history to distribution of actions}
-Suppose that the regrets of the $N$ actions at iteration $T$ is
-$\{R_1^T,\ldots,R_N^T\}$, and the corresponding weights are $\{\omega^T\}$
-
-The final score, defined in Equation~(\ref{eqn:potential-bound}) is
-only a function of the values .  As the
-indices of the actions can be arbitrarily permuted, we can represent
-the collection of values as a bag, or a point-mass distribution over
-$\reals$. We will denote distribution by $\state(T)$, and for reasons justified in the following lemma, we call $\state(i)$ the {\em state} at iteration $i$. 
-
-\begin{lemma}
-  Assuming that the adversary has divisibility super power, For every
-  iteration $1\leq i \leq T-1$, every history
-  $\Pvec{1},\Lvec{1},\ldots,\Pvec{i}$ and any $\Lvec{i}$ resulting in
-  distribution $\state(i+1)$ there is an alternative adversarial
-  strategy $\Lvec{i'}$ that results in the same state $\state(i+1)$
-  and in addition, $\state(i+1)$ is a function of
-  $\state(i),\Pvec{i},\Lvec{i'}$
-\end{lemma}
-
-\proof
-\qed
-
-This excludes second order alg based on quadratic variation.
-
-
-The adversary in DTOL chooses a loss $l_j^i \in [-1,+1]$ for each action $i$ at
-iteration $j$ as a function of the game so far. We use a probabilistic
-representation of the choice of the adversary, that is ..
-
-\subsection{Upper and lower potentials} \label{sec:potentialRecursion}
+In most applications, the potential assocciated with a specific action
+is a function of the cumulative loss of the same action. In
+NormalHedge~\cite{} the potential function also depends on the
+iteration numer. 
 
 The potential game defines the {\em final} potential function
 $\finalPotT$. We will now define {\em upper} and {\em lower}
 potentials for non final iterations $i < T$.
 
-Suppose first that the strategies for both sides are fixed,  Then we
-can define the potential at iteration $i<T$ and regret $R$ to be
-\[
-\phi(i,R) = 
-\]
-
- A single action defines a path $S_\omega$ (as defined in (\ref{eqn:path})). Fixing
- the strategies of the learner and the adversary determines
- a distribution $\D$ over paths.
-We describe two equivalent ways to define $\potPQ(i,\R)$ for $i<T$
+A single action defines a path $S_\omega$ (as defined in
+(\ref{eqn:path})). Fixing the strategies of the learner and the
+adversary determines a distribution $\D$ over paths.  We describe two
+equivalent ways to define $\potPQ(i,\R)$ for $i<T$
  \begin{enumerate}
  \item{\bf Using conditional expectation} We can define the potential
    on iteration $i$ based on the fixed potential at iteration $T$.
@@ -590,7 +497,10 @@ We describe two equivalent ways to define $\potPQ(i,\R)$ for $i<T$
      \forall i=1,\ldots,T-1, \R\;\;\;
      \potPQ(i,\R)=\E{\omega\sim \D|M_\omega^i=\R}{\potPQ(i+1,\R_{\omega}^{i+1})}
    \end{equation}
-by using backwards induction: $i=T-1,T-2,\ldots,1$ we can compute the
+
+\subsubsection{Upper and lower potentials} \label{sec:potentialRecursion}
+
+   by using backwards induction: $i=T-1,T-2,\ldots,1$ we can compute the
 potential for all iterations.
 
 
@@ -630,7 +540,6 @@ A few things worth noting:
   The final expected potential is equal to $\pot(0,0)$ which is the
   potential at the common starting point: $i=1$, $\R=0$.
 \end{enumerate}
-
 
 Next,we vary the strategies of one side or the other to define upper
 and lower potentials.
@@ -674,140 +583,72 @@ section. To achieve min/max optimality we extend the integer time game
 to the discrete time game (section~\ref{sec:discrete}) and to the
 continuous time game (\ref{sec:continuous}).
 
-\subsection{Potential-based analysis of DTOL}
+
+\subsection{Strategies for the integer time  game} \label{sec:strat-integer}
+We assume that $\finalPotT  \in \SP{2}$, in other words, the final
+potential is positive, increasing and convex. $\finalPotT$ defines the
+upper and lower potentials at time $T$:
+$$\lowerpotb(T,\R) = \upperpotb(T,\R) = \finalPotT(\R) $$
+We define a backwards recursion for the lower potential:
+\begin{equation} \label{eqn:backward-iteration-lower}
+  \lowerpotb(i-1, \R) = \frac{\lowerpotb(i,\R+1) + \lowerpotb(i,\R-1)}{2}
+\end{equation}
+and a backwards recursion for the upper potential:
+\begin{equation} \label{eqn:backward-iteration-upper-recursion}
+  \upperpotb(i-1, \R) = \frac{\upperpotb(i,\R+2) + \upperpotb(i,\R-2)}{2}
+\end{equation}
+
+We define strategies that correspond to these potentials. A strategy
+for the adversary:
+\begin{equation} \label{eqn:adv-strat-p}
+  \adversMb(i,\R) =
+  \begin{cases}
+    +1 & \mbox{ w.p. } \frac{1}{2}\\
+    -1 & \mbox{ w.p. } \frac{1}{2}\\
+  \end{cases}
+\end{equation}
+and a strategy for the learner:
+\begin{equation} \label{eqn:learner-strat-1}
+\learnerMb(i,\R) = \frac{1}{Z} \frac{\pot(i,\R+2) - \pot(i,\R-2)}{2}
+\end{equation}
+Where $Z$ is a normalization factor
+$$Z = \E{\R \sim \state(i)}{\frac{\pot(i,\R+2) - \pot(i,\R-2)}{2}}$$
+
+\begin{theorem} \label{thm:IntegerGameBounds}
+  Let $\finalPotT \in \SP{2}$, for any iteration $0 \leq i \leq T$ and
+  regret $\R_0 \in \reals$ 
+  \begin{itemize}
+  \item
+    The lower potential guaranteed by $\adversMb$ is
+     $$\lowerpotb(i,R_0) = \E{\R \sim \R_0 \oplus \Binom(T-i,1)}{\finalPotT(\R)} $$
+  \item
+    The upper potential guaranteed by $\learnerMb$ is
+    $$\upperpotb(i,R_0) = \E{\R \sim \R_0 \oplus \Binom(T-i,2)}{\finalPotT(\R)}$$
+  \end{itemize}
+\end{theorem}
+
+Plugging in $i=0$,$\R=0$ we get the following Corrolary:
+\begin{corollary}
+  if the learner plays $\learnerMb$ on every iteration
+  it guarantees that the final score satisfies
+  $$\state(T) \odot \finalPotT \leq \Binom(T,2) \odot \finalPotT $$
+
+  If the Adversary plays $\adversMb$ on every iteration it guarantees
+  that:
+  $$\state(T) \odot \finalPotT = \Binom(T,1) \odot \finalPotT $$
+\end{corollary}
 
 
-Central to our analysis is the notion of a {\em game state}. From the game
-state at the end of the game $i=T$ the outcome of the game can be calculated.
-
-
-
-$i$, deonted $\state_i$ is a representation of the game at iteration $i$ from which (1) any quantity relevant to iteration $i$ can be calculated.
-
-
-
-DTOL is a full information deterministicc game, if the strategies for
-both sides are also deterministic then the game determines a single history:
-\[
-  \{P^1_1,P^1_2,\ldots,P^1_N\},\{l^1_1,l^1_2,\ldots,l_N^1\},
-  \{P^2_1,P^2_2,\ldots,P^2_N\},\{l^2_1,l^2_2,\ldots,l_N^2\},\ldots 
-\]
-each player deterministically selects their action according to a
-prefix the history which is then appended to the end of the history
-and the other side takes their turn.  It is not hard to verify that
-the vector $\left\langle L^i_\ell,R_1^i,\ldots,R_N^i \right\rangle$
-contains all of the information in the prefix of history up to
-iteration $i$. Moreover, the information does not change if we relabel
-the actions.  We therefor define the {\em state} of the game as
-$\left\langle L^i_\ell, \{R_1^i,\ldots,R_N^i\} \right\rangle$ where the curly brackets define a {\em bag} or a {\em point-mass distribution}.
-
-The first step in extending DTOL to EDTOL is allowing {\em any}
-distribution over the regrets.
-
-and also fix as well as
-the final potential $\finalPotT$, we can calculate the conditional
-expectation of the potential at time $T$ given the that the regret at
-time $ti<T$ is R.  It is natural to define this conditional expected
-value as the potential at $i,R$.
-
-
-
-
-
-Central to our model is the concept of {\em state}. Roughly speaking,
-the state of the game is a summary of the history which holds all of
-the relevant past information. From Figure~\ref{fig:DTOL} it is clear
-that the state on iteration $i$ can be defined as the combination of
-the cumulative loss of the algorithm $L_\ell^i$ and the cumulative
-regret of the $N$ actions:
-$\left\langle L^i_\ell,R_1^i,\ldots,R_N^i \right\rangle$. As the
-indices of the actions can be arbitrarily permuted, the cumulative
-losses of the actions can be represented as a {\em bag} which can also
-be thought of as a point-mass distribution over $\reals$. Here we
-allow arbitrary distribution over the cumulative loss of the
-expert.~\footnote{More precisely, an Borel-Meaure on $\reals$.} This
-does not substrantially expand the setup with $N$ acctions as any
-Borel-measure can approximated by letting $N \to \infty$. We use the
-term {\em state} at time $i$, denoted $\state(i)$, to represent
-distribution or measure, over regrets at iteration $i$.  The full
-state at time $i$ is
-$\fstate(i) \doteq \left\langle L^i_\ell,\state(i)
-\right\rangle$.~\footnote{Note that according to our definitions the
-  state is unchanged when exchanging the indices $i \neq j$ when
-  $L_i^i=L_j^i$.  On the other hand, algorithms that depend on
-  quadrative variation, depend also on a quadratic expression for each
-  action, which is problem with second order algorithms on quadratic
-  variation, as these depend on information outside
-  $\left\langle L^i_\ell,\state(t) \right\rangle$, namely, the
-  quadratic variation of each action.{\bf to be completed}}
-
-Using this generalized definition of state we define a variant of the
-DTOL game (Figure~\ref{fig:DTOL}) that we call the discrete time game (DTG)
-(Figure~\ref{fig:discrete-Time-Game}). DTG generalizes DTOL and strengthens the adversary,
-but not the learner. Thus any upper bound on the regret that holds for DTG holds also for DTOL. 
-
-We now explain the elements of DGT in Figure~\ref{fig:discrete-Time-Game}
-\begin{itemize}
-\item the loss $l_j^i$ associated with action is generalized to a measureble function that maps 
-\item At the beginning of iteration $i$ the adversary chooses a
-  step-size $1 \geq s_i \geq 0$ which sets the range of instatanous
-  losss/gains to $[-s_i,+s_i]$
-\item We replace the iteration number $i$ with $U_i$ that is an upper
-  bound on the cumulative variance that is updated according to the recursion:
-  $U_i = U_{i-1}+s_i^2$.
-\item  
-\end{itemize}
-
-
-The DTOL game progresses from the full state $\fstate(t)$ to $\fstate(t+1)$ according to the strategies of the learner and the adversary:
-\begin{enumerate}
-\item The learner chooses a weighting $P(t,R)$ as a function of $\fstate(t)$
-\item The adversary assigns a loss to each action. $\adversM(t,\cdot): \reals \to \Delta^{[-s_i,+s_i]}$
-  \item ,,
-\end{enumerate}
+When the adversary is memomry-less the losses are independent and the cumulative loss at each iteration $i$ depsends only on the cumulative loss on iteration $i-1$. Specifically
+$ R^{i+1}(\omega) = R^{i}(\omega) + \ell^i - l^i(\omega)$. Therefor, when the adversary is memory less we can reduce the complete history to the sequence of cumulative regrets. We call the distribution over $\reals$
+induced by $R_i(\omega)$ the $i$ {\em state} of the game and denote it by
+\begin{equation}
+\end{equation}
 
 
 
 
-$\left\langle L^i_\ell,\state(t) \right\rangle$ to
-$\left\langle L^{t+1}_\ell,\state(t+1) \right\rangle$
 
-
-a sequence of
-states $s_0,s_1,s_2,\ldots,s_t$, and a strategy for the adversary
-(potentially randomized) $A: S \times \Omega \to \vec{l}_t$, a
-strategy for the learner $L:S,\Omega \to \vec{P}$.
-
-such as DTOL described in figure~\ref{fig:DTOL}. 
-
-\subsection{State symmetries}
-
-
-Intuitively, the state of a
-game captures all of the information about the game history that is
-relevant to the game's future. More formally, a state is a function of
-history that such that the future is independent of the history given
-the state. One can define the state of the DTOL game at time $t$ as
-the vector consisting of the $N$ cumulative regrets:
-$(R_1^i,\ldots,R_N^i)$. Note also that the regret (relative to the
-best action or a percentile) as well as the potential are conserved
-under permutation of the regrets. Therefor, a smaller definition of
-the state is the {\em distribution} of the cumulative regrets.
-
-When the set of actions is finite, this distribution is a point mass
-distribution where the probability of a single point corresponds to
-the number of actions with the cumulative regret.
-
-We allow countable and uncountable sets of actions, however, for most of our analysis it sufficies to consider 
-finite action sets that double in size at each step.
-
-Specifically we assume that the adversary chooses a step size $1 \leq s \leq 0$. At time $t$ the adversary
-associates $2^t$ actions with the $2^t$ loss sequences of the form $\{\pm s\}^t$.
-
-Thee set of ``divisible'' actions is somewhat larger. Here we allow
-the adversary to split each action at each stage into two, each action
-can have a different weight, but the weights have to sum that of the
-action before it is split.
 
 \begin{figure}[ht!]
 \framebox{
@@ -925,6 +766,7 @@ $\Ilat{T}$ is a special case of $\Klat{\realT,k}$ because setting
 $\realT=T=2^{2k}$ we get that $s_k=s_k^2=1$ and  $\Klat{\realT,k} = \Ilat{T}$.
 
 It is not hard to show that the lattices get finer with $k$, i.e. if  $j \leq k$,  $\Klat{\realT,j} \subseteq \Klat{\realT,k}$.
+
 
 The following Lemma parallels Lemma~\ref{lemma:first-order-bound} for the integer time game.
 \begin{lemma} \label{lemma:discrete-step-bound}
@@ -1414,6 +1256,7 @@ We prove the lower bound using Lyapunov CLT ~\cite{billingsley1995central}
 \bibliography{ref.bib,bib.bib}
 
 \appendix
+
 \section{Proof of Theorem~\ref{thm:IntegerGameBounds}}
 
 
@@ -1439,7 +1282,7 @@ If $\upperpotb(i,\R) \in \SP{2}$
 
 \end{lemma}
 
-\proof {\bf Of Lemma~\ref{lemma:first-order-bound}
+\proof {\bf Of Lemma~\ref{lemma:first-order-bound}}
 
     We prove each claim in turn
 \begin{enumerate}
@@ -1502,35 +1345,8 @@ term~(\ref{eqn:zero-term}) can be written as:
 \qed
 
 Repeating the induction steps of Lemma~\ref{lemma:first-order-bound}
-from $i=T$ to $i=1$ yields the following theorem.
+from $i=T$ to $i=1$ yields the proof of the theorem.
 
-\section{Proof of Theorem~\ref{thm:simulBoundAveragePot} \label{proof:simulBoundAveragePot}}
-\proof
-~\\
-\begin{itemize}
-  \item
-  {\bf A distribution $\state$ satisfies SRB for $G$ if it satisfies APB
-  for $\pot(R) = G(R)^{-1}$}\\
-Assume by contradiction that $\state$ does not satisfy the simultaneous bound. In
-other words there exists $a \in \reals$ such that
-$\P{\R \sim \state}{\R > a} > B(a)$. From Markov inequality and the fact
-that $\phi$ is non decreasing we get
-\[
-  \E{\R \sim \state}{\pot(\R)} \geq \phi(a) \P{\R \sim \state}{\R > a} >
-  \phi(a) B(a) = \frac{B(a)}{B(a)}=1
-\]
-but $ \E{\R \sim \state}{\pot(\R)} >1$ contradicts the average potential
-assumption for the potential $\phi(\R) = B(\R)^{-1}$
-\item {\bf A distribution $\state$ satisfies an
-    APB for $\pot$ if it satisfies SRB for $G$ and $\int_{-\infty}^{\infty}\pot(\R) G(\R) d\R \leq 1$}\\
-  From the SRB condition we have
-  $$\forall R, \P{\rho \sim \state}{\rho \geq \R} \leq G(\R)$$
-  From the condition  $\int_{-\infty}^{\infty}\pot(\R) G(\R) d\R \leq 1$ we get
-  $$1 \geq \int_{-\infty}^{\infty}\pot(\R) G(\R) d\R \geq
-  \int_{-\infty}^{\infty}\pot(\R) \P{\rho \sim \state}{\rho\geq \R}
-  d\R = \E{\R \sim \state}{\pot(\R)}$$
-\end{itemize}
-\qed
 
 \section{Divided differences of a function} \label{sec:divdiff}
 
@@ -2230,62 +2046,285 @@ of the adversary is to maximize it.
 \caption{The integer time game \label{fig:integerTimeGame}}
 \end{figure}
 
-\subsection{Defining potential Functions for all iterations\label{sec:potentials}}
-
-
-\subsection{Strategies for the integer time  game} \label{sec:strat-integer}
-We assume that $\finalPotT  \in \SP{2}$, in other words, the final
-potential is positive, increasing and convex. $\finalPotT$ defines the
-upper and lower potentials at time $T$:
-$$\lowerpotb(T,\R) = \upperpotb(T,\R) = \finalPotT(\R) $$
-We define a backwards recursion for the lower potential:
-\begin{equation} \label{eqn:backward-iteration-lower}
-  \lowerpotb(i-1, \R) = \frac{\lowerpotb(i,\R+1) + \lowerpotb(i,\R-1)}{2}
-\end{equation}
-and a backwards recursion for the upper potential:
-\begin{equation} \label{eqn:backward-iteration-upper-recursion}
-  \upperpotb(i-1, \R) = \frac{\upperpotb(i,\R+2) + \upperpotb(i,\R-2)}{2}
-\end{equation}
-
-We define strategies that correspond to these potentials. A strategy
-for the adversary:
-\begin{equation} \label{eqn:adv-strat-p}
-  \adversMb(i,\R) =
-  \begin{cases}
-    +1 & \mbox{ w.p. } \frac{1}{2}\\
-    -1 & \mbox{ w.p. } \frac{1}{2}\\
-  \end{cases}
-\end{equation}
-and a strategy for the learner:
-\begin{equation} \label{eqn:learner-strat-1}
-\learnerMb(i,\R) = \frac{1}{Z} \frac{\pot(i,\R+2) - \pot(i,\R-2)}{2}
-\end{equation}
-Where $Z$ is a normalization factor
-$$Z = \E{\R \sim \state(i)}{\frac{\pot(i,\R+2) - \pot(i,\R-2)}{2}}$$
-
-\begin{theorem} \label{thm:IntegerGameBounds}
-  Let $\finalPotT \in \SP{2}$, for any iteration $0 \leq i \leq T$ and
-  regret $\R_0 \in \reals$ 
-  \begin{itemize}
+\section{Proof of Theorem~\ref{thm:simulBoundAveragePot} \label{proof:simulBoundAveragePot}}
+\proof
+~\\
+\begin{itemize}
   \item
-    The lower potential guaranteed by $\adversMb$ is
-     $$\lowerpotb(i,R_0) = \E{\R \sim \R_0 \oplus \Binom(T-i,1)}{\finalPotT(\R)} $$
-  \item
-    The upper potential guaranteed by $\learnerMb$ is
-    $$\upperpotb(i,R_0) = \E{\R \sim \R_0 \oplus \Binom(T-i,2)}{\finalPotT(\R)}$$
-  \end{itemize}
-\end{theorem}
+  {\bf A distribution $\state$ satisfies SRB for $G$ if it satisfies APB
+  for $\pot(R) = G(R)^{-1}$}\\
+Assume by contradiction that $\state$ does not satisfy the simultaneous bound. In
+other words there exists $a \in \reals$ such that
+$\P{\R \sim \state}{\R > a} > B(a)$. From Markov inequality and the fact
+that $\phi$ is non decreasing we get
+\[
+  \E{\R \sim \state}{\pot(\R)} \geq \phi(a) \P{\R \sim \state}{\R > a} >
+  \phi(a) B(a) = \frac{B(a)}{B(a)}=1
+\]
+but $ \E{\R \sim \state}{\pot(\R)} >1$ contradicts the average potential
+assumption for the potential $\phi(\R) = B(\R)^{-1}$
+\item {\bf A distribution $\state$ satisfies an
+    APB for $\pot$ if it satisfies SRB for $G$ and $\int_{-\infty}^{\infty}\pot(\R) G(\R) d\R \leq 1$}\\
+  From the SRB condition we have
+  $$\forall R, \P{\rho \sim \state}{\rho \geq \R} \leq G(\R)$$
+  From the condition  $\int_{-\infty}^{\infty}\pot(\R) G(\R) d\R \leq 1$ we get
+  $$1 \geq \int_{-\infty}^{\infty}\pot(\R) G(\R) d\R \geq
+  \int_{-\infty}^{\infty}\pot(\R) \P{\rho \sim \state}{\rho\geq \R}
+  d\R = \E{\R \sim \state}{\pot(\R)}$$
+\end{itemize}
+\qed
 
-Plugging in $i=0$,$\R=0$ we get the following Corrolary:
-\begin{corollary}
-  if the learner plays $\learnerMb$ on every iteration
-  it guarantees that the final score satisfies
-  $$\state(T) \odot \finalPotT \leq \Binom(T,2) \odot \finalPotT $$
+\iffalse
+memory-less adversaries. In other words
+adversaries to not depend on history. In other words: for any $1 \leq i \leq T$:
+\begin{eqnarray}
+  && \P{\omega \sim \D}{L^i(\omega)=b_i \left|
+  P^i(\omega)=a_i\wedge (P^{i-1}(\omega)=a_{i-1} \wedge L^{i-1}(\omega)=b_{i-1})
+     \wedge \ldots \wedge (P^{1}(\omega)=a_{1} \wedge L^1(\omega)=b_1) \right.} \nonumber\\
+     &=&   \P{\omega \sim \D}{L^i(\omega)=b_i}
+\end{eqnarray}
+\fi
 
-  If the Adversary plays $\adversMb$ on every iteration it guarantees
-  that:
-  $$\state(T) \odot \finalPotT = \Binom(T,1) \odot \finalPotT $$
-\end{corollary}
+
+\subsection{Potential-based analysis of DTOL}
+
+
+Central to our analysis is the notion of a {\em game state}. From the game
+state at the end of the game $i=T$ the outcome of the game can be calculated.
+
+
+
+$i$, deonted $\state_i$ is a representation of the game at iteration $i$ from which (1) any quantity relevant to iteration $i$ can be calculated.
+
+
+
+DTOL is a full information deterministicc game, if the strategies for
+both sides are also deterministic then the game determines a single history:
+\[
+  \{P^1_1,P^1_2,\ldots,P^1_N\},\{l^1_1,l^1_2,\ldots,l_N^1\},
+  \{P^2_1,P^2_2,\ldots,P^2_N\},\{l^2_1,l^2_2,\ldots,l_N^2\},\ldots 
+\]
+each player deterministically selects their action according to a
+prefix the history which is then appended to the end of the history
+and the other side takes their turn.  It is not hard to verify that
+the vector $\left\langle L^i_\ell,R_1^i,\ldots,R_N^i \right\rangle$
+contains all of the information in the prefix of history up to
+iteration $i$. Moreover, the information does not change if we relabel
+the actions.  We therefor define the {\em state} of the game as
+$\left\langle L^i_\ell, \{R_1^i,\ldots,R_N^i\} \right\rangle$ where the curly brackets define a {\em bag} or a {\em point-mass distribution}.
+
+The first step in extending DTOL to EDTOL is allowing {\em any}
+distribution over the regrets.
+
+and also fix as well as
+the final potential $\finalPotT$, we can calculate the conditional
+expectation of the potential at time $T$ given the that the regret at
+time $ti<T$ is R.  It is natural to define this conditional expected
+value as the potential at $i,R$.
+
+
+
+
+
+Central to our model is the concept of {\em state}. Roughly speaking,
+the state of the game is a summary of the history which holds all of
+the relevant past information. From Figure~\ref{fig:DTOL} it is clear
+that the state on iteration $i$ can be defined as the combination of
+the cumulative loss of the algorithm $L_\ell^i$ and the cumulative
+regret of the $N$ actions:
+$\left\langle L^i_\ell,R_1^i,\ldots,R_N^i \right\rangle$. As the
+indices of the actions can be arbitrarily permuted, the cumulative
+losses of the actions can be represented as a {\em bag} which can also
+be thought of as a point-mass distribution over $\reals$. Here we
+allow arbitrary distribution over the cumulative loss of the
+expert.~\footnote{More precisely, an Borel-Meaure on $\reals$.} This
+does not substrantially expand the setup with $N$ acctions as any
+Borel-measure can approximated by letting $N \to \infty$. We use the
+term {\em state} at time $i$, denoted $\state(i)$, to represent
+distribution or measure, over regrets at iteration $i$.  The full
+state at time $i$ is
+$\fstate(i) \doteq \left\langle L^i_\ell,\state(i)
+\right\rangle$.~\footnote{Note that according to our definitions the
+  state is unchanged when exchanging the indices $i \neq j$ when
+  $L_i^i=L_j^i$.  On the other hand, algorithms that depend on
+  quadrative variation, depend also on a quadratic expression for each
+  action, which is problem with second order algorithms on quadratic
+  variation, as these depend on information outside
+  $\left\langle L^i_\ell,\state(t) \right\rangle$, namely, the
+  quadratic variation of each action.{\bf to be completed}}
+
+Using this generalized definition of state we define a variant of the
+DTOL game (Figure~\ref{fig:DTOL}) that we call the discrete time game (DTG)
+(Figure~\ref{fig:discrete-Time-Game}). DTG generalizes DTOL and strengthens the adversary,
+but not the learner. Thus any upper bound on the regret that holds for DTG holds also for DTOL. 
+
+We now explain the elements of DGT in Figure~\ref{fig:discrete-Time-Game}
+\begin{itemize}
+\item the loss $l_j^i$ associated with action is generalized to a measureble function that maps 
+\item At the beginning of iteration $i$ the adversary chooses a
+  step-size $1 \geq s_i \geq 0$ which sets the range of instatanous
+  losss/gains to $[-s_i,+s_i]$
+\item We replace the iteration number $i$ with $U_i$ that is an upper
+  bound on the cumulative variance that is updated according to the recursion:
+  $U_i = U_{i-1}+s_i^2$.
+\item  
+\end{itemize}
+
+
+The DTOL game progresses from the full state $\fstate(t)$ to $\fstate(t+1)$ according to the strategies of the learner and the adversary:
+\begin{enumerate}
+\item The learner chooses a weighting $P(t,R)$ as a function of $\fstate(t)$
+\item The adversary assigns a loss to each action. $\adversM(t,\cdot): \reals \to \Delta^{[-s_i,+s_i]}$
+  \item ,,
+\end{enumerate}
+
+
+
+
+$\left\langle L^i_\ell,\state(t) \right\rangle$ to
+$\left\langle L^{t+1}_\ell,\state(t+1) \right\rangle$
+
+
+a sequence of
+states $s_0,s_1,s_2,\ldots,s_t$, and a strategy for the adversary
+(potentially randomized) $A: S \times \Omega \to \vec{l}_t$, a
+strategy for the learner $L:S,\Omega \to \vec{P}$.
+
+such as DTOL described in figure~\ref{fig:DTOL}. 
+
+\subsection{State symmetries}
+
+
+Intuitively, the state of a
+game captures all of the information about the game history that is
+relevant to the game's future. More formally, a state is a function of
+history that such that the future is independent of the history given
+the state. One can define the state of the DTOL game at time $t$ as
+the vector consisting of the $N$ cumulative regrets:
+$(R_1^i,\ldots,R_N^i)$. Note also that the regret (relative to the
+best action or a percentile) as well as the potential are conserved
+under permutation of the regrets. Therefor, a smaller definition of
+the state is the {\em distribution} of the cumulative regrets.
+
+When the set of actions is finite, this distribution is a point mass
+distribution where the probability of a single point corresponds to
+the number of actions with the cumulative regret.
+
+We allow countable and uncountable sets of actions, however, for most of our analysis it sufficies to consider 
+finite action sets that double in size at each step.
+
+Specifically we assume that the adversary chooses a step size $1 \leq s \leq 0$. At time $t$ the adversary
+associates $2^t$ actions with the $2^t$ loss sequences of the form $\{\pm s\}^t$.
+
+Thee set of ``divisible'' actions is somewhat larger. Here we allow
+the adversary to split each action at each stage into two, each action
+can have a different weight, but the weights have to sum that of the
+action before it is split.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We define {\em the potential game} to be identical to DTOL with the
+only difference being that the goal of the learner is to minimize the
+final score and the goal of the adversary is to maximize it.
+
+To simplify our initial analysis we assume that $T$, the number of
+iterations in game (also called the {\em horizon} of the game) is
+fixed and known a priori.  We will later remove this assumption.
+
+We also assume that the final potential $\finalPotT$ is
+fixed. Intuitively, we want $\finalPotT(R)$ to increase fast with $R$
+so that $\alpha$ decreases quickly with $R$. However, at this point we
+assume only that $\finalPotT(R)$ is in $\SP{2}$.
+
+For our analysis we extend the game by giving the adversary additional
+abilities which we shall refer to as {\em super powers}. These super
+powers will simplify the analysis and allow us to prove min/max
+optimality. As super-powers are given only to the adversary, any
+learner strategy that achieves an upper bound on the final score in
+the extended game will guarantee the same bound or better in the
+original game (without super-powers).
+
+Ultimately, we will show that the potential defined in the NormalHedge
+algorithm is the {\em optimal} potential function that increases in
+the fastest rate without resulting infinite expected values.
+
+\paragraph*{full information game}
+The potential game is a full information, deterministic, iterative,
+finite horizon game between a learner and an adversary. The strategies
+for the player and adverssary are mappings from the history of the
+game: $\Pvec{1},\Lvec{1},\Pvec{2},\Lvec{2},\ldots$ to the next
+choices: $\Pvec{i}$ for the learner and $\Lvec{i}$ for the learner.
+The history implies a distribution over the regrets. In turn, the
+distribution of the regrets determines the tail probability and the
+average potential. There the distribution of the regret is the only
+information we need to determine the result at the {\em end} of the
+game. We will now show that the distribution of the regret at any time
+point holds all of the relevant information about the history up to
+that time point.
+
+\paragraph*{The divisibility super-power}
+The first super-power we give to the adversary is the ability to {\em
+  split} actions. Suppose we have $N$ actions with non-negative
+weights: $\omega_1,\ldots,\omega_N$ that sum to one.  The splitting
+adversary can split any action $j$ into $N_j$ ``sub-actions'' with
+weights $\omega_{j,1},\ldots,\omega_{j,N_j}$ whose sum is
+$\omega_j$.~\footnote{Thes $\omega_j$ are the a-priori or base weights
+  associated with the actions, in particular, they do {\em not}
+  incorporate the weighting by the learner $\Pvec{i}$}
+Clearly, the non-splitting adversary is a special case of the
+splitting adversary. Also, it is not hard to show that any splitting
+adversary can be approximated as a non-splitting adversary by letting
+$N \to \infty$ and using subsets of the actions to represent the
+splitted action.
+
+\paragraph{The divisibility super-power allows the adversary to
+  remove dependense on history}
+As described above, the learner choses $\Pvec{i}$ at iteration $i$, 
+as an arbitrary function of the history before iteration $i$
+$\Pvec{1},\Lvec{1},\Pvec{i-1},\Lvec{i-1}$. Following this choice, the adversary chooses $\Lvec{i}$.
+Let $\Rvec{i-1}$ be the distribution of the regrets before iteration $i$ and $\Rvec{i}$
+be the distribution after iteration $i$. It is not hard to show that $\Rvec{i}$ is a function of
+$\Rvec{i-1}, \Pvec{i}$ and $\Lvec{i}$. However, the full history might be used in the choices
+made by the learner and the adversary.
+
+We will not show that if the adversary has the divisibility super
+power she can always replace $\Lvec{i}$ with $\Lvec{i}$ in a way that
+the dependence on history reduces to a dependence on $\Rvec{i-1}$ and
+$\Rvec{i}$ remains unchanged. Consider the finite actions case (the
+general case holds under appropriate measurability constraints). Focus
+on
+
+
+\paragraph*{A Splitting adversary reduces history to distribution of actions}
+Suppose that the regrets of the $N$ actions at iteration $T$ is
+$\{R_1^T,\ldots,R_N^T\}$, and the corresponding weights are $\{\omega^T\}$
+
+The final score, defined in Equation~(\ref{eqn:potential-bound}) is
+only a function of the values .  As the
+indices of the actions can be arbitrarily permuted, we can represent
+the collection of values as a bag, or a point-mass distribution over
+$\reals$. We will denote distribution by $\state(T)$, and for reasons justified in the following lemma, we call $\state(i)$ the {\em state} at iteration $i$. 
+
+\begin{lemma}
+  Assuming that the adversary has divisibility super power, For every
+  iteration $1\leq i \leq T-1$, every history
+  $\Pvec{1},\Lvec{1},\ldots,\Pvec{i}$ and any $\Lvec{i}$ resulting in
+  distribution $\state(i+1)$ there is an alternative adversarial
+  strategy $\Lvec{i'}$ that results in the same state $\state(i+1)$
+  and in addition, $\state(i+1)$ is a function of
+  $\state(i),\Pvec{i},\Lvec{i'}$
+\end{lemma}
+
+\proof
+\qed
+
+This excludes second order alg based on quadratic variation.
+
+
+The adversary in DTOL chooses a loss $l_j^i \in [-1,+1]$ for each action $i$ at
+iteration $j$ as a function of the game so far. We use a probabilistic
+representation of the choice of the adversary, that is ..
 
 %%% Local Variables:
 %%% mode: latex
