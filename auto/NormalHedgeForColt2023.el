@@ -17,7 +17,7 @@
     '("iter" 1)
     '("Pomega" 1)
     '("Eomega" 1)
-    '("pospart" 1)
+    '("pospart" 2)
     '("Rvec" 1)
     '("Lvec" 1)
     '("lvec" 1)
@@ -46,10 +46,11 @@
     "fig:DTOL_prob"
     "fig:state-based"
     "eqn:adv-strat-p"
-    "lemma:SP-pos-comb"
     "eqn:percentile-bound"
     "def:averagePotential"
     "eqn:potential-bound"
+    "lemma:SP-pos-comb"
+    "sec:recursiveDef"
     "eqn:back-induction"
     "sec:potentialRecursion"
     "eqn:induction"
@@ -93,14 +94,14 @@
     "eqn:generalized-half-step"
     "thm:min-max-limit"
     "sec:continuous"
+    "eqn:difference"
+    "eqn:dt"
+    "eqn:ddR2"
     "eqn:Kolmogorov"
     "eqn:convol-with-normal"
     "eqn:exponential-potential"
     "eqn:NormalHedge"
     "sec:easy"
-    "sec:contin-Time-Game"
-    "thm:variancebound"
-    "eqn:Vn"
     "sec:lowerbound"
     "lemma:first-order-bound"
     "eqn:lower"
@@ -117,12 +118,10 @@
     "eqn:Taylor.F"
     "proof:onestep"
     "proof:allsteps"
-    "term:Taylor_rdt"
-    "term:Taylor_dtsquare"
-    "term:Taylor_r3"
-    "term:Taylor_r2t"
-    "term:Taylor_rt2"
-    "term:Taylor_t3"
+    "eqn:diffs"
+    "eqn:interior-point-dt"
+    "eqn:usingKol"
+    "eqn:interior-point-R"
     "term:coll1"
     "term:coll2"
     "term:coll3"

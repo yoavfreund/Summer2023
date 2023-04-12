@@ -100,6 +100,7 @@
 \newcommand{\agloss}{v}
 \newcommand{\Bias}{B}
 \newcommand{\deltat}{\Delta t}
+\newcommand{\deltaR}{\Delta R}
 
 \newcommand{\diffweight}{\l^d}   % learner strategy based on taking a difference
 \newcommand{\upperpotdiff}{\upperpot_{\diffweight}}
@@ -111,15 +112,10 @@
 \newcommand{\V}{V}
 
 
-\newcommand{\at}[1]{\left\{ \left. #1
+\newcommand{\at}[2]{\left\{ \left. #1
     \right|_{\begin{tiny}\begin{matrix}
-          \tau,\rho=\\t_i,\R \end{matrix} \end{tiny}}
+          \tau,\rho=\\#2 \end{matrix} \end{tiny}}
     \pot(\tau,\rho)\right\}}
-\newcommand{\att}[1]{\left\{ \left. #1  
-\right|_{\begin{tiny}\begin{matrix} \tau,\rho=\\t_i+g \deltat_i,\R_i+g
-      r_i \end{matrix} \end{tiny}}
-\pot(\tau, \rho)\right\}}
-
 
 \newcommand{\atI}[1]{\left\{ \left. #1  
 \right|_{\begin{tiny}\begin{matrix}

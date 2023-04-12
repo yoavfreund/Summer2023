@@ -43,24 +43,24 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces NormalHedge.2 }}{4}\protected@file@percent }
 \newlabel{fig:normalhedge2}{{2}{4}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Representing game Instances using measures}{4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Reformulation using single-state quantities}{4}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Decision theoretic online learning in probabilistic formulation}}{5}\protected@file@percent }
 \newlabel{fig:DTOL_prob}{{3}{5}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The state-based game }}{5}\protected@file@percent }
 \newlabel{fig:state-based}{{4}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Reformulation using single-state quantities}{5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Binomial adversaries}{5}\protected@file@percent }
-\newlabel{eqn:adv-strat-p}{{10}{5}}
 \citation{CesaBinachiLugosi}
+\newlabel{eqn:adv-strat-p}{{10}{6}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Potential functions}{6}\protected@file@percent }
-\newlabel{lemma:SP-pos-comb}{{3}{6}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Using potential to bound regret}{6}\protected@file@percent }
 \newlabel{eqn:percentile-bound}{{11}{6}}
-\newlabel{def:averagePotential}{{3}{6}}
+\newlabel{def:averagePotential}{{2}{6}}
 \newlabel{eqn:potential-bound}{{12}{6}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}Recusive definition of the potential}{7}\protected@file@percent }
+\newlabel{lemma:SP-pos-comb}{{3}{6}}
+\newlabel{sec:recursiveDef}{{3.3.1}{7}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Recursive definition of the potential }{7}\protected@file@percent }
 \newlabel{eqn:back-induction}{{14}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.3}Upper and lower potentials}{7}\protected@file@percent }
-\newlabel{sec:potentialRecursion}{{3.3.3}{7}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}Upper and lower potentials}{7}\protected@file@percent }
+\newlabel{sec:potentialRecursion}{{3.3.2}{7}}
 \newlabel{eqn:induction}{{15}{7}}
 \newlabel{thm:backward-recursion}{{4}{7}}
 \newlabel{eqn:upperPotentials}{{16}{7}}
@@ -101,7 +101,6 @@
 \newlabel{eqn:pot-recursion-0}{{38}{12}}
 \newlabel{eqn:lowerpotquarterstep}{{39}{12}}
 \newlabel{eqn:pot-recursion-1}{{40}{12}}
-\citation{kac1947random}
 \newlabel{eqn:pot-recursion-diff}{{41}{13}}
 \newlabel{eqn:recursion-as-difference}{{42}{13}}
 \newlabel{lemma:divdiff}{{12}{13}}
@@ -109,11 +108,19 @@
 \newlabel{thm:min-max-limit}{{13}{13}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Characterizing the limit $s \to 0$}{13}\protected@file@percent }
 \newlabel{sec:continuous}{{4}{13}}
-\newlabel{eqn:Kolmogorov}{{44}{14}}
-\newlabel{eqn:convol-with-normal}{{45}{14}}
-\newlabel{eqn:exponential-potential}{{46}{14}}
-\newlabel{eqn:NormalHedge}{{48}{14}}
+\citation{kac1947random}
+\newlabel{eqn:difference}{{45}{14}}
+\newlabel{eqn:dt}{{46}{14}}
+\newlabel{eqn:ddR2}{{47}{14}}
+\newlabel{eqn:Kolmogorov}{{48}{14}}
+\newlabel{eqn:convol-with-normal}{{49}{14}}
+\newlabel{eqn:exponential-potential}{{50}{14}}
 \citation{billingsley1995central}
+\newlabel{eqn:NormalHedge}{{52}{15}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}The continuous time game and bounds for easy sequences}{15}\protected@file@percent }
+\newlabel{sec:easy}{{5}{15}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Lower bound}{15}\protected@file@percent }
+\newlabel{sec:lowerbound}{{6}{15}}
 \bibstyle{plain}
 \bibdata{ref.bib,bib.bib}
 \bibcite{abernethy2006continuous}{1}
@@ -122,12 +129,6 @@
 \bibcite{butt2016generalization}{4}
 \bibcite{cesa1996line}{5}
 \bibcite{cesa2007improved}{6}
-\@writefile{toc}{\contentsline {section}{\numberline {5}The continuous time game and bounds for easy sequences}{15}\protected@file@percent }
-\newlabel{sec:easy}{{5}{15}}
-\newlabel{thm:variancebound}{{14}{15}}
-\newlabel{eqn:Vn}{{49}{15}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Lower bound}{15}\protected@file@percent }
-\newlabel{sec:lowerbound}{{6}{15}}
 \bibcite{chaudhuri2009parameter}{7}
 \bibcite{chernov2009prediction}{8}
 \bibcite{chernov2010prediction}{9}
@@ -145,52 +146,26 @@
 \bibcite{orabona2016coin}{21}
 \bibcite{popoviciu1965certaines}{22}
 \bibcite{schapire2001drifting}{23}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Proof of Theorem\nobreakspace  {}5\hbox {}}{17}\protected@file@percent }
-\newlabel{lemma:first-order-bound}{{15}{17}}
-\newlabel{eqn:lower}{{50}{17}}
-\newlabel{eqn:ell-optimal-learner}{{51}{17}}
-\newlabel{eqn:Pot-Update}{{52}{17}}
-\newlabel{eqn:pot-upper}{{53}{17}}
-\newlabel{eqn:zero-term}{{56}{17}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Proof of Theorem\nobreakspace  {}5\hbox {}}{18}\protected@file@percent }
+\newlabel{lemma:first-order-bound}{{15}{18}}
+\newlabel{eqn:lower}{{54}{18}}
+\newlabel{eqn:ell-optimal-learner}{{55}{18}}
+\newlabel{eqn:Pot-Update}{{56}{18}}
+\newlabel{eqn:pot-upper}{{57}{18}}
+\newlabel{eqn:zero-term}{{60}{18}}
 \citation{popoviciu1965certaines}
 \citation{butt2016generalization}
 \citation{de2005divided}
 \citation{butt2016generalization}
 \citation{butt2016generalization}
 \citation{popoviciu1965certaines}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Divided differences of a function}{18}\protected@file@percent }
-\newlabel{sec:divdiff}{{B}{18}}
-\newlabel{thm:popo}{{16}{18}}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Proof of Theorem\nobreakspace  {}14\hbox {}}{19}\protected@file@percent }
-\newlabel{appendix:ProofOfVarianceBound}{{C}{19}}
-\newlabel{lemma:infiniteexpectations}{{17}{19}}
-\newlabel{lemma:Taylor2D}{{18}{19}}
-\newlabel{eqn:d.dn.F}{{66}{20}}
-\newlabel{eqn:Taylor.F}{{67}{20}}
-\newlabel{proof:onestep}{{68}{20}}
-\newlabel{proof:allsteps}{{69}{20}}
-\newlabel{term:Taylor_rdt}{{74}{21}}
-\newlabel{term:Taylor_dtsquare}{{75}{21}}
-\newlabel{term:Taylor_r3}{{76}{21}}
-\newlabel{term:Taylor_r2t}{{77}{21}}
-\newlabel{term:Taylor_rt2}{{78}{21}}
-\newlabel{term:Taylor_t3}{{79}{21}}
-\newlabel{term:coll1}{{81}{22}}
-\newlabel{term:coll2}{{82}{22}}
-\newlabel{term:coll3}{{83}{22}}
-\newlabel{term:coll4}{{84}{22}}
-\newlabel{term:coll5}{{85}{22}}
-\newlabel{term:coll6}{{86}{22}}
-\newlabel{term:coll7}{{87}{22}}
-\newlabel{term:coll8}{{88}{22}}
-\newlabel{term:Taylor_collected_rdt}{{89}{23}}
-\newlabel{term:Taylor_collected_r3}{{89}{23}}
-\newlabel{eqn:Taylor}{{89}{23}}
-\newlabel{eqn:deltatislargeenough}{{90}{23}}
-\newlabel{eqn:contin0}{{92}{23}}
-\newlabel{eqn:contin1}{{93}{23}}
-\newlabel{eqn:contin2}{{94}{23}}
-\newlabel{eqn:contin3}{{95}{23}}
-\newlabel{eqnterm1.1}{{96}{24}}
-\newlabel{eqnterm1.2}{{97}{24}}
-\newlabel{eqn:term2.1}{{98}{24}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Divided differences of a function}{19}\protected@file@percent }
+\newlabel{sec:divdiff}{{B}{19}}
+\newlabel{thm:popo}{{16}{19}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Proof of Theorem\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `thm:variancebound' on page 20 undefined}}{20}\protected@file@percent }
+\newlabel{appendix:ProofOfVarianceBound}{{C}{20}}
+\newlabel{lemma:infiniteexpectations}{{17}{20}}
+\newlabel{eqn:diffs}{{66}{20}}
+\newlabel{eqn:interior-point-dt}{{67}{20}}
+\newlabel{eqn:usingKol}{{68}{21}}
+\newlabel{eqn:interior-point-R}{{70}{21}}

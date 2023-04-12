@@ -7,8 +7,7 @@
    (TeX-add-symbols
     '("atII" 1)
     '("atI" 1)
-    '("att" 1)
-    '("at" 1)
+    '("at" 2)
     '("adversMdkpar" 1)
     '("lowerscore" 1)
     '("upperscore" 1)
@@ -74,6 +73,7 @@
     "agloss"
     "Bias"
     "deltat"
+    "deltaR"
     "diffweight"
     "upperpotdiff"
     "Binom"
