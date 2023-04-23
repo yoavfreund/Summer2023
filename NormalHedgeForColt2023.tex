@@ -274,7 +274,7 @@ For $t=0,1,2,\ldots$
   H(V,\R) = \frac{W(V,R+1)}{\sum_{j=1}^N W(V+1,R_j)}
 \end{equation}
 
-\item Update regrets $\forall j=1,\ldots N,\;\;\; R_j^{t+1} = R_j^t +l_j^t -\ell^t $
+\item Update regrets $\forall j=1,\ldots N,\;\;\; R_j^{t+1} = R_j^t -l_j^t +\ell^t $
 
 \end{enumerate}
 \end{minipage}}
@@ -917,7 +917,7 @@ limit corresponds to the min/max slolution of the game we need to show
 that the adversary perfers smaller steps. In other words, that
 for any $t,R$, $\lowerpotMdk(t,\R)$ increases with $k$.
 
-To prove this claim we strengther the condition $\finalPotR \in \SP{2}$ used above to $\finalPotR \in \sp{4}$. In words, we assume that the function $\finalPotR(\R)$ is continuous and strictly positive and it's first four derivatives are continuous and strictly positive.
+To prove this claim we strengthen the condition $\finalPotR \in \SP{2}$ used above to $\finalPotR \in \SP{4}$. In words, we assume that the function $\finalPotR(\R)$ is continuous and strictly positive and it's first four derivatives are continuous and strictly positive.
 
 We use the sequence of discrete adversarial strategies
 $\adversMdk, k=1,2,\ldots$ defined in
@@ -1587,9 +1587,9 @@ $\frac{\partial^2}{\partial t^2} \pot(t,R) > 0$
 
 
 \begin{eqnarray} 
-  \pot(t+\deltat,\R+\deltaR) - \pot(t,\R)
+  \pot(t+\deltat,\R+r) - \pot(t,\R)
   &=& \paren{\pot(t+\deltat,\R) - \pot(t,\R)} \nonumber\\
-  &+& \paren{\pot(t+\deltat,\R+\deltaR)-\pot(t+\deltat,\R)} \label{eqn:diffs}
+  &+& \paren{\pot(t+\deltat,\R+r)-\pot(t+\deltat,\R)} \label{eqn:diffs}
 \end{eqnarray}
 
 From the fact that $\frac{\partial^2}{\partial \tau^2} \pot(\tau,\rho) > 0$ we get that 
@@ -1612,23 +1612,47 @@ we get that
 
 From the fact that $\pot(R,t) = \pot(R/\sqrt{t})$ we get that 
 \begin{eqnarray}
-  \lefteqn{\pot(t+\deltat,\R+\deltaR)-\pot(t+\deltat,\R)
-  \leq \pot(t,\R+\deltaR)-\pot(t,\R)}&&\\
-  &=&\at{\frac{\partial}{\partial \rho}}{t,R} \deltaR
-  +\frac{1}{2} \at{\frac{\partial^2}{\partial \rho^2}}{t,R+g \deltaR} \deltaR^2
+  \lefteqn{\pot(t+\deltat,\R+r)-\pot(t+\deltat,\R)
+  \leq \pot(t,\R+r)-\pot(t,\R)}&&\\
+  &=&\at{\frac{\partial}{\partial \rho}}{t,R} r
+  +\frac{1}{2} \at{\frac{\partial^2}{\partial \rho^2}}{t,R+g r} r^2
   \nonumber \\
-  &\leq& \at{\frac{\partial}{\partial \rho}}{t,R} \deltaR
-  +\frac{1}{2} \at{\frac{\partial^2}{\partial \rho^2}}{t,R+1} \deltaR^2
+  &\leq& \at{\frac{\partial}{\partial \rho}}{t,R} r
+  +\frac{1}{2} \at{\frac{\partial^2}{\partial \rho^2}}{t,R+1} r^2
   \label{eqn:interior-point-R}
 \end{eqnarray}
 
 Combining Equations~(\ref{eqn:diffs}), (\ref{eqn:usingKol}) and~(\ref{eqn:interior-point-R}) we get that
 \begin{eqnarray} 
-  \lefteqn{\pot(t+\deltat,\R+\deltaR) - \pot(t,\R)
-   \leq  \at{\frac{\partial}{\partial \rho}}{t,R} \deltaR} &&\\
-   &+&   \frac{1}{2} \at{\frac{\partial^2}{\partial \rho^2}}{t,R+1} \deltaR^2
+  \lefteqn{\pot(t+\deltat,\R+r) - \pot(t,\R)
+   \leq  \at{\frac{\partial}{\partial \rho}}{t,R} r} &&\\
+   &+&   \frac{1}{2} \at{\frac{\partial^2}{\partial \rho^2}}{t,R+1} r^2
    - \frac{1}{2} \at{\frac{\partial^2}{\partial \rho^2}}{t+1,R} \deltat
 \end{eqnarray}
+
+ We set
+ \[
+   \deltat  = \frac{\E{R \sim \state(t), r \sim Q}{\at{\frac{\partial^2}{\partial \rho^2}}{t,R+1}r^2}}
+   {\E{R \sim \state(t), r \sim Q}{\at{\frac{\partial^2}{\partial \rho^2}}{t+1,R}}}
+ \]
+
+Let $\state(t)$ be the distribution over the regrets, then the difference in the potential between steps $t$ and $t+\deltat$ is:
+\begin{eqnarray}
+  \lefteqn{\E{\R \sim \state(t+\deltat)}{\pot(t+\deltat,\R)} -
+  \E{\R \sim \state(t)}{\pot(t,\R)} }
+  &&\\
+  &=&
+      \E{R \sim \state(t), r \sim Q}{\pot(t+\deltat,R+r) - \pot(t,\R)} \\
+  &\leq&
+         \E{R \sim \state(t), r \sim Q}
+         {\at{\frac{\partial}{\partial \rho}}{t,R} r}\\
+  &+&
+      \frac{1}{2}\E{R \sim \state(t), r \sim Q}
+      {\at{\frac{\partial^2}{\partial \rho^2}}{t,R+1} r^2}\\
+  &-&
+      \frac{1}{2} \E{R \sim \state(t), r \sim Q}{\at{\frac{\partial^2}{\partial \rho^2}}{t+1,R}r^2}
+\end{eqnarray}
+
 
 \iffalse
 We now specialize the analysis for the normalHedge Potential which increases with $R$ and decreases with $t$. We get that 
@@ -2142,9 +2166,11 @@ The final score is calculated: $\score(T)=\state(T) \odot
 
 The goal of the learner is to minimize this score, the goal
 of the adversary is to maximize it.
-\end{minipage}}
-\caption{The integer time game \label{fig:integerTimeGame}}
-\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \end{minipage}}                                             %
+% \caption{The integer time game \label{fig:integerTimeGame}} %
+% \end{figure}                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Proof of Theorem~\ref{thm:simulBoundAveragePot} \label{proof:simulBoundAveragePot}}
 \proof

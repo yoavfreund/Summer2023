@@ -146,7 +146,6 @@
     "sec:stable"
     "fig:counterExample"
     "sec:int-time-game"
-    "fig:integerTimeGame"
     "proof:simulBoundAveragePot")
    (LaTeX-add-bibliographies
     "ref.bib"
