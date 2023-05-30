@@ -95,8 +95,8 @@
 
 \newcommand{\adversMdkp}{\adversMdkpar{k+1}}  %\adversMdk with k+1
 
-% \renewcommand{\a}{\adversM}
-%\newcommand{\legalAdversary}{{\cal A}}
+\renewcommand{\a}{\adversM}
+\newcommand{\legalAdversary}{{\cal A}}
 \newcommand{\agloss}{v}
 \newcommand{\Bias}{B}
 \newcommand{\deltat}{\Delta t}
@@ -111,11 +111,16 @@
 \newcommand{\var}{\mbox{Var}}
 \newcommand{\V}{V}
 
-
-\newcommand{\at}[2]{\left\{ \left. #1
+\newcommand{\at}[1]{\left\{ \left. #1
     \right|_{\begin{tiny}\begin{matrix}
-          \tau,\rho=\\#2 \end{matrix} \end{tiny}}
+          \tau,\rho=\\t_i,\R \end{matrix} \end{tiny}}
     \pot(\tau,\rho)\right\}}
+\newcommand{\att}[1]{\left\{ \left. #1  
+\right|_{\begin{tiny}\begin{matrix} \tau,\rho=\\t_i+g \deltat_i,\R_i+g
+      r_i \end{matrix} \end{tiny}}
+\pot(\tau, \rho)\right\}}
+
+
 
 \newcommand{\atI}[1]{\left\{ \left. #1  
 \right|_{\begin{tiny}\begin{matrix}
@@ -126,6 +131,16 @@ f(x,y) \right\}}
       x,y=\\x_0+t\Dx,y_0+t\Dy \end{matrix} \end{tiny}}
 f(x,y) \right\}}
 
+%%% divided differences
+
+\newcommand{\iter}[1]{\lowerpotMdkpar{1}\paren{\tau,\R {#1} \sqrt{\tau}}}
+\newcommand{\iterzero}{\lowerpotMdkpar{1}\paren{\tau,\R}}
+
+\newcommand{\fIter}[1]{\finalPotTau \paren{R {#1} \sqrt{\tau}}}
+\newcommand{\fIterzero}{\finalPotTau \paren{R}}
+
+\newcommand{\gIter}[1]{\finalPotTau \paren{R {#1} a}}
+\newcommand{\gIterzero}{\finalPotTau \paren{R}}
 
 \newmcommandi{\paren}{\left({#1}\right)}
 \newmcommandi{\brac}{\left[{#1}\right]}

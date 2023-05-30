@@ -1,6 +1,6 @@
 This is BibTeX, Version 0.99d (TeX Live 2020)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
-The top-level auxiliary file: NormalHedgeForColt2023.aux
+The top-level auxiliary file: NormalHedgeSummer23.aux
 The style file: plain.bst
 Database file #1: ref.bib
 Repeated entry---line 86 of file ref.bib
@@ -10,45 +10,45 @@ I'm skipping whatever remains of this entry
 Database file #2: bib.bib
 Warning--I didn't find a database entry for "sec:NormalHedgeAlg"
 Warning--I didn't find a database entry for "CesaBinachiLugosi"
-You've used 23 entries,
+You've used 18 entries,
             2118 wiz_defined-function locations,
-            850 strings with 14847 characters,
-and the built_in function-call counts, 8667 in all, are:
-= -- 923
-> -- 309
-< -- 9
-+ -- 126
-- -- 98
-* -- 564
-:= -- 1347
-add.period$ -- 77
-call.type$ -- 23
-change.case$ -- 118
+            819 strings with 14141 characters,
+and the built_in function-call counts, 6659 in all, are:
+= -- 710
+> -- 230
+< -- 7
++ -- 95
+- -- 72
+* -- 422
+:= -- 1037
+add.period$ -- 60
+call.type$ -- 18
+change.case$ -- 90
 chr.to.int$ -- 0
-cite$ -- 23
-duplicate$ -- 357
-empty$ -- 711
-format.name$ -- 98
-if$ -- 1892
+cite$ -- 18
+duplicate$ -- 278
+empty$ -- 549
+format.name$ -- 72
+if$ -- 1455
 int.to.chr$ -- 0
-int.to.str$ -- 23
-missing$ -- 23
-newline$ -- 119
-num.names$ -- 46
-pop$ -- 115
+int.to.str$ -- 18
+missing$ -- 18
+newline$ -- 94
+num.names$ -- 36
+pop$ -- 87
 preamble$ -- 1
-purify$ -- 95
+purify$ -- 72
 quote$ -- 0
-skip$ -- 278
+skip$ -- 220
 stack$ -- 0
-substring$ -- 694
-swap$ -- 114
-text.length$ -- 9
+substring$ -- 533
+swap$ -- 89
+text.length$ -- 7
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 92
+type$ -- 72
 warning$ -- 0
-while$ -- 95
-width$ -- 25
-write$ -- 263
+while$ -- 73
+width$ -- 20
+write$ -- 206
 (There was 1 error message)

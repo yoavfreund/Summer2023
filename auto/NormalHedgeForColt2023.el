@@ -12,9 +12,6 @@
     "amsthm"
     "graphicx")
    (TeX-add-symbols
-    '("gIter" 1)
-    '("fIter" 1)
-    '("iter" 1)
     '("Pomega" 1)
     '("Eomega" 1)
     '("pospart" 2)
@@ -23,9 +20,6 @@
     '("lvec" 1)
     '("Pvec" 1)
     "Ndist"
-    "iterzero"
-    "fIterzero"
-    "gIterzero"
     "Dx"
     "Dy"
     "erf")
@@ -72,6 +66,9 @@
     "eqn:backward-iteration-upper-recursion-discrete"
     "eqn:adv-strat-dk"
     "eqn:learner-strat-1c"
+    "lemma:second-order-bound"
+    "eqn:learner-strat-2"
+    "eqn:value-iteration-upper"
     "eqn:game-lattice"
     "lemma:discrete-step-bound"
     "thm:DescreteGameExactValues"
@@ -110,6 +107,8 @@
     "eqn:pot-upper"
     "eqn:zero-term"
     "sec:divdiff"
+    "lemma:differences"
+    "def:recurse-divided-difference"
     "thm:popo"
     "appendix:ProofOfVarianceBound"
     "lemma:infiniteexpectations"
@@ -141,6 +140,13 @@
     "eqnterm1.1"
     "eqnterm1.2"
     "eqn:term2.1"
+    "term:Taylor_rdt"
+    "term:Taylor_dtsquare"
+    "term:Taylor_r3"
+    "term:Taylor_r2t"
+    "term:Taylor_rt2"
+    "term:Taylor_t3"
+    "eqn:term2.2"
     "eqn:lower-discrete"
     "thm:simulBoundAveragePot"
     "sec:stable"

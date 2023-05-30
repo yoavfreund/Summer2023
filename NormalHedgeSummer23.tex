@@ -107,8 +107,8 @@ functions with real valued parameters.
     Quadratic Variation} $Q_j^T=\sum_{t=1}^T (l_j^t)^2$ measures the
   cumulative variation of the action $j$ at. While the {\em cumulative
     variance}
-  $V^T = \sum_{t=1}^T \sum_{j=1}^N P^t_j (l_j^t - \ell^t)^2$ is a
-  measure of the variance of all of the actions. There are numerous
+  $V^T = \sum_{t=1}^T \sum_{j=1}^N H^t_j (l_j^t - \ell^t)^2$ is a
+  measure of the variance of all of the actions.~\footnote{Note that, in our setting, $H_j^t$ can be different from $P_j^t$.} There are numerous
   publications that give bounds based on quadratic
   variation~\cite{chernov2009prediction,hazan2010extracting,gaillard2014second,koolen2015second}. But
   none that are based on cumulative variance. In this paper we give an
@@ -194,10 +194,11 @@ corresponds to Brownian Motion.
 
 \subsection{Relation To Other Work}
 
-The analysis described here builds on a long line of work. Including
-the Binomial Weights algorithm and it's
-variants~\cite{cesa1996line,abernethy2006continuous,abernethy2008optimal}
-as well as drifting games~\cite{schapire2001drifting,freund2002drifting}.
+TBD
+% The analysis described here builds on a long line of work. Including
+% the Binomial Weights algorithm and it's
+% variants~\cite{cesa1996line,abernethy2006continuous,abernethy2008optimal}
+% as well as drifting games~\cite{schapire2001drifting,freund2002drifting}.
 
 \subsection{Organization of the paper}
 The rest of the paper is organized as follows. In
@@ -659,16 +660,7 @@ Plugging in $i=0$,$\R=0$ we get the following Corrolary:
 \end{corollary}
 
 
-When the adversary is memomry-less the losses are independent and the cumulative loss at each iteration $i$ depsends only on the cumulative loss on iteration $i-1$. Specifically
-$ R^{i+1}(\omega) = R^{i}(\omega) + \ell^i - l^i(\omega)$. Therefor, when the adversary is memory less we can reduce the complete history to the sequence of cumulative regrets. We call the distribution over $\reals$
-induced by $R_i(\omega)$ the $i$ {\em state} of the game and denote it by
-\begin{equation}
-\end{equation}
-
-
-
-
-
+\section{Discrete time game}
 
 \begin{figure}[ht!]
 \framebox{
@@ -748,7 +740,6 @@ backwards for  $i=T,T-1,\ldots,0$, $t_i = i s_k^2$
    \upperpotMdk(t_{i-1}, \R) = \frac{\upperpotMdk(t_i,\R+s_k(1+s_k)) + \upperpotMdk(t_i,\R-s_k(1+s_k))}{2}
  \end{equation}
 
- 
 These upper and lower potentials correspond to strategies for the
 adversary and the learner.
 The adversarial strategy is 
@@ -767,6 +758,33 @@ The learner's strategy is:
   \mbox{ where } Z = \E{\R \sim \state(t_{i+1})}{\frac{\upperpotMdk(t_{i+1},\R+s_k(1+s_k)) -
   \upperpotMdk(t_{i+1},\R-s_k(1+s_k)}{2}} \nonumber
 \end{eqnarray}
+
+  \subsection{A learner strategy with a variance-dependent bound}
+
+  As shown in Lemma~\ref{lemma:adversary-prefers-extremes}, the
+  adversary always prefers mixed strategies that assign zero
+  probability for all steps other than $\pm 1$. Suppose, however, that
+  the adversary is not worst-case optimal and chooses steps whose
+  length is less than one. The following lemma gives a slightly
+  different strategy for the learner, which guarantees a tighter bound
+  for this case.
+
+  \begin{lemma} \label{lemma:second-order-bound}
+      The learner strategy:
+      \begin{equation} \label{eqn:learner-strat-2}
+      \learnerM^2(i-1,\R) =  \frac{1}{Z}
+      \left. \frac{\partial}{\partial r} \right|_{r=\R} \pot(i,r)
+      \end{equation}
+      Where $Z$ is a normalization factor
+      $$Z = \E{\R \sim \state(i)}{\left. \frac{\partial}{\partial r} \right|_{r=\R} \pot(i,r)}$$
+      guarantees the following upper potential against any adversarial
+      strategy $\adversM$
+      \begin{equation} \label{eqn:value-iteration-upper}
+        \upperpot(i-1, \R) = \pot(i,\R) + b(i,\R) \E{l \sim \adversM(i,\R)}{l^2}
+      \end{equation}
+      where $b(i,\R) = \pot(i,\R+1+c) -\pot(i,\R) - (1+c) \left. \frac{\partial}{\partial r} \right|_{r=\R} \pot(i,r)$
+   \end{lemma}
+
 
 The potentials and strategies defined above are scaled versions of the
 integer time potential recursions defined in
@@ -961,14 +979,6 @@ For $k=1$ we we have for $i=0,1,2,3$:
    \lowerpotMdkpar{0}\paren{\frac{i+1}{4}\tau,\R+\frac{1}{2}\sqrt{\tau}}}{2}
  \end{equation}
 
-\newcommand{\iter}[1]{\lowerpotMdkpar{1}\paren{\tau,\R {#1} \sqrt{\tau}}}
-\newcommand{\iterzero}{\lowerpotMdkpar{1}\paren{\tau,\R}}
-
-\newcommand{\fIter}[1]{\finalPotTau \paren{R {#1} \sqrt{\tau}}}
-\newcommand{\fIterzero}{\finalPotTau \paren{R}}
-
-\newcommand{\gIter}[1]{\finalPotTau \paren{R {#1} a}}
-\newcommand{\gIterzero}{\finalPotTau \paren{R}}
 
 Combining Equation~(\ref{eqn:lowerpotquarterstep}) for $k=0,1,2,3$ we get
 \small
@@ -1399,13 +1409,20 @@ from $i=T$ to $i=1$ yields the proof of the theorem.
 
 \section{Divided differences of a function} \label{sec:divdiff}
 
-The function $g_s(\R)$ has a special form called ``divided difference''
+\begin{lemma} \label{lemma:differences}
+Let $f$ be a function in $\SP{4}$, let $x$ be any real and $s$ be a positive real. Define
+\begin{equation}
+  h(x,s) =  \frac{1}{24s^4} \paren{f(x)- 4f(x+s)+ 6f(x+2s)-
+    4f(x+3s)+ f(x+4s)}
+\end{equation}
+Then $h(x,s)>0$.
+\end{lemma}
+
+The function $h(x,s)$ has a special form called ``divided difference''
 that has been extensively studied ~\cite{popoviciu1965certaines,butt2016generalization, de2005divided}.
-and is closely related to to derivatives of different orders. Using
-this connection and the fact that $\pot(\cdot,\R) \in \SP{4}$ we prove
-the following lemma:
+and is closely related to to derivatives of different orders. properties of divided difference are at the core of the proof of lemma~\ref{lemma:differences}
 
-
+\iffalse
 We conclude that if $\pot(t',\R)$ has a strictly positive fourth
 derivative then $\pot_{k+1}(t,\R) > \pot_{k}(t,\R)$ for all $\R$, proving
 the first part of the lemma.
@@ -1417,7 +1434,7 @@ $\pot(t,\R)$ and therefor retain their continuity and convexity properties.
 A function $\finalPot{}$ that satisfies
 inequality~\ref{eqn:4thOrderConvex} is said to be {\em 4'th order convex}
 (see details in in~\cite{butt2016generalization}).
-
+\fi
 
 Following\cite{butt2016generalization} we give a brief review of
 divided differences and of $n$-convexity.
@@ -1425,7 +1442,7 @@ divided differences and of $n$-convexity.
 Let $f:[a,b] \to \reals$ be a function from the segment $[a,b]$ to the
 reals.
 
-\begin{definition}[$n$'th order divided difference of a function]
+\begin{definition}[$n$'th order divided difference of a function] \label{def:recurse-divided-difference}
   The $n$'th order divided different of a function $f:[a,b] \to
   \reals$ at mutually distinct and ordered points $a \leq x_0 < x_1
   < \cdots < x_n \leq b$
@@ -1450,18 +1467,10 @@ If $f^{(n)}$ exists then f is $n$-convex if and only if $f^{(n)}\geq 0$.
 The next lemma states that the function $g(\R)>0$ as defined in
 Equation~(\ref{eqn:divdiff}).
 
-\proof {\bf of Lemma~(\ref{lemma:divdiff})
+\proof {\bf of Lemma~(\ref{lemma:differences})}
 
-Fix $t$ and define $f(x) = \pot(t,x)$.
-Let $(x_0,x_1,x_2,x_3,x_4)=(\R-2 s,\R-s,\R,\R+s,\R+2s)$
-
-Using this notation we can rewrite $g(\R)$ in the form
-\begin{equation}
-  h(x_0,x_1,x_2,x_3,x_4) =  \frac{1}{24s^4} \paren{f(x_4)- 4f(x_3)+ 6f(x_2)-
-    4f(x_1)+ f(x_0)}
-\end{equation}
-Is the 4-th order divided difference of $\pot(t,\cdot)$
-
+All we need to do is show that the function $h$ is a fourth order divided difference.
+define $(x_0,x_1,x_2,x_3,x_4) = (x,x+a,x+2a,x+3a,x+4a)$ and apply Definition~\ref{def:recurse-divided-difference} five times.
 
 \begin{enumerate}
 \item
@@ -1490,8 +1499,9 @@ $$[x_i;f] = f(x_i)$$
     &=& \frac{f(x_{i+4})-4f(x_{i+3})+6f(x_{i+2})-4f(x_{i+1})+f(x_i)}{24s^4}
   \end{eqnarray*}
 \end{enumerate}
-
+We have shown that $h=f^{(4)}$. The statement of the Lemma follows from the fact that $f \in SP{4}$ together with Theorem~\ref{thm:popo}.
 \qed
+  
 \section{Proof of Theorem~\ref{thm:variancebound}}
 \label{appendix:ProofOfVarianceBound}
 We start with atechnical lemma
@@ -1823,6 +1833,292 @@ Finally (\ref{eqn:contin3}) is negligible relative to the other terms
 as $s \to 0$.
 \fi
 \qed 
+
+\section{Proof of Theorem~\ref{thm:variancebound}}
+\label{appendix:ProofOfVarianceBound}
+We start with two technical lemmas
+\begin{lemma} \label{lemma:infiniteexpectations}
+Let $f(x) \in \SP{2}$, i.e. $f(x), f'(x),f''(x) >0$ for all $x \in
+\reals$, let $h(x)$ be a uniformly bounded function: $\forall x,\;\; |h(x)|<1$.
+Let $\state$ be a distribution over $\reals$.
+If $\E{x \sim \state}{f(x)}$ is well-defined (and finite) , then 
+$\E{x \sim \state}{h(x) f'(x)}$ is well defined (and finite) as well.
+\end{lemma}
+\proof
+Assume by contradiction that $\E{x \sim \state}{h(x) f'(x)}$ is
+undefined. Define $h^+(x) = \max(0,h(x))$.
+As $f'(x)>0$, this implies that either $\E{x \sim \state}{h^+(x)
+  f'(x)}=\infty$ or $\E{x \sim \state}{(-h)^+(x) f'(x)}=\infty$ (or both). 
+
+Assue wlog that $\E{x \sim \state}{h^+(x) f'(x)}=\infty$. As
+$f'(x)>0$ and $0 \leq h^+(x) \leq 1$ we get that $\E{x \sim
+  \state}{f'(x)}=\infty$.
+As $f(x+1) \geq f'(x)$ we get that $\E{x \sim
+  \state}{f(x)}=\infty$ which is a contradiction.
+\qed
+
+\iffalse
+$\epsilon>0$ such that
+for any $v>0$ there exists $|h_v(x)| < v$ such that 
+$|\E{x \sim \state}{h_v(x) f'(x)}|>\epsilon$. Define $h'_v =
+\frac{h_v}{v}$. Clearly $|h'_v(x)|<1$ and we have that
+$$|\E{x \sim \state}{h'_v(x) f'(x)}|>\frac{\epsilon}{v}$$
+
+Define the positive parts of $h_v$ to be $h_v^+(x) = \max(0,h'_v(x))$
+and $h_v^-(x) = \max(0,-h'_v(x))$. As $f'(x)>0$ we that either
+\[
+  \E{x \sim \state}{h^+_v(x) f'(x)}>\frac{\epsilon}{v}
+\]
+or 
+\[
+  \E{x \sim \state}{h^-_v(x) f'(x)}>\frac{\epsilon}{v}
+\]
+Wlog assume the first. As $f \in \SP{2}$, we have that $f(x+1) \geq f'(x)$. Therefore
+ $\E{x \sim \state}{f(x+1)|h_v^(x)>0)}=\infty$. As $f(x)>0$ for all $x$ we
+ find that $\E{x \sim \state}{f(x)}=\infty$ which contradicts the
+ Lemma's assumption.
+\qed
+\fi
+
+\newcommand{\Dx}{\Delta x}
+\newcommand{\Dy}{\Delta y}
+\begin{lemma} \label{lemma:Taylor2D}
+Let $f(x,y)$ be a differentiable function with continuous derivatives
+up to degree three. Then
+\begin{eqnarray}
+  &&f(x_0+\Dx,y_0+\Dy) = f(x_0,y_0)
+  + \atI{\frac{\partial}{\partial x}} \Dx 
+  + \atI{\frac{\partial}{\partial y}} \Dy \\
+  &+&\frac{1}{2} \atI{\frac{\partial^2}{\partial x^2}} \Dx^2
+      +\atI{\frac{\partial^2}{\partial x\partial y}} \Dx\Dy
+      +\frac{1}{2} \atI{\frac{\partial^2}{\partial y^2}} \Dy^2\\
+  &+&\frac{1}{6} \atII{\frac{\partial^3}{\partial x^3}} \Dx^3
+      +\frac{1}{2} \atII{\frac{\partial^3}{\partial x^2 \partial y}} \Dx^2\Dy\\
+  &&+ \frac{1}{2} \atII{\frac{\partial^3}{\partial x \partial y^2}} \Dx\Dy^2
+    + \frac{1}{6} \atII{\frac{\partial^3}{\partial y^3}} \Dy^3
+\end{eqnarray}
+for some $0\leq t \leq 1$.
+\end{lemma}
+\proof {\em of Lemma~\ref{lemma:Taylor2D}} 
+Let $F:[0,1] \to \reals$ be defined as  $F(t)=f(x(t),y(t))$ where
+$x(t) = x_0+t\Dx$ and $y(t)=y_0+t\Dy$. Then $F(0)=f(x_0,y_0)$ and
+$F(1)=f(x_0+\Dx,y_0+\Dy)$. It is easy to verify that
+$$ \frac{d}{dt}F(t)
+=\frac{\partial}{\partial x} f(x(t),y(t))\Dx
++ \frac{\partial}{\partial y} f(x(t),y(t))\Dy
+$$
+and that in general:
+\begin{equation} \label{eqn:d.dn.F}
+\frac{d^n}{d t^n} F(t) = \sum_{m=1}^n {n \choose m}
+\frac{\partial^n}{\partial x^m \partial y^{n-m}} f(x_0+t \Dx,y_0+t\Dy)
+\Dx^m \Dy^{n-m}
+\end{equation}
+As $f$ has partial derivatives up to degree 3, so does $F$. Using the
+Taylor expansion of $F$ and the intermediate point theorem we get that
+\begin{equation} \label{eqn:Taylor.F}
+  f(x_0+\Dx,y_0+\Dy) = F(1) = F(0)+\frac{d}{dt}F(0)
+  +\frac{1}{2}\frac{d^2}{dt^2}F(0)
+  +\frac{1}{6}\frac{d^3}{dt^3}F(t')
+\end{equation}
+Where $0 \leq t' \leq 1$. Using Eqn~(\ref{eqn:d.dn.F}) to expand each
+term in Eqn.~(\ref{eqn:Taylor.F}) completes the proof.
+\qed
+
+
+\proof {\em of Theorem~\ref{thm:variancebound}}\\
+We prove the claim by an upper bound on the increase of potential that holds for any iteration $1 \leq i \leq n$:
+\begin{equation} \label{proof:onestep}
+\score(\state(t_{i+1})) \leq \score(\state(t_i)) + a s_i^3 \mbox{ for some constant } a>0
+\end{equation}
+Summing inequality~(\ref{proof:onestep}) over all iterations we get that 
+\begin{equation} \label{proof:allsteps}
+\score(\state(T)) \leq \score(\state(0)) + c \sum_{i=1}^n s_i^3 \leq 
+\score(\state(0)) + a s \sum_{i=1}^n s_i^2 = 
+\score(\state(0)) + a s T
+\end{equation}
+From which the statement of the theorem follows.
+
+We now prove inequality~(\ref{proof:onestep}). 
+We use the notation $r=y -\ell(i)$ to denote the instantaneous regret at iteration $i$. 
+
+
+Applying Lemma~\ref{lemma:Taylor2D} to
+$\pot(t_{i+1},\R_{i+1})=\pot(t_i+\deltat_i,\R_i+r_i)$  we get
+\begin{eqnarray} 
+    \pot(t_i+\deltat_i,\R_i+r_i) & =&  
+    \pot(t_i,\R_i)\\
+    &+&\at{\frac{\partial}{\partial \rho}} r_i \\
+    &+&\at{\frac{\partial}{\partial \tau}}  \deltat_i \\
+    &+& \frac{1}{2} \at{\frac{\partial^2}{\partial \rho^2}} r_i^2 \\
+    &+& \at{\frac{\partial^2}{\partial r \partial \tau}} r_i \deltat_i \label{term:Taylor_rdt}\\
+    &+& \frac{1}{2} \at{\frac{\partial^2}{\partial \tau^2}} \deltat_i^2 \label{term:Taylor_dtsquare}\\
+    &+& \frac{1}{6} \att{\frac{\partial^3}{\partial \rho^3}} r_i^3 \label{term:Taylor_r3}\\
+    &+& \frac{1}{2} \att{\frac{\partial^3}{\partial \rho^2 \partial \tau}} r_i^2\deltat_i \label{term:Taylor_r2t}\\
+    &+& \frac{1}{2} \att{\frac{\partial^3}{\partial \rho \partial \tau^2}} r_i\deltat_i^2 \label{term:Taylor_rt2}\\
+    &+& \frac{1}{6} \att{\frac{\partial^3}{\partial \tau^3}} \deltat_i^3 \label{term:Taylor_t3}
+\end{eqnarray}
+for some $0 \leq g \leq 1$.
+
+By assumption $\pot$ satisfies the Kolmogorov backward equation:
+\begin{equation*} 
+  \frac{\partial}{\partial \tau} \pot(\tau,\rho)
+  = -\frac{1}{2} \frac{\partial^2}{\partial r^2} \pot(\tau,\rho)
+\end{equation*}
+Combining this equation with the exchangability of the order of
+partial derivative (Clairiaut's Theorem) we can substitute all
+partial derivatives with respect to $\tau$ with partial derivatives
+with respect to $\rho$ using the following equation.
+\[
+  \frac{\partial^{n+m}}{\partial \rho^n \partial \tau^m} \pot(\tau,\rho)=
+  (-1)^m \frac{\partial^{n+2m}}{\partial \rho^{n+2m}} \pot(\tau,\rho)
+\]
+Which yields
+\begin{eqnarray}
+      \pot(t_i+\deltat_i,\R_i+r_i) & =&  
+    \pot(t_i,\R_i)\\
+    &+& \at{\frac{\partial}{\partial \rho}} r_i \label{term:coll1}\\
+    &+& \at{\frac{\partial^2}{\partial \rho^2}} \paren{\frac{r_i^2}{2}-\deltat_i} \label{term:coll2}\\
+    &-& \at{\frac{\partial^3}{\partial \rho^3}} r_i \deltat_i \label{term:coll3}\\
+    &+& \frac{1}{2} \at{\frac{\partial^4}{\partial \rho^4}} \deltat_i^2 \label{term:coll4}\\
+    &+& \frac{1}{6} \att{\frac{\partial^3}{\partial \rho^3}} r_i^3 \label{term:coll5}\\
+    &-& \frac{1}{2} \att{\frac{\partial^4}{\partial \rho^4}} r_i^2\deltat_i \label{term:coll6}\\
+    &+& \frac{1}{2} \att{\frac{\partial^5}{\partial \rho^5}} r_i\deltat_i^2 \label{term:coll7}\\
+    &-& \frac{1}{6} \att{\frac{\partial^6}{\partial \rho^6}} \deltat_i^3 \label{term:coll8}
+\end{eqnarray}
+
+  From the assumption that the game is $(n,s,T)$-bounded we get that 
+  \begin{enumerate}
+  \item $|r_i| \leq s_i +c s_i^2 \leq 2 s_i$
+  \item $\deltat_i = s_i^2 \leq s^2$
+    % \item $\sum_i \deltat_i=T$
+  \end{enumerate}
+
+  given these inequalities we can rewrite the second factor in each
+  term as follows, where $|h_i(\cdot)|\leq 1$
+  \begin{itemize}
+  \item {\bf For~(\ref{term:coll1}):}
+    $r_i=2s_i\frac{r_i}{2s_i}=2s_ih_1(r_i)$.
+  \item {\bf For~(\ref{term:coll2}):}
+    $r_i^2 - \frac{1}{2}\deltat_i = 4s_i^2\frac{r_i^2 -
+      \frac{1}{2}\deltat_i}{4s_i^2} = 4s_i^2 h_2(r_i,\deltat_i)$
+  \item {\bf For~(\ref{term:coll3}):} $r_i \deltat_i = 2s_i^3
+    \frac{r_i \deltat_i}{2s_i^3} = 2s_i^3 h_3(r_i,\deltat_i)$
+  \item {\bf For~(\ref{term:coll4}):} $\deltat_i^2 =
+    s_i^4\frac{\deltat_i^2}{s_i^4} = s_i^3 h_4(\deltat_i)$
+  \item {\bf For~(\ref{term:coll5}):} $r_i^3 = 8s_i^3
+    \frac{r_i^3}{8s_i^3} = 8s_i^3 h_5(r_i,\deltat_i)$
+  \item {\bf For~(\ref{term:coll6}):} $r_i^2 \deltat_i = 4s_i^4
+    \frac{r_i^2 \deltat_i}{4s_i^4} = 4s_i^3 h_6(r_i,\deltat_i)$
+  \item {\bf For~(\ref{term:coll7}):} $r_i \deltat_i^2 = 2s_i^5
+    \frac{r_i \deltat_i^2}{2s_i^5}$
+  \item {\bf For~(\ref{term:coll8}):} $\deltat_i^3 = s_i^6 \frac{\deltat_i^3}{s_i^6}$
+\end{itemize}
+  We therefor get the simplified equation
+  
+  \begin{eqnarray*} 
+     \pot(t_i+\deltat_i,\R_i+r_i) & =&  \pot(t,\R)+\at{\frac{\partial}{\partial r}} r
+    + \at{\frac{\partial}{\partial t}} \deltat \\
+                                  &+& 
+                                      \frac{1}{2}  \at{\frac{\partial^2}{\partial r^2}} r^2\\
+                                  &+& \at{\frac{\partial^2}{\partial r \partial t}} r_i \deltat_i \label{term:Taylor_collected_rdt}\\
+                                  &+& \frac{1}{6} \at{\frac{\partial^3}{\partial r^3}} r_i^3 \label{term:Taylor_collected_r3}
+                                      + O(s^4)
+\end{eqnarray*}
+
+and therefor
+  \begin{eqnarray} 
+     \pot(t_i+\deltat_i,\R+r) &=& \pot(t_i,\R) +
+                                  \at{\frac{\partial}{\partial r}} r
+                                  \nonumber \\
+    &+& \at{\frac{\partial^2}{\partial r^2}} (r^2 - \deltat_i) +
+        O(s^3) \label{eqn:Taylor}
+\end{eqnarray}
+
+Our next step is to consider the expected value of~(\ref{eqn:Taylor}) wrt $\R \sim \state(t_i)$,
+$y \sim \adversM(t_i,\R)$ for an arbitrary adversarial strategy
+$\adversM$.
+
+We will show that the expected potential does not increase:
+\begin{equation} \label{eqn:deltatislargeenough}
+     \E{\R \sim \state(t_i)}{ \E{y \sim \adversM(t_i,\R)}{\pot(t_i+\deltat_i,\R+y-\ell(t_i))}} \leq \E{\R \sim \state(t_i)}{\pot(t_i,\R)}
+\end{equation}
+
+Plugging Eqn~(\ref{eqn:Taylor}) into the LHS of
+Eqn~(\ref{eqn:deltatislargeenough}) we get
+\begin{eqnarray}
+  \lefteqn{\E{\R \sim \state(t_i)}{\E{y \sim \adversM(t_i,\R)}{\pot(t_i+\deltat_i,\R+y-\ell(t_i))}}} \\
+  &=& \E{\R \sim \state(t_i)}{\pot(t_i,\R)} \label{eqn:contin0}\\
+  &+& \E{\R \sim \state(t_i)}{\E{y \sim \adversM(t_i,\R)}{\at{\frac{\partial}{\partial r}} (y-\ell(t_i))}} \label{eqn:contin1}\\
+  &+& \E{\R \sim \state(t_i)}{\E{y \sim
+      \adversM(t_i,\R)}{\at{\frac{\partial^2}{\partial r^2}}
+      ((y-\ell(t_i))^2 - \deltat_i)}}
+  \label{eqn:contin2}\\
+  &+& O(s^3) \label{eqn:contin3}
+\end{eqnarray}
+Some care is needed here. we need to show that the expected value
+are all finite. We assume that the expected potential
+(Eqn~({eqn:contin0}) is finite. Using
+Lemma~\ref{lemma:infiniteexpectations} this implies that the expected
+value of higher derivatives of $\frac{\partial}{\partial \R} \pot(\R)$
+are also finite.\footnote{I need to clean this up and find an argument
+  that the expected value for mixed derivatives is also finite.}
+
+
+To prove inequality~(\ref{proof:onestep}), we need to show that the
+terms~\ref{eqn:contin1} and \ref{eqn:contin2} are smaller or equal to
+zero.
+~\\~\\~\\
+{\bf Term~(\ref{eqn:contin1}) is equal to zero:}\\
+As $\ell(t_i)$ is a constant
+relative to $\R$ and $y$, and $\at{\frac{\partial}{\partial r}}$ is a
+constant with respect to $y$ we can rewrite~(\ref{eqn:contin1}) as
+\begin{equation} \label{eqnterm1.1}
+  \E{\R \sim \state(t_i)}{\at{\frac{\partial}{\partial r}}
+    \E{y \sim \adversM(t_i,\R)}{y} }
+- \ell(t_i) \E{\R \sim \state(t_i)}{\at{\frac{\partial}{\partial r}}}
+\end{equation}
+
+Combining the definitions of $\ell(t)$~(\ref{eqn:ell-discrete}) and~
+and the learner's strategy
+$\learnerM^{cc}$~(\ref{eqn:learner-strat-cc}) we get that
+\begin{eqnarray}
+\ell(t_i) &=& \E{\R \sim \state{t_i}}{\frac{1}{Z}
+              \at{\frac{\partial}{\partial r}}
+              \E{y \sim \adversM(i,\R)}{y}} \mbox{ where }
+              Z=\E{\R \sim \state{t_i}}{\frac{1}{Z}
+              \at{\frac{\partial}{\partial r}}}
+              \label{eqnterm1.2}
+\end{eqnarray}
+
+Plugging~(\ref{eqnterm1.2}) into (\ref{eqnterm1.1}) and recalling the
+requirement that $\ell(t_i)<\infty$ we find that
+term~(\ref{eqn:contin1}) is equal to zero.
+
+
+~\\~\\~\\
+{\bf Term~(\ref{eqn:contin2}) is equal to zero:}\\
+As $\deltat_i$ is a constant relative to $y$, we can take it
+outside the expectaation to give 
+\begin{equation} \label{eqn:term2.1}
+  \E{\R \sim \state(t_i)}{\E{y \sim
+      \adversM(t_i,\R)}{\at{\frac{\partial^2}{\partial r^2}}
+      (y-\ell(t_i))^2}}
+  - \deltat_i  \;  \E{\R \sim \state(t_i)}{\at{\frac{\partial^2}{\partial r^2}}}
+\end{equation}
+On the other hand, from the choice of $\deltat_i$ given in
+Eqn~(\ref{eqn:deltat}) we get
+\begin{equation} \label{eqn:term2.2}
+  \deltat_i \; \E{\R \sim \state(t_i)}{\at{\frac{\partial^2}{\partial r^2}}} = 
+  \E{\R \sim \state(t_i)}{\E{y \sim \adversM(t_i,R)}{
+      \at{\frac{\partial^2}{\partial r^2}} (y-\ell(t_i))^2}}
+\end{equation}
+Combining~(\label{eqn:term2.1}) and~(\ref{eqn:term2.2}) we
+find that (\ref{eqn:contin2}) is zero.
+
+Finally (\ref{eqn:contin3}) is negligible relative to the other terms
+as $s \to 0$.
+\qed 
+
 
 \end{document}
 

@@ -5,9 +5,13 @@
     "amsmath"
     "bm")
    (TeX-add-symbols
+    '("gIter" 1)
+    '("fIter" 1)
+    '("iter" 1)
     '("atII" 1)
     '("atI" 1)
-    '("at" 2)
+    '("att" 1)
+    '("at" 1)
     '("adversMdkpar" 1)
     '("lowerscore" 1)
     '("upperscore" 1)
@@ -70,6 +74,7 @@
     "adversMd"
     "adversMdk"
     "adversMdkp"
+    "legalAdversary"
     "agloss"
     "Bias"
     "deltat"
@@ -79,7 +84,10 @@
     "Binom"
     "radsum"
     "var"
-    "V")
+    "V"
+    "iterzero"
+    "fIterzero"
+    "gIterzero")
    (LaTeX-add-amsthm-newtheorems
     "lemma"
     "claim"
