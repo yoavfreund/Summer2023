@@ -1,0 +1,2231 @@
+\documentclass[anon,12pt]{colt2024} % Anonymized submission
+%\documentclass[final,12pt]{colt2024} % Include author names
+
+% The following packages will be automatically loaded:
+% amsmath, amssymb, natbib, graphicx, url, algorithm2e
+
+\title[Second order NormalHedge]{Second order bounds for NormalHedge}
+\usepackage{times}
+% Use \Name{Author Name} to specify the name.
+% If the surname contains spaces, enclose the surname
+% in braces, e.g. \Name{John {Smith Jones}} similarly
+% if the name has a "von" part, e.g \Name{Jane {de Winter}}.
+% If the first letter in the forenames is a diacritic
+% enclose the diacritic in braces, e.g. \Name{{\'E}louise Smith}
+
+% Two authors with the same address
+% \coltauthor{\Name{Author Name1} \Email{abc@sample.com}\and
+%  \Name{Author Name2} \Email{xyz@sample.com}\\
+%  \addr Address}
+
+% Three or more authors with the same address:
+% \coltauthor{\Name{Author Name1} \Email{an1@sample.com}\\
+%  \Name{Author Name2} \Email{an2@sample.com}\\
+%  \Name{Author Name3} \Email{an3@sample.com}\\
+%  \addr Address}
+
+
+% Authors with different addresses:
+\coltauthor{%
+ \Name{Author Name1} \Email{abc@sample.com}\\
+ \addr Address 1
+ \AND
+ \Name{Author Name2} \Email{xyz@sample.com}\\
+ \addr Address 2%
+}
+
+%\usepackage{fullpage}
+% Packages
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage{amsthm}
+\usepackage{graphicx}
+
+\input{macros}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+  We study potential-based online learning algorithms in a game
+  theoretical setting. We characterize the min/max optimal strategies
+  for the set of potential functions that have strictly positive
+  derivatives up to order four. We show that the optimal adversarial
+  strategy for all of these cases corresponds to Brownian Motion.
+
+  Based on this analysis we design a variant of NormalHedge which has
+  second order upper bounds that are closely matched by lower-bounds.
+  
+\end{abstract}
+
+\section{Outline}
+
+Main results
+\begin{enumerate}
+\item Upper bound using variance for normal-hedge.
+\item almost matching lower bound using variance on any online algorithm.
+\end{enumerate}
+
+Technical results:
+\begin{enumerate}
+\item A min/max analysis of a finite horizon potential game for
+  terminal potential with 4 strictly positive derivatives.  Resulting
+  in a characterization of the min/max strategies as solutions of the
+  heat equation.
+\item Using analytical solutions of the heat equation, we create a
+  stop-anytime version of the learning algorithm.
+\end{enumerate}
+
+\subsection{Organization of paper}
+\subsubsection{Main Resullts}
+\begin{itemize}
+\item Upper bound using variance for normal-hedge.
+\item almost matching lower bound using variance on any online algorithm.
+\end{itemize}
+\subsubsection{The potential game}
+\begin{itemize}
+\item Define the generalized potential game: give range and allow arbitrary split.
+\item The binomial strategies.
+\item defining upper and lower potentials.
+\item the limit range $\to 0$ is best for adversary.
+\item the limit range $\to 0$ is min max.
+\item is characterized by heat equation.
+  \end{itemize}
+\subsubsection{Variance based bounds}
+\begin{itemize}
+\item proof of variance based bound for any 4-convex function.
+\item proof of variance bound for normal hedge and why cannot improve this potential.
+\item proof of lower bound.
+  \end{itemize}
+
+\section{Introduction}
+In this paper we study the {\em the decision-theoretic online learning game}
+(DTOL)~\cite{freund1997decision}. DTOL (Figure~\ref{fig:DTOL}) is a
+repeated zero sum game between a {\em learner} and an {\em
+  adversary}. The adversary controls the losses of $N$ actions, while
+the learner controls a distribution over the actions.
+\newcommand{\Pvec}[1]{\vec{P}^{#1}}
+\newcommand{\lvec}[1]{\vec{l}_{#1}}
+\newcommand{\Lvec}[1]{\vec{L}_{#1}}
+\newcommand{\Rvec}[1]{\vec{R}^{#1}}
+
+\begin{figure}[ht!]
+\framebox{
+\begin{minipage}[t]{6.4in}
+  {\bf Initialization:} $R^0_j=0$ for $j=1,\ldots,N$\\
+  ~\\
+For $i=0,1,\ldots$
+\begin{enumerate}
+\item The learner chooses a distribution function $P_j^i$ over the
+  experts $j \in \{1,\ldots,N\}$ \\ such that $\sum_{j=1}^N P_j^i=1$. We
+  denote the distribution by $\Pvec{i} = \{P_1^i,\ldots,P_N^i\}$.
+\item The adversary chooses the {\em instantaneous loss for 
+    expert}
+  $j \in \{1,\ldots,N\}$: $l_j^i \in [-1,+1]$
+\item The learner incurs an {\em instantaneous loss of the learner} is defined
+  as $\ell^i = \sum_{s=1}^i P^i_j l_j^i $ 
+\item The {\em cumulative regret} of the learner with respect to
+  expert $j$ is \\$\R_j^{i+1} = \R_j^i +l^i_j-\ell^i$. 
+  $\Rvec{i+1}$ represents the regret vector after iteration $i$.
+\end{enumerate}
+The goal of the algorithm is to minimize the maximal regret.
+\end{minipage}}
+\caption{Decision theoretic online learning \label{fig:DTOL}}
+\end{figure}
+
+
+\cite{freund1997decision} presents the DTOL framework and applies the
+weighted majority algorithm~\cite{LittlestoneWa94} to define the {\em
+  multiplicative weights algorithm} which yield {\em zero-order}
+regret bounds of the form
+\begin{equation} \label{eqn:0-order-bound}
+  \max_{j=1}^N \R_j^T \prec \sqrt{T \ln N}
+\end{equation}
+We use $\prec$ to indicate that we ignore lower order terms. 
+
+Many generalizations and refinements have been made over the years. We
+describe those that are relevant to our paper below
+\begin{itemize}
+\item{\bf percentile-based bounds} \cite{freund1999adaptive} refines
+  this bound by replacing the comparison to the best single expert to
+  a comparison to the regret to the top $\epsilon$-percentile of the
+  experts, indicated by $\R(T,\epsilon)$, giving bounds of the form
+\begin{equation} \label{eqn:percentile-bounds}
+\R(T,\epsilon) \prec \sqrt{T \ln \frac{1}{\epsilon}}
+\end{equation}
+Using quantiles allows experts sets that are uncountably infinite.
+For example consider an expert set that corresponds to linear
+functions with real valued parameters.
+
+\item{\bf Parameter-free algorithms} The multiplicative weights
+  algorithm has a learning rate parameter $\eta>0$. Achieving the
+  bounds~\ref{eqn:0-order-bound} and~\ref{eqn:percentile-bounds}
+  requires a priori-knowledge of $T$ and either $N$ or       
+  $\epsilon$. ``Parameter-free'' algorithms remove the need for
+  a-priori knowledge of the sequence. Parameter-free algorithms have
+  been proposed in~\cite{chaudhuri2009parameter,
+    chernov2010prediction,orabona2016coin,cutkosky2018black}.
+
+\item{\bf Second order bounds} take advantage of so-called ``easy
+  sequences'' where $|l_j^i|<1$. Roughly speaking, second order bounds
+  replace the length of the sequence $T$ with a sum of quadratic terms
+  of the form $(l_j^t)^2$ or $(l_j^t-\ell_t)^2$. Two types of second
+  order bounds were proposed in~\cite{cesa2007improved}.  The {\em
+    Quadratic Variation} $Q_j^T=\sum_{t=1}^T (l_j^t)^2$ measures the
+  cumulative variation of the expert $j$ at. While the {\em cumulative
+    variance}
+  $V^T = \sum_{t=1}^T \sum_{j=1}^N H^t_j (l_j^t - \ell^t)^2$ is a
+  measure of the variance of all of the experts.~\footnote{Note that, in our setting, $H_j^t$ can be different from $P_j^t$.} There are numerous
+  publications that give bounds based on quadratic
+  variation~\cite{chernov2009prediction,hazan2010extracting,gaillard2014second,koolen2015second}. But
+  none that are based on cumulative variance. In this paper we give an
+  upper and lower bounds based on cumulative variance. Thereby
+  providing evidence that the cumultive variance provides a tighter
+  characterization of ``easy sequences'' than quadratic variation.
+  
+\item {\bf Potential based Online learning algorithms} There are two
+  main paradigms for designing online learning algorithms: the {\em
+    follow the leader} paradigm and the {\em potential function}
+  paradigm.  The second is the paradigm we study here.  
+\end{itemize}
+
+\subsection{Main Results}
+In this paper we present a new analysis of the algorithm NormalHedge
+presented in~\ref{sec:NormalHedgeAlg} and improved upon
+in~\cite{luo2015achieving}.  NormalHedge is potential based and
+parameter free, the bounds on its performance or of the
+form(~\ref{eqn:percentile-bounds}).
+
+\paragraph*{Second order regret bounds for NormalHedge}
+
+\begin{definition}[weighted variances]
+We use the definitions of $\{l^i_j\}_{j=1}^N$ and $\ell^i$ given in the DTOL game (Fig.~\ref{fig:DTOL}).
+Let $H^i=(H^i_1, H^i_2,\ldots , H^i_N) $ be a distribution over experts at iteration $i$.
+Let ${\cal H}=(H^1,H^2,\ldots)$ be a sequence of distributions.
+We define the ${\cal H}$-weighted-variance as
+\begin{equation}
+  v^i(H^i)=\sum_{j=1}^N H^i_j (l_j^i-\ell^i)^2
+\end{equation}
+We define the ${\cal H}$-cumulative-variance to be
+$$V^T({\cal H}) = \sum_{i=1}^T v^i(H^i)$$
+\end{definition}
+
+Our regret bounds relate the ${\cal H}$-cumulative-variance $V^T({\cal H})$,
+the percentile of the comparison set of experts $\epsilon$ and the regret relative to the comparison set $R$.
+For the sake of simplicity we upper and lower bound $\epsilon(V^T({\cal H}),R)$. These bounds are equivalent
+to bounds on $R(V^T({\cal H}),\epsilon)$.
+ 
+Our main result is that NormalHedge is a parameter free
+stop-anytime algorithm with the following regret bound that holds simultanously for all $T,R$
+\begin{theorem}
+
+Let $V^T$ be the ${\cal H}$-cumulative variance 
+for ${\cal H}$ defined in line 3 of~(\ref{eqn:HNormalHedge})
+
+then for all $T,R$ the Normal-Hedge algorithm, defined in Figure~\ref{fig:normalhedge2} satisfies
+
+\begin{equation} \label{eqn:epsilonUpperBound}
+  \epsilon(V^T({\cal H}),R) \leq \sqrt{V^T({\cal H})+1} \;\; \exp \paren{\frac{-R^2}{2(V^T({\cal H})+1)}}
+\end{equation}
+\end{theorem}
+
+Our lower bound 
+\begin{theorem} \label{thm:LowerBound}
+  Given any sequence of numbers
+  $0 \leq \nu^i \leq 1$ such that
+  $\lim_{T \to \infty} \sum_{i=1}^T \nu_i = \infty$, there exists an
+  adversarial strategy such that $V^T({\cal I}) = \sum_{i=1}^T \nu_i$
+  for any sequence of distributions ${\cal I}$, and any learning
+  algorithm, the following holds.
+
+  For any $a>2$ define the sequence of regrets $R^T = a \sqrt{V^T({\cal I)}}$, then
+  \begin{equation} \label{eqn:epsilonLowerBound}
+    \lim_{T \to \infty}\epsilon(V^T({\cal I}),R^T) -
+    \left(\frac{\sqrt{V^T({\cal I})}}{R^T} -  \left( \frac{\sqrt{V^T({\cal I})}}{R^T} \right)^3 \right) \exp \paren{\frac{-(R^T)^2}{2V^T({\cal I})}} \geq 0
+  \end{equation}
+\end{theorem}
+
+If we define $a=\frac{R}{\sqrt{V^T({\cal H})}}$ we can approximate the upper bound by 
+\[
+\epsilon(a,R) < \approx a^{-1}R \exp\left(\frac{-a^2}{2} \right) 
+\]
+And the lower bound by
+\[
+  \epsilon(a,R) \geq (a^{-1}-a^{-3}) \exp\left(\frac{-a^2}{2} \right)
+\]
+If $a>2$ then the ratio between the upper and lower bound is $O(R)$.
+
+
+Note that the ratio between the upper and lower bound on
+$\epsilon(t,R)$ is, to first order, $R$. As the dependence of the
+regret bound~\ref{eqn:upper-bound} on $\epsilon$ is a term of the form
+$\log 1/\epsilon$ is we get that in the lower bound the term
+$2\log \frac{1}{\epsilon}$ is replaced with
+$2 \log \frac{1}{\epsilon R}$ which is a logarithmic gap between the
+upper and lower bound on $R^t_\epsilon$.
+
+\paragraph{Min max analysis of potential-based algorithms}
+The lower bound~\ref{eqn:epsilonLowerBound} holds for any DTOL
+algorithm and leaves a small gap with the upper bound
+~\ref{eqn:epsilonUpperBound}. However, if we restrict ourselves to
+potential-based online algrithms we can characterize the min/max
+algorithm and adversary. This analysis holds for a broad set of
+potential functions beyond the NormalHedge potential.  We formalize
+the notion of potential based learning by defining a variant of the
+DTOL game, where the goal of the learner is to minimize the average
+potential. We derive the min-max solution of this game for any
+potential function that has four strictly positive derivatives. In
+particular, we show that the optimal strategy for the adversary
+corresponds to Brownian Motion.
+
+\subsection{Relation To Other Work}
+
+TBD
+% The analysis described here builds on a long line of work. Including
+% the Binomial Weights algorithm and it's
+% variants~\cite{cesa1996line,abernethy2006continuous,abernethy2008optimal}
+% as well as drifting games~\cite{schapire2001drifting,freund2002drifting}.
+
+\subsection{Organization of the paper}
+The rest of the paper is organized as follows. In
+Section~\ref{sec:NormalHedgeAlg}, we describe the algorithm that
+satisfies Theorem~\ref{thm:NHUpperBound}. The rest of the paper is
+devoted to the analysis of this and related algorithms.
+
+In Section~\ref{sec:preliminaries} We define some terms and
+notation. In Section~\ref{sec:PotentialGame} we define the potential
+game which captures the structure of online learning algorithms that
+have an and has an a-priori known end (or horizon) and a fixed
+potential function for the end.  Having a known horizon and known
+final potential function is needed for our analysis. Ultimately the
+bounded horizon assumption is removed to allow algorithms, such as
+NormalHedge, that can be stopped at any iteration.
+
+We formalize the notion of the {\em state} of the game $\state$, which
+allows us to separately analyze each iteration. In
+Section{sec:potentialRecursion} we show how, for a fixed pair of
+learner and adversarial strategies, we can extend the potential at the
+horizon to a potential for any earlier iteration.
+
+In Section~\ref{sec:disc-game-strategies} we describe strategies for the adversary and for the learner.
+
+\section{Preliminaries}
+
+A definition and two notations used in this paper:
+\begin{definition}
+A function $f:\reals \to \reals$ is strictly positive of degree $k$, 
+denoted $f \in \SP{k}$ if the derivatives of orders 0 to $k$:  
+$f(x), \frac{d}{dx}f(x), \ldots, \frac{d^k}{dx^k}f(x)$ exist and are strictly positive.
+\end{definition}
+
+Let $\vec{x}=(x_1,\ldots,x_n)$, and $f:R \to \R$, we define the {\em convolution} symbol $\odot$ as follows:
+$$\vec{x} \odot f \doteq \frac{1}{n}\sum_{i=1}^{n} f(x_i)$$
+
+Let $f : \reals \to \reals$ then
+\[\pospart{f(x)}{x\geq 0} \doteq
+  \begin{cases}
+    f(x) & \mbox{ if } x \geq 0\\
+    0    & \mbox{ otherwise }
+  \end{cases}
+\]
+
+
+\newcommand{\finalpot}{\pot^{\mbox{\tiny final}}}
+
+\section{The NormalHedge  Algorithm} \label{sec:NormalHedgeAlg}
+Figure~\ref{fig:normalhedge2} describes a variant of the NormalHedge
+algorithm~\cite{chaudhuri2009parameter} which satisfies the regret
+bound given in Theorem~\ref{eqn:upper-bound}
+
+In fact, the original algorithm can be used. The only difference is in
+the way the time (here - the cumulative variance) is updated. While
+the original version requires solving a system of two non-linear
+equations with two unknowns, the method here is simple averaging.
+This simpler update lends itself to the second order analysis which is
+obscured in~\cite{chaudhuri2009parameter}.
+
+
+\begin{figure}[ht!]
+\framebox{
+\begin{minipage}[t]{6.4in}
+Set $V_0=1$ \\
+For $t=0,1,2,\ldots$
+
+\begin{enumerate}
+\item The learner chooses the distribution
+\begin{equation} \label{eqn:learner-strat-cc}
+  P^i_j =  \frac{1}{Z^i} \pospart{R_j^i \exp\paren{\frac{(R_j^i)^2}{2V^i}}}{R_j^i \geq 0}
+  \mbox{ where } Z^i = \sum_{j=1}^N \pospart{R_j^i \exp\paren{\frac{(R_j^i)^2}{2V^i}}}{R_j^i \geq 0}
+\end{equation}
+
+\item Calculate the Learner's loss:
+  \begin{equation} %\label{eqn:ell-discrete}
+    \ell^i=\sum_{j=1}^N P_j^i l_j^t,
+  \end{equation}
+  
+\item  Update cumulative variance $V^{i+1}=V^i +v^i$ where
+\begin{equation} \label{eqn:deltat}
+  v^i=  \sum_{j=1}^N H(V^i,\R_j^i)(l_j^i-\ell^i)^2
+\end{equation}
+
+\begin{equation}  \label{eqn:HNormalHedge}
+  W(V,\R) =
+  \pospart{
+    \exp\paren{\frac{R^2}{2V}} \left(\frac{1}{2V^{3/2}} + \frac{R^2}{V^{5/2}} \right)}
+  {R\geq 0},\;
+  H(V,\R) = \frac{W(V,R+1)}{\sum_{j=1}^N W(V,R_j+1)}
+\end{equation}
+
+\item Update regrets $\forall j=1,\ldots N,\;\;\; R_j^{i+1} = R_j^i -l_j^t +\ell^i$
+
+\end{enumerate}
+\end{minipage}}
+\caption{NormalHedge.2 \label{fig:normalhedge2}}
+\end{figure}
+
+\section{The potential game}
+
+\begin{figure}[ht!]
+\framebox{
+\begin{minipage}[t]{6.4in}
+  {\bf Initialization:} set initial regrets $R^0_j\geq 0$ for $j=1,\ldots,N$, a natural number $S$ \\
+  and $\finalpot(\cdot)$, a positive, increasing and convex function.\\
+  {\bf The adversary chooses} step size $s=1/k$ for some natural number $k$.
+  $T=Sk^2$
+~\\
+  
+  For $i=0,1,\ldots,T$
+\begin{enumerate}
+\item The number of experts is $M^i=N 2^i$, They are indexed $1,\ldots,M^i$
+\item The learner chooses a distribution function $P_j^i$ over the experts
+  $j \in \{1,\ldots,M^i\}$ \\
+  such that $\sum_{j=1}^{M^i} P_j^i=1$. We
+  denote the distribution by $\Pvec{i} =  \{P_1^i,\ldots,P_{M^i}^i\}$.
+\item The adversary splits each expert into two equal parts and assigns a loss to each part.\\
+For $j \in \{1,\ldots,M^i\}$: $l_{j1}^i, l_{j2}^i,\in [-s,+s]$
+\item The {\em instantaneous loss of the learner} is
+  $\ell^i = \sum_{j=1}^i P^i_j \frac{l_{j1}^i + l_{j2}^i}{2}$. The
+  adversary is restricted choose the losses so as to keep $|\ell^i|\leq s^2$.
+\item The {\em cumulative regret} of the learner with respect to
+  expert $j1$ is $\R_{j1}^{i+1} = R_{j1} +l_{j1}^i -\ell^i$,\\
+  and for expert $j2$ is $\R_{j2}^{i+1} = R_{j2} +l_{j2}^i -\ell^i$,\\
+  $\Rvec{i+1}$ is regret vector at iteration $i+1$, it has $2M^i$
+  components in a non-decreasing order.
+   % $\vec{L}^{i+1}$ is the vector whose components are
+   % $\{L_{11},L_{12},\ldots,L_{M^i1},L_{M^i2}\}$ ordered in as the
+   % corresponding elements of $\Rvec{i+1}$
+\end{enumerate}
+The goal of the algorithm is to minimize the final score $\score^T=\frac{1}{M^T}\sum_{j=1}^{M^T} \finalpot(R_j^T) = \vec{R}^T \odot \finalpot$
+\end{minipage}}
+\caption{The potential game \label{fig:PotentialGame}}
+\end{figure}
+
+In order to prove upper bounds on the regret we focus on
+potential-based learning algorithms. 
+We define a new game which we call
+the {\em potential game}~ (Fig.\ref{fig:PotentialGame}).
+
+
+The potential game is similar to DTOL, with the following differences:
+\begin{enumerate}
+\item In DTOL, the range of the losses is always $[-1,+1]$,, in the
+  potential game the adversary set the range of losses to $[-s,+s]$
+  for $s = \frac{1}{k}$ where $k$ is a natural number.
+\item The goal in DTOL is to bound the regret, the goal in the
+  potential game is to minimize the score function.
+\item In the potential game, a pre-specified potential function
+  $\finalpot(\cdot)$ is evaluated at an a-priori specified horizon
+  $T=S k^2$.
+\item At each iteration, the adversary splits each expert into two
+  experts with equal weight and and assigns to each a loss in the
+  range $[-s,+s]$.
+\end{enumerate}
+Note that the adversarial choice of $k$ plays two roles in the
+the potential game. First, the range of losses is
+$[-\frac{1}{k},+\frac{1}{k}]$.  Second, the number of iterations is
+$Sk^2$. We will later explain why this particular choices make sense.
+
+
+
+\newcommand{\Ndist}{{\cal N}}
+
+\subsection{Upper bound on Potential game implies regret bound on DTOL}
+
+We show that an upper bound on $\score^T$ in the potential game
+implies upper bounds on regret of the $\epsilon$ percentile in the bounded horizon DTOL.
+
+Let DTOL$(T)$ denote the DTOL game with an a-priori known horizon $T$. Then
+\begin{theorem}
+  Let $\pot^T$ be a strictly convex function of degree 2.
+  If a learner algorithm guarantees $\Theta > \score^T$ in the potential game, then the same algorithm guarantees
+  $\epsilon(R) \leq \frac{\theta}{\finalpot(R)}$ in DTOL$(T)$ for all $R$
+\end{theorem}
+\begin{proof} We show that the adversary can make choices that make the
+potential game identical to DTOL$(T)$. First, $k=s=1$, consequentially $S=T$, finally the experts split is eliminated by
+setting $l_{j1}^i = l_{j2}^i$ for all $i,j$. As these choices are
+controlled by the adversary, this means that the adversary in the
+potential game is stronger than the adversary in DTOL$(T)$. In other
+words, a learner which guarantees an upper bound $\theta\geq\score^T$
+guaranteees the same upper bound for DTOL$(T)$. Finally we use the
+standard relationship between a potential that is convex of degree 2 and the regret.
+Let $\epsilon(R)$ be the fraction of the coordinates of $\vec{R}^T$  that are larger or equal to $R$. Then
+$\theta \geq \score^T \geq \epsilon(R) \finalpot(R)$ which implies the statement of the theorem.
+\end{proof}
+
+\subsection{Strategies and Potentials}
+\newcommand{\CA}{$\cal A$~}
+\newcommand{\CL}{$\cal L$~}
+
+Keeping the step size $s$ fixed, we describe strategies and
+for the the adversary and for the learner, denoted \CA and \CL respectively. We focus on a single iteration $i$ and allow an arbitrary
+$\vec{R}^i$ 
+
+The strategy \CA is very simple: on iteration $i$ the losses for the two parts are set to
+$l^i_{j1}=-s$, $l^i_{j2}=-s$. It is easy to see that if $\vec{R}^i=\{R^i_1,\ldots R^i_M\}$
+then $\vec{R}^{i+1}=\{R^i_1-s,R_1^i+s,\ldots R^i_M-s,R^i_M+s\}$ regardless of the learner
+choice of $\vec{P}^i$.
+
+For \CA, and given the final potential $\finalpot$ we use
+backward induction to associate a {\em lower potential} $\lowerpot^i$ with
+iterations $T-1,T-2,\ldots,1$. The base step is $\lowerpot^T =
+\finalpot$. Fixing $\lowerpot^{i+1}$, we define
+\begin{equation} \label{eqn:lowerpot}
+\forall x \in \reals, \lowerpot^i(x) = \frac{\lowerpot^{i+1}(x-s)+\lowerpot^{i+1}(x+s)}{2}
+\end{equation}
+  
+
+Assuming that the adversry uses \CA in all iterations of the game it is easy to show that
+\begin{equation} \label{eqn:potential-equality} 
+  \vec{R}^0 \odot \lowerpot^0 = \vec{R}^1 \odot \lowerpot^1 = \cdots = \vec{R}^T \odot \lowerpot^T = \vec{R}^T \odot \finalpot = \score^T
+\end{equation}
+%As $\vec{R}^0=\{0\}$, $\vec{R}^0 \odot \lowerpot^0 = \lowerpot^0(0)$. In addition, the distribution of
+%$\vec{R}$ is a binomial scaled by $s$. Combining these facts we get
+%$$\lowerpot^0(0) = \vec{R}^T \odot \finalpot = \sum_{j=0}^T {T \choose j} \finalpot((2j-T)s)$$
+
+We now move to the learner's strategy \CL. We use backward iteration to define
+the lower potential and the learner's strategy.
+
+The base case is $\upperpot^T=\finalpot$.
+
+Given $\upperpot^{i+1}$ We define $\upperpot^i$ as follows
+\begin{equation}
+\forall x \in \reals, \upperpot^i(x) = \frac{\upperpot^{i+1}(x+s(1+s))+\upperpot^{i+1}(x-s(1+s))}{2}
+\end{equation}
+The strategy \CA is to set the learner's distribution function to
+\begin{equation} \label{eqn:Pij}
+P^i_j = \frac{1}{Z^i}(\upperpot^{i+1}(R_j^i+s(1+s)) - \upperpot^{i+1}(R_j^i-s(1+s)))
+\end{equation}
+where $Z^i$ is a normalization factor defined so that $\sum_j P^i_j =1$.
+
+Equation~(\ref{eqn:potential-equality}) shows that \CA gives a lower bound (in fact, an equality) 
+for the final score for any learner. We now show that
+the \CL guarantees an upper bound on the final score for any adversary.
+\begin{theorem}
+  If the learner uses the strategy \CL on all iterations of the potential game then, for any choices made by the adversary
+  \begin{equation} \label{eqn:potential-upper} \vec{R}^0 \odot
+    \upperpot^0 \geq \vec{R}^1 \odot \upperpot^1 \geq \cdots \geq
+    \vec{R}^T \odot \upperpot^T = \vec{R}^T \odot \finalpot = \score^T
+\end{equation}
+\end{theorem}
+\begin{proof}
+The proof is done by backward induction from $i=T$ to $i=0$. The base case is by definition
+$\vec{R}^T \odot \upperpot^T = \vec{R}^T \odot \finalpot = \score^T$
+
+For general $i$, show that $\vec{R}^i \odot \pot^i \geq \vec{R}^{i+1} \odot \pot^{i+1}$.
+As $\pot^{i+1}$ is convex we have that for all $j,k$, $-s-s^2 \leq l^i_{jk}-\ell^i \leq s +s^2$
+\begin{eqnarray} 
+  \upperpot^{i+1}(R^i_{j}+l^i_{jk}-\ell^i)
+  & \leq & \frac{\upperpot^{i+1}(R^i_j+s(1+s))+\upperpot^{i+1}(R^i_j-s(1+s))}{2} \label{eqn:upper-convex}\\
+  &+&
+      \left(l^i_{jk} - \ell^i\right) \frac{\upperpot^{i+1}(R^i_j+s(1+s))-\upperpot^{i+1}(R^i_j-s(1+s))}{2} \nonumber \\
+  &=& \frac{\upperpot^{i+1}(R^i_j+s(1+s))+\upperpot^{i+1}(R^i_j-s(1+s))}{2} + \frac{\left(l^i_{jk} - \ell^i\right) Z^i P^i_j}{2} \label{eqn:using_def_upperpot}
+\end{eqnarray}
+Where~(\ref{eqn:upper-convex}) follows from convexity
+and~(\ref{eqn:using_def_upperpot}) follows from the definition of
+$P^i_j$ in Eqn.~(\ref{eqn:Pij})
+
+Summing over the experts at iteration $i+1$ we get 
+\begin{eqnarray} \label{eqn:upper-aver}
+  \lefteqn{ \vec{R}^{i+1} \odot \upperpot^{i+1} = \sum_{j=1}^{M^i} \sum_{k=1}^2
+  \upperpot^{i+1}(R^i_{j}+l^i_{jk}-\ell^i)}
+  && \label{eqn:upperpot1}\\
+  & \leq &  \sum_{j=1}^{M^i} \frac{\upperpot^{i+1}(R^i_j+s(1+s))+\upperpot^{i+1}(R^i_j-s(1+s))}{2} \label{eqn:upperpot2} \\
+  & + & \sum_{j=1}^{M^i} \frac{\left(l^i_{j1} -\ell^i +l^i_{j2}- \ell^i\right) Z^i P^i_j}{2} \label{eqn:upperpot3}\\
+  & = & \sum_{j=1}^{M^i}
+        \frac{\upperpot^{i+1}(R^i_j+s(1+s))+\upperpot^{i+1}(R^i_j-s(1+s))}{2} \label{eqn:upperpot4} \\
+        & = & \sum_{j=1}^{M^i} \pot^i(R_j^i) = \vec{R}^i \odot \pot^i \label{eqn:upperpot5}\\
+\end{eqnarray}
+Line (\ref{eqn:upperpot2}) follows from line (\ref{eqn:upperpot1}) and
+Eqn. (\ref{eqn:using_def_upperpot}.
+
+line (\ref{eqn:upperpot4}) follows from lines (\ref{eqn:upperpot2})
+and (\ref{eqn:upperpot3}) because the expression in line
+(\ref{eqn:upperpot3}) is equal to zero, which follows from the plugging in the definition of $\ell^i$ (line 4. of Figure~\ref{fig:PotentialGame})
+`\[
+  \sum_{j=1}^{M^i} \left(l^i_{j1} +l^i_{j2}- 2\ell^i\right) P^i_j  =  \sum_{j=1}^{M^i} \left(l^i_{j1} +l^i_{j2}\right)P^i_j
+  - 2 \ell^i = \sum_{j=1}^{M^i} \left(l^i_{j1} +l^i_{j2}\right)P^i_j - \sum_{j=1}^{M^i} \left(l^i_{j1} +l^i_{j2}\right)P^i_j
+=0  \]
+\end{proof}
+
+Note that 
+  the upper and lower potentials $lowerpot^i,\upperpot^i$ depend only
+  on the final potential $\finalpot$ and on the iteration number
+  $i$. In particular they do not depend on the strategies of the
+  learner and the adversary. Moreover, the upper and lower bounds on
+  the same depend only on the convolutions
+  $\vec{R}^i \odot \lowerpot^i, \vec{R}^i \odot \upperpot^i$. This
+  means that, as far as our upper and lower bounds are concerned, all
+  of the information relevant to future of the game beyond iteration
+  $i$ is in the regret vector $\vec{R}^i$. This suggests calling $R^i$
+  the {\em state} of the game. Which, similarly to the state of a
+  chess board, contains all of the relevant information and makes past
+  states irrelevant.
+
+\subsection{The adversary prefers smaller steps} \label{sec:smallsteps}
+
+Equation~(\ref{eqn:lowerpot}) is an inductive definition of $\lowerpot$
+given $\finalpot$, $s$ and $T=S/s^2$. We now answer
+the question, ``how should the adversary choose $s$?''
+We will show that, under appropriate conditions, the
+adversary prefers $s$ that is as small as possible, but not zero.
+
+To simplify the argument (which is generalized in the appendix)
+we fix $\finalpot$, $x in \reals$ and $S=1$ and compare $\lowerpot^i(x)$
+between$s=1$ and $s=1/2$.
+
+When $s=1$, $T=1$ and The recursion is simple:
+\begin{equation}
+  \lowerpot^{0,1}(x) = \frac{\finalpot(x-s)+\finalpot(x+s)}{2}
+\end{equation}
+When $s=1/2$, $t=4$ and unfolding the recurion for 4 steps we get
+\begin{equation}
+  \lowerpot^{0,s/1}(x) = \frac{1}{16}
+  \left(\finalpot(x-2s) + 4  \finalpot(x-s)+ 6 \finalpot(x)
+  +4 \finalpot(x+s) + \finalpot(x+2s) \right)
+\end{equation}
+To see which one is larger we consider the difference:
+\begin{equation}
+  \lowerpot^{0,1/2}(x) -\lowerpot^{0,1} = \frac{1}{16}
+  \left(\finalpot(x-2s) - 4  \finalpot(x-s)+ 6 \finalpot(x)
+  -4 \finalpot(x+s) + \finalpot(x+2s) \right)
+\end{equation}
+
+As it turns out this expression is positive if $\finalpot \in \SP{4}$
+
+
+
+Theorem~\ref{eqn:conergence-for-k} characterizes the limits of the
+upper and lower potentials, as $k \to \infty$ are equal to each
+other and to ${\cal N}(\R_0,\realT-t) \odot \finalPotR$ To show
+that this limit corresponds to the min/max slolution of the game
+we need to show that the adversary perfers smaller steps. In other
+words, that for any $t,R$, $\lowerpotMdk(t,\R)$ increases with
+$k$.
+
+To prove this claim we strengthen the condition $\finalPotR \in \SP{2}$ used above to $\finalPotR \in \SP{4}$. In words, we assume that the function $\finalPotR(\R)$ is continuous and strictly positive and it's first four derivatives are continuous and strictly positive.
+
+We use the sequence of discrete adversarial strategies
+$\adversMdk, k=1,2,\ldots$ defined in
+Section~\ref{sec:disc-game-strategies}.
+
+\begin{theorem}\label{thm:smallerSteps}
+  If $ \finalPotR \in \SP{4}$, and $\realT>0$  
+  then for any $k\geq 0$, any $t \in [0,\realT]$ and any $\R$
+  $$\lowerpotMdkpar{k+1}(t,\R) >  \lowerpotMdkpar{k}(t,\R)$$
+\end{theorem}
+
+The proof of the theorem relies on a reduction to a simpler case:
+dividing a single time step of duration $\tau$ into four time steps of duration  $\tau/4$
+
+\begin{lemma} \label{lemma:half-step}
+  If $ \finalPotTau \in \SP4$, and $\tau>0$ then for any $\R$
+  $$\lowerpotMdkpar{1}(0,\R) >  \lowerpotMdkpar{0}(0,\R)$$
+\end{lemma}
+  
+\begin{proof} The step sizes for $k=0,1$ are
+$s_0=\sqrt{\tau}, s_1=\frac{\sqrt{\tau}}{2}$ and the time icrements
+are $\Delta t_0=\tau, \Delta t_1=\frac{\tau}{4}$. 
+In other words $k=0$ corresponds to a single step of size $\sqrt{\tau}$, while $k=1$ corresponds
+to {\em four} steps of size $\frac{\sqrt{\tau}}{2}$.
+
+By definition $\finalPotTau(R)=\lowerpotMdkpar{0}(\tau,\R)=\lowerpotMdkpar{1}(\tau,\R)$
+
+For $k=0$ we we get the recursion
+\begin{equation}  \label{eqn:pot-recursion-0}
+  \lowerpotMdkpar{0}(0, \R) =
+  \frac{\lowerpotMdkpar{0}(\tau,\R-\sqrt{\tau})+
+    \lowerpotMdkpar{0}(\tau,\R+\sqrt{\tau})}{2}
+  =   \frac{\finalPotTau(\R-\sqrt{\tau})+
+    \finalPotTau(\R+\sqrt{\tau})}{2}
+\end{equation}
+
+For $k=1$ we we have for $i=0,1,2,3$:
+\begin{equation}   \label{eqn:lowerpotquarterstep}
+   \lowerpotMdkpar{0}\paren{\frac{i}{4}\tau,\R}=
+ \frac{\lowerpotMdkpar{0}\paren{\frac{i+1}{4}\tau,\R-\frac{1}{2}\sqrt{\tau}}+
+   \lowerpotMdkpar{0}\paren{\frac{i+1}{4}\tau,\R+\frac{1}{2}\sqrt{\tau}}}{2}
+ \end{equation}
+
+
+Combining Equation~(\ref{eqn:lowerpotquarterstep}) for $k=0,1,2,3$ we get
+\small
+\begin{eqnarray} \label{eqn:pot-recursion-1}
+  \lowerpotMdkpar{1}(0, \R)
+  &=& \frac{1}{16}
+      \left[\iter{-2}+4\iter{-} \right. \\
+  &&+ \left. 6\iterzero +4\iter{+}+\iter{+2}\right] \nonumber\\
+  &=& \frac{1}{16}
+      \left[\fIter{-2}+4\fIter{-}+6\fIterzero +4\fIter{+}+\fIter{+2}\right] \nonumber
+\end{eqnarray}
+\normalsize the difference between
+Equations~(\ref{eqn:pot-recursion-1}) and~(\ref{eqn:pot-recursion-0})
+is \small
+\begin{eqnarray} \label{eqn:pot-recursion-diff}
+  \lefteqn{\lowerpotMdkpar{1}(0, \R) - \lowerpotMdkpar{0}(0, \R)}\\
+&=&  \frac{1}{16}
+\left[\fIter{-2}-4\fIter{-}+6\fIterzero -4\fIter{+}+\fIter{+2}\right] \nonumber
+\end{eqnarray}
+\normalsize Our goal is to show that the LHS of
+Eqn.~\ref{eqn:pot-recursion-diff} is positive. This is equivalent to
+proving positivity of
+\begin{eqnarray}
+g_a(\R) &=& \frac{2}{3a^2}\paren{\lowerpotMdkpar{1}(0, \R) -
+  \lowerpotMdkpar{0}(0, \R)}\nonumber \\
+& = &
+\frac{1}{24 a^4}
+      \left[\gIter{-2}-4\gIter{-}+6\gIterzero -4\gIter{+}+\gIter{+2}\right]
+       \label{eqn:recursion-as-difference}
+\end{eqnarray}
+where $a=2 s_1=\sqrt{\tau}$
+\end{proof}
+The function $g_a(\R)$ has a special form called ``divided
+differences''. The proof of the following lemma uses this fact to show that 
+Eqn~(\ref{eqn:recursion-as-difference}) is strictly positive.
+\begin{lemma} \label{lemma:divdiff}
+If $\finalPotTau \in \SP{4}$ and $\tau>0$, then $\forall \R, g_a(\R)>0$
+\end{lemma}
+The proof of Lemma~\ref{lemma:divdiff} is given in appendix~\ref{sec:divdiff}
+
+\begin{proof}  of Theorem~\ref{thm:smallerSteps} \\
+
+Let $ \Klat{{\realT,k}}$ be the game lattices defined in
+Equation~\ref{eqn:game-lattice}. The statement of
+Lemma~\ref{lemma:half-step} can be trivially generalized as follows. Fix $k\geq 0$ and $t=i s_k^2$
+then 
+\begin{equation} \label{eqn:generalized-half-step}
+  \mbox{ if } \phi((i+1) s_k^2,\R) \in \SP{4} \mbox{ then }
+  \lowerpotMdkpar{k+1}(i s_k^2,\R) >  \lowerpotMdkpar{k}(i s_k^2,\R)
+\end{equation}
+The proof of the theorem is by double induction, first on $k=0,1,2,\ldots$ and then on
+$t=\tau-s_k^2,\tau-2s_k^2,\ldots,0$.
+
+The base case $k=0,t=\tau$ follows directly from Lemma ~\ref{lemma:half-step}.
+
+For $k>0$ we use a second induction $t=\tau-s_{k-1}^2,\tau-2s_{k-1}^2,\ldots,0$, which, combined with 
+~\ref{eqn:generalized-half-step} holds for $k-1$, shows that for any $(t,\R) \in \Klat{{\realT,k-1}}$
+we have $ \lowerpotMdkpar{k}(t,\R) >  \lowerpotMdkpar{k-1}(t,\R)$
+
+% we take a finite backward induction over
+% $t=T-2^{-2k},T-2 \times 2^{-2k},T-3 \times 2^{-2k},\cdots,0$.
+% Our inductive claims are that $\pot_{k+1}(t,\R) > \pot_{k}(t,\R)$ and
+% $\pot_{k+1}(t,\R)$,$\pot_{k}(t,\R)$ are in $SP{4}$. That these claims carry over
+% from $t=T-i \times 2^{-2k}$ to  $t=T-(i+1) \times 2^{-2k}$ follows
+% directly from Lemma~\ref{lemma:n-strictly-convex}.
+
+The theorem follows by forward induction on $k$.
+\end{proof}
+
+Combining Theorems~\ref{thm:seq-of-adv-strategies}
+and~\ref{thm:smallerSteps} we get our characterization of the min/max
+solution for the potential game.
+
+\begin{theorem} \label{thm:min-max-limit}
+Let $\realT>0$ and $\finalPotR \in \SP{4}$, define $\phi^*(t,\R) = {\cal N}(\R_0,\realT-t) \odot \finalPotR$
+Fix a state at time $t<\realT$ $\state(t)$ and define the score of this state
+to be $\score(t) = \state(t) \odot \pot(t)$. Then for any $\epsilon>0$ there exists
+\begin{itemize}
+\item A learner strategy that guarantees $\score^T \odot \finalPotR \leq \score(t)+\epsilon$ against any adversarial strategy and
+  \item an adversarial strategy that guarantees  $\score^T \odot \finalPotR \geq \score(t)-\epsilon$
+\end{itemize}
+\end{theorem}
+\begin{proof}
+From Theorem~\ref{thm:seq-of-adv-strategies} we know that the  $k \to \infty$.
+From Theorem~\ref{thm:smallerSteps} we know that the small step limit maximizes the 
+
+Together these theorems show that the the min/max optimal potential function is $ {\cal N}(\R_0,\realT-t) \odot \finalPotR$.
+\end{proof}
+
+\section{Characterizing the limit $s \to 0$}
+\label{sec:continuous}
+
+We have shown that in min/max potential is achieved by taking the
+limit $s_k \to 0$ in either the lower bound
+(Eqn~(\ref{eqn:backward-iteration-lower-discrete})) or upper bound
+potential:
+(Eqn~(\ref{eqn:backward-iteration-upper-recursion-discrete})).
+
+Consider the recursive equation for the lower potential:
+ \begin{equation}
+   \pot(t, \R) =  \frac{\pot(t+s^2,\R+s) + \pot(t+s^2,\R-s)}{2}
+ \end{equation}
+
+ By subtracting $\pot(t+s^2,R)$ from both sides and dividing by $s^2$ we get 
+ \begin{equation}
+   \frac{\pot(t, \R)  - \pot(t+s^2,R)}{s^2} =  \frac{\pot(t+s^2,\R+s) - 2\pot(t+s^2,R)+\pot(t+s^2,\R-s)}{2s^2} \label{eqn:difference}
+ \end{equation}
+ Taking the limit $s \to 0$ on both sides, we get, from the definition of first and second order partial derivatives, that:
+
+ \begin{equation}
+   \lim_{s \to 0}\frac{\pot(t, \R)  - \pot(t+s^2,R)}{s^2} =  -\frac{\partial}{\partial t} \pot(t,\R)
+   \label{eqn:dt}
+   \end{equation}
+ \begin{equation}
+   \lim_{s \to 0}
+   \frac{\pot(t+s^2,\R+s) - 2\pot(t+s^2,R)+\pot(t+s^2,\R-s)}{2s^2}
+   =  \frac{1}{2} \frac{\partial^2}{\partial \R^2} \pot(t,\R)
+\label{eqn:ddR2}
+ \end{equation}
+
+Combining Equations~\ref{eqn:difference},\ref{eqn:dt} and \ref{eqn:ddR2} we arrive at the  
+ celebrated Backwards Kolmogorov Equation:
+\begin{equation} \label{eqn:Kolmogorov}
+  \frac{\partial}{\partial t} \pot(t,\R)
+  + \frac{1}{2} \frac{\partial^2}{\partial \R^2} \pot(t,\R)=0
+\end{equation}
+
+the upper and lower
+potential functions defined in
+
+Consider the distribution of regret sequences generated by the adversaryf we index these sequences by $V_t = ts^2$ and let $s \to 0$ we arrive at the well known Brownian or Wiener process
+(see~\cite{kac1947random}).
+
+The backwards recursion that defines the min-max potential function
+for intermediate steps is the 
+Given a final value function with a strictly positive fourth
+derivative we can use Equation~(\ref{eqn:Kolmogorov}) to compute the
+value function for all $0 \leq t \leq T$. 
+
+There seems to be a paradox: the adversary prefers to set $s_i>0$ as
+small as possible. On the other hand, there is no minimal strictly
+positive number. Whatever step size the adversary chooses, it regrets
+not choosing an even smaller step!
+
+Luckily, this paradox does not bother the learner. The learner wants
+to protect itself from an adversary with an arbitrarily small step
+size. To achieve that, it just needs to use the limit potential function for $s \to 0$.
+
+The results up to this point hold for any potential function in
+$\SP{4}$. Given a final potential function $\finalPotR \in \SP{4}$ we
+can compute the potential for any $0 \leq t \leq \realT$ and any $R$ using the equation 
+\begin{equation} \label{eqn:convol-with-normal}
+\pot(t,\R)={\cal N}(\R_0,\realT-t) \odot \finalPotR
+\end{equation}
+By using uses the $\R$-derivative of this potential function to define
+the weights the learner guarantees that the final average score is at
+most $\pot(0,0)$.
+
+A major limition of this result is that the horizon $\realT$ is set in
+advance.  It is desirable that the potential is defined without
+knowledge of the horizon.  In what follows we show that Hedge and
+NormalHedge can both be used in such ``anytime'' algorithms.
+
+Our solution is based on the observation that a potential function satisfies Eqn~(\ref{eqn:convol-with-normal}) if and only if it satisfies 
+the Kolmogorov backwards PDE~(\ref{eqn:Kolmogorov}):
+The potential $\finalPotR \in \SP{4}$ defines a boundary condition of the PDE.
+
+We derive our anytime algorithm by finding solutions to the Kolmogorov
+PDE that are not restricted in time, and that have a fixed parametric
+form.  In other words, the evolution of the potential with time is
+defined by changing the parameter values, without changing the form.
+
+We describe two potential functions that are solutions of PDE. In the following section we use our general results to prove simultanous regret bounds
+
+{\bf The exponential potential function} which corresponds to exponential
+  weights algorithm corresponds to the following equation
+\begin{equation} \label{eqn:exponential-potential}
+    \pot_{\mbox{\tiny exp}}(\R,t) = e^{\sqrt{2} \eta \R - \eta^2 t}
+\end{equation}
+
+Equation~\ref{eqn:exponential-potential}.
+
+For the standard (non simultanous) bound we fix $\epsilon$ and $t$,
+choose $\eta = \sqrt{\frac{\ln (1/\epsilon)}{t}}$
+and get a bound of the form 
+  \begin{equation}
+    \R_\epsilon \leq \sqrt{2 t \ln \frac{1}{\epsilon}}
+  \end{equation}
+
+  To derive a simultanous regret bound we fix the learning rate $\eta$ and take the reciprocal of the potential:
+ \[
+    G(R,t) \leq e^{\eta^2 t - \sqrt{2}\eta R}
+ \]
+Which holds for any $t$ and $R$. The bound $G(R,t)$ depends on $\eta$.
+
+  
+{\bf The NormalHedge potential function} parametrized by $\nu>0$ is:
+\begin{equation} \label{eqn:NormalHedge}
+  \pot_{\mbox{\tiny NH$(\nu)$}}(\R,t) = \begin{cases}
+    \frac{1}{\sqrt{t+\nu}}\exp\left(\frac{\R^2}{2(t+\nu)}\right)
+    & \mbox{if } \R \geq 0  \\
+  \frac{1}{\sqrt{t+\nu}} & \mbox{if } \R <0
+  \end{cases}
+\end{equation}
+
+The function $\pot_{\mbox{NH}}(\R,t)$ is not in $\SP{4}$, however, the
+positive part $\R\geq 0$ is in $\SP{4}$ while the negative part
+$\R \leq 0$ is a constant. A constant potential corresponds to zero weight which means that experts whose regret is negative are ignored by the learner. In this case the optimal adversarial is not unconstrained brownian motion, instead it is brownian motion with a reflective boundary at $R=0$.
+
+  \subsection{A learner strategy with a variance-dependent bound}
+
+  As shown in Lemma~\ref{lemma:adversary-prefers-extremes}, the
+  adversary always prefers mixed strategies that assign zero
+  probability for all steps other than $\pm 1$. Suppose, however, that
+  the adversary is not worst-case optimal and chooses steps whose
+  length is less than one. The following lemma gives a slightly
+  different strategy for the learner, which guarantees a tighter bound
+  for this case.
+
+  \begin{lemma} \label{lemma:second-order-bound}
+      The learner strategy:
+      \begin{equation} \label{eqn:learner-strat-2}
+      \learnerM^2(i-1,\R) =  \frac{1}{Z}
+      \left. \frac{\partial}{\partial r} \right|_{r=\R} \pot(i,r)
+      \end{equation}
+      Where $Z$ is a normalization factor
+      $$Z = \E{\R \sim \state(i)}{\left. \frac{\partial}{\partial r} \right|_{r=\R} \pot(i,r)}$$
+      guarantees the following upper potential against any adversarial
+      strategy $\adversM$
+      \begin{equation} \label{eqn:value-iteration-upper}
+        \upperpot(i-1, \R) = \pot(i,\R) + b(i,\R) \E{l \sim \adversM(i,\R)}{l^2}
+      \end{equation}
+      where $b(i,\R) = \pot(i,\R+1+c) -\pot(i,\R) - (1+c) \left. \frac{\partial}{\partial r} \right|_{r=\R} \pot(i,r)$
+   \end{lemma}
+
+
+The potentials and strategies defined above are scaled versions of the
+integer time potential recursions defined in
+Equations~(\ref{eqn:backward-iteration-lower},\ref{eqn:backward-iteration-upper-recursion})
+and the strategies defined in Equations~(\ref{eqn:adv-strat-p},\ref{eqn:learner-strat-1}). Specifically, the games operate on lattices that we will now describe.
+
+The adversarial strategy $\adversMb$ defines the following lattice over $i$ and $R$:
+$$\Ilat{T}=\left\{ (i,2j-i) \left| 0 \leq i \leq T, 0 \leq j \leq i\right. \right\}$$
+
+The $k$'th adversarial strategy $\adversMdk$ uses step size $s_k=\sqrt{\realT} 2^{-k}$ and time
+increments $s_k^2=\realT 2^{-2k}$. We define the {\em game lattice}
+for $k$ as the set of $(t,R)$ pairs that are reached by $\adversMdk$.
+\begin{equation}  \label{eqn:game-lattice}
+  \Klat{{\realT,k}}=\left\{ (t,\R) \left| t=i s_k^2, 0 \leq i \leq 2^{2k}, \R=(2j-i)s_k, 0 \leq j \leq i\right. \right\}
+  \end{equation}
+$\Ilat{T}$ is a special case of $\Klat{\realT,k}$ because setting
+$\realT=T=2^{2k}$ we get that $s_k=s_k^2=1$ and  $\Klat{\realT,k} = \Ilat{T}$.
+
+It is not hard to show that the lattices get finer with $k$, i.e. if  $j \leq k$,  $\Klat{\realT,j} \subseteq \Klat{\realT,k}$.
+
+
+The following Lemma parallels Lemma~\ref{lemma:first-order-bound} for the integer time game.
+\begin{lemma} \label{lemma:discrete-step-bound}
+~\\
+Let $i$ be an integer between $1$ and $T$
+
+If $\lowerpotMdk(t_i,\R) \in \SP{2}$
+\begin{enumerate}
+\item  $\lowerpotMdk(t_{i-1},\R) \in \SP{2}$
+\item The adversarial strategy~(\ref{eqn:adv-strat-dk})
+  guarantees the recursion given in Eq.~(\ref{eqn:backward-iteration-lower-discrete})
+\end{enumerate}
+
+If $\upperpotMdk(t_i,\R) \in \SP{2}$
+\begin{enumerate}
+\item $\upperpotMdk(t_{i-1},\R) \in \SP{2}$
+\item The learner strategy~(\ref{eqn:learner-strat-1c})
+  guarantees the recursion given in Eq.~(\ref{eqn:backward-iteration-upper-recursion-discrete})
+\end{enumerate}
+
+\end{lemma}
+\begin{proof}
+The statement of the Lemma and the proof are scaled versions of
+Lemma~\ref{lemma:first-order-bound} and its proof. The iteration step
+is $s_k^2$ instead of $1$ while the loss/gain of an expert in a single
+step is $[-s_k,s_k]$ instead of $[-1,+1]$.
+
+One change worth noting is at the step from
+Equation~(\ref{eqn:Pot-Update}) and Equation~(\ref{eqn:pot-upper}),
+where the bound  $y-\ell(i) \in [-2,2]$ is replace by  $y-\ell(i) \in
+[-s_k-s_k^2,s_k+s_k^2]$. This follows from the bound $|\ell(i)| \leq
+s_k^2$ which is discussed in Section~\ref{sec:discrete}.
+\end{proof}
+
+\begin{theorem} \label{thm:DescreteGameExactValues}
+  Let $\finalPotR \in \SP{2}$ be the final potential in the discrete
+  time game. Fix $k$ and the step size $s_k=\sqrt{\realT} 2^{-k}$, and let $t_i=i s_k^2$ for $i=0,1,\ldots,2^{2k}$ and
+  let $\R_0$ be a real value, then 
+  \begin{itemize}
+  \item
+    The lower potential guaranteed by $\adversMdk$ is
+    \begin{equation} \label{eqn:lower-potential-exact}
+      \lowerpotMdk(t_i,\R_0) = \E{\R \sim \R_0 \oplus
+        \Binom\paren{2^{2k}-i,s_k}}{\finalPotR(\R)}
+      \end{equation}
+  \item
+    The upper potential guaranteed by $\learnerMdk$ is
+    \begin{equation} \label{eqn:upper-potential-exact}
+    \upperpotMdk(t_i,\R_0) =  \E{\R \sim \R_0 \oplus
+      \Binom\paren{2^{2k}-i,s_k(1+s_k)}}{\finalPotR(\R)}
+    \end{equation}
+  \end{itemize}
+\end{theorem}
+
+Using Theorem~\ref{thm:DescreteGameExactValues} we can show that, as
+$k \to \infty$, the upper lower potential converge to the same limit.
+
+\begin{theorem} \label{thm:seq-of-adv-strategies}
+  ~\\
+  Fix $\realT$ and assume $\finalPotR \in \SP{2}$. Consider the sequence of upper
+  and lower potentials  $\upperpotMdk,\lowerpotMdk$ for
+  $k=0,1,2,\ldots$.
+
+  Then for any  $0 < t \leq \realT$ and any $\R_0$:
+  \begin{equation} \label{eqn:k-limit}
+    \lim_{k \to \infty} \upperpotMdk(t,\R_0) =
+    \lim_{k \to \infty}\lowerpotMdk(t,\R_0)=
+    {\cal N}(\R_0,\realT-t) \odot \finalPotR
+  \end{equation}
+\end{theorem}
+
+\begin{proof}
+
+We first assume that $(t,\R_0) \in \Klat{j,\realT}$ and that $k\geq j$. We later expand to any $0 < t \leq \realT$ and any $\R_0 \in \reals$.
+Consider Equation~\ref{eqn:upper-potential-exact} for $\learnerMdk$ and $\learnerMdj$,
+keeping $t$ and $j$ constant and letting $k \to \infty$.
+
+\begin{equation} \label{eqn:upper-potential-exact-j}
+  \upperpotMdj(t,\R_0) =  \E{\R \sim \R_0 \oplus
+    \Binom\paren{2^{2j}-i_j,s_j(1+s_j)}}{\finalPotR(\R)}
+\end{equation}
+
+\begin{equation} \label{eqn:upper-potential-exact-k}
+  \upperpotMdk(t,\R_0) =  \E{\R \sim \R_0 \oplus
+    \Binom\paren{2^{2k}-i_k,s_k(1+s_k)}}{\finalPotR(\R)}
+\end{equation}
+We rewrite the binomial factor in
+Eq~(\ref{eqn:upper-potential-exact-k})
+$$
+ \Binom\paren{2^{2k}-i_k,s_k(1+s_k)} =
+ \Binom\paren{2^{2(k-j)}\paren{2^{2j}-i_j},2^{j-k} s_j(1+2^{j-k} s_j)}
+ $$
+As $j$ is constant, $s_j$ is constant and so is $a_j \doteq
+2^{2j}-i_j$. Multiplying the number of steps by the variance per step
+we get
+$$Var(\Binom_k) = 2^{2(k-j)}a_j\paren{2^{j-k} s_j(1+(2^{j-k} s_j)}^2
+= a_j s_j^2 (1+(2^{j-k} s_j))^2 
+$$
+
+As $s_j,a_j$ are constants we get that $\lim_{k \to \infty}
+Var(\Binom_k) = a_j s_j$.  From the central limit theorem we get that
+for any $(t,\R_0) \in \Klat{j,\realT}$
+\begin{equation} \label{eqn:conergence-for-k}
+  \lim_{k \to \infty} \upperpotMdk(t,\R_0) \odot \finalPotR = {\cal
+    N}(\R_0,\realT-t) \odot \finalPotR
+\end{equation}
+
+Our argument hold for all $(t,\R_0) \in \bigcup_{k=0}^\infty \Klat{k,\realT}$ which is dense in the set $0<t\leq \realT, \R_0 \in \reals$.
+On the other hand, $\upperpotMdk(t,\R) \odot \finalPotR$ is continuous in both
+$t$ and $R$, therefor Equation~(\ref{eqn:conergence-for-k})  holds for all $t$ and $\R$.
+
+As similar (slightly simpler) argsument holds for the lower potential limit
+$\lim_{k \to \infty} \lowerpotMdk(t,\R_0)$
+
+\end{proof}
+
+We have shown that in the limit $s \to 0$ the learner and the
+adversary converge to the same potential function. In the next section
+we show that this limit is the min/max solution by describing conditions
+under which the adversary prefers using ever smaller steps size.
+
+
+\section{Lower bound} \label{sec:lowerbound}
+
+We now prove the lower bound given in Theorem~\ref{thm:LowerBound}.
+
+The lower bound is based on a symmetric random walk strategy similar
+to the one employed in Section~\ref{sec:disc-game-strategies}
+Equation~\ref{eqn:adv-strat-dk}, with two main differences
+\begin{enumerate}
+\item we allow different step size on different iterations. We use a non-reflecctive random walk.
+\end{enumerate}
+
+As the strategy is a symmetric random walk the loss of each expert is
+zero and the variance and the learner has no impact on the evolution of the game. For
+$V^i \to \infty$ the distribution of the regrets is normal with mean 0
+and variance $V_i$.  To prove this we appeal to Lindberg's
+generalization of the central limit theorem.~(\cite{shiryaev1989probability}, page 328).
+  
+  \begin{theorem}[Lindberg CLT]
+  Let $X_i$ be a squence of independent, zero mean, random variables with variance $\sigma_1^2,\sigma_2^2,\ldots$. Denote by $V_n  = \sum_{i=1}^n \sigma_i^2$
+
+if for any $\epsilon>0$:
+  \[
+    \lim_{n \to \infty} \frac{1}{V_n} \sum_{i=1}^n \E{}{X_i^2 \;\;{\bf 1}_{X_i: |X_i| \geq \epsilon \sqrt{V_n}}}=0
+  \]
+
+ Then $\frac{\sum_{i=1}^n X_i}{\sqrt{V_n}}$ converges in probability to the standard normal ${\cal N}(0,1)$.
+\end{theorem}
+
+\noindent We now prove Theorem~\ref{thm:LowerBound}.
+\begin{proof}
+Suppose the adversary uses the symmetric random walk with unequal step sizes:
+\begin{equation}
+\adversMb(i,\R) =
+  \begin{cases}
+    +s_i & \mbox{ w.p. } \frac{1}{2}\\
+    -s_i & \mbox{ w.p. } \frac{1}{2}\\
+  \end{cases}
+\end{equation}
+for $s_i = \sqrt{\nu^i}$. The progression of the game for this
+adversary is independent of the learning algorithm and of the
+weighting $\{\cal I\}$. In particular
+$V^T({\cal I}) = \sum_{i=1}^T \nu^i$. To simplify notation we replace
+$V^T({\cal I})$ with $V^T$
+
+Let $X_i$ denote the random variable which takes on the values
+$\pm s_i$ with equal probabilities. Consider the distribution of $\frac{\sum_{i=1}^T X_i}{V^T}$
+as $T \to \infty$.
+
+
+Fix some $\epsilon>0$. As $s_i \leq 1$, $V^T \to \infty$ and
+$|X_i| \leq 1$ there exists $T_{\epsilon}$ such that for any
+$T \geq T_{\epsilon}$, and any $1 \leq i \leq T$,
+$|X_i| < \epsilon \sqrt{V^T}$. Therefore Lindberg's expression
+converges to zero as $T \to \infty$ for any fixed $\epsilon>0$
+\[
+  \frac{1}{V^T}\sum_{i=1}^T \E{}{X_i^2 \;\;{\bf 1}_{X_i: |X_i| \geq \epsilon \sqrt{V^T} } } = 
+    \frac{1}{V^T}\sum_{i=1}^{T_\epsilon} \E{}{X_i^2 \;\;{\bf 1}_{X_i: |X_i| \geq \epsilon \sqrt{V^T} } }
+    \leq \frac{\sum_{i=1}^{T_\epsilon} s_i^2}{\sum_{i=1}^{T} s_i^2}
+    \stackrel{T \to \infty}{\longrightarrow} 0
+  \]
+  Lindberg's CLT implies that if we fix $a>0$ and set $R^T=a \sqrt{V^T}$ then the probability that
+  $R>R_T$ is equivalent to the probability that ${\cal N}(0,1)$ assigns to the
+  ray $[a,\infty]$.
+
+  \[
+    \int_a^\infty \frac{1}{\sqrt{2 \pi}} e^{-\frac{x^2}{2}} dx
+    \geq \frac{1}{\sqrt{2 \pi}} e^{-\frac{a^2}{2}}
+    \left( \frac{1}{a} - \frac{1}{a^3}\right)
+  \]
+
+Plugging in $a=\frac{R^T}{\sqrt{V^T}}$ we get the statement of theorem~\ref{thm:LowerBound}.
+  
+  \end{proof}
+
+ 
+
+\bibliographystyle{plain}
+\bibliography{ref.bib,bib.bib}
+
+\appendix
+
+\section{Proof of Theorem~\ref{thm:IntegerGameBounds}}
+
+
+The following lemma states that these strategies guarantee the
+corresponding potentials.
+\begin{lemma} \label{lemma:first-order-bound}
+~\\
+Let $i$ be an integer between $1$ and $T$
+
+If $\lowerpotb(i,\R) \in \SP{2}$
+\begin{enumerate}
+\item {\bf Positivity:} $\lowerpotb(i-1,\R) \in \SP{2}$
+\item {\bf Adversary:} The adversarial strategy~(\ref{eqn:adv-strat-p})
+  guarantees the recursion given in Eq.~(\ref{eqn:backward-iteration-lower})
+\end{enumerate}
+
+If $\upperpotb(i,\R) \in \SP{2}$
+\begin{enumerate}
+\item {\bf Positivity:} $\upperpotb(i-1,\R) \in \SP{2}$
+\item {\bf Learner:} The learner strategy~(\ref{eqn:learner-strat-1})
+  guarantees the recursion given in Eq.~(\ref{eqn:backward-iteration-upper-recursion})
+\end{enumerate}
+
+\end{lemma}
+
+\begin{proof} {\bf Of Lemma~\ref{lemma:first-order-bound}}
+
+    We prove each claim in turn
+\begin{enumerate}
+\item {\bf Positivity:} Follows from Lemma~\ref{lemma:SP-pos-comb}.
+\item{\bf Adversary:} By symmetry adversarial strategy~(\ref{eqn:adv-strat-p}) guarantees that
+  the aggregate loss~(\ref{eqn:aggregate-loss}) is zero regardless of
+  the choice of the learner: $\ell(i)=0$.
+  Therefor the state update~(\ref{eqn:state-update}) is equivalent to
+  the symmetric random walk:
+  $$\state(i) = \frac{1}{2} \paren{(\state(i) \oplus 1) + (\state(i)
+    \ominus 1)}$$
+  Which in turn implies that if the adversary plays $\adversM^*$
+  and the learner plays an arbitrary strategy $\learnerM$
+  \begin{equation} \label{eqn:lower}
+    \lowerpotb(i-1,\R) = \frac{\lowerpotb(i,\R-1)+\lowerpotb(i,\R+1)}{2}
+  \end{equation}
+  As this adversarial strategy is oblivious to the learner's strategy, it
+  guarantees that the average value at iteration $i$ is {\em equal} to the
+  average of the lower value at iteration $i$.
+\item {\bf Learner:}
+  Plugging learner's strategy~(\ref{eqn:learner-strat-1})
+  into equation~(\ref{eqn:aggregate-loss}) we find that
+ \begin{equation} \label{eqn:ell-optimal-learner}
+   \ell(i) = \frac{1}{Z_{i}} \E{\R \sim \state(i)}{\paren{\upperpotb(i,\R+2)-\upperpotb(i,\R-2)}
+   \Bias(i,\R)}
+\end{equation}
+  Consider the score at iteration $i$ when the learner's strategy
+  is $\learnerM^*$ and the adversarial strategy  $\adversM$ is arbitrary
+     \begin{equation} \label{eqn:Pot-Update}
+    \score_{\learnerM^*,\adversM}(i,\R) = \E{\R \sim \state(i)}{ \E{y \sim
+      \adversM(i)(\R)}{\pot(i,\R+y-\ell(i))}}
+  \end{equation}
+  As $\pot(i,\cdot)$ is convex and as $y-\ell(i) \in [-2,2]$,
+  \begin{equation} \label{eqn:pot-upper}
+    \upperpotb(i-1,\R+y) \leq \frac{\upperpotb(i,\R+2)+\upperpotb(i,\R-2)}{2} +
+    (y-\ell(i)) \frac{\upperpotb(i,\R+2)-\upperpotb(i,\R-2)}{2}
+    \end{equation}
+  Combining the equations~(\ref{eqn:ell-optimal-learner}) and~(\ref{eqn:Pot-Update}) we find that
+  \begin{eqnarray}
+  \score_{\learnerM^*,\adversM}(i,\R)&=&\E{\R \sim \state(i)}{\E{y \sim \adversM(i)(\R)}{\upperpotb(i,\R+y-\ell(i))}}\\
+  &\leq & \E{\R \sim \state(i)}{\frac{\upperpotb(i,\R+2)+\upperpotb(i,\R-2)}{2}}\\
+  &+&
+  \E{\R \sim \state(i)}{\E{y \sim \adversM(i)(\R)}{(y-\ell(i)) \frac{\upperpotb(i,\R+2)-\upperpotb(i,\R-2)}{2}}} \label{eqn:zero-term}
+  \end{eqnarray}
+  
+The final step is to show that the term~(\ref{eqn:zero-term}) is equal
+to zero. As $\ell(i)$ is a constant with respect to $\R$ and $y$ the
+term~(\ref{eqn:zero-term}) can be written as:
+\begin{eqnarray}
+&&\E{\R \sim \state(i)}{\E{y \sim \adversM(i)(\R)}{(y-\ell(i))
+   \frac{\upperpotb(i,\R+2)-\upperpotb(i,\R-2)}{2}}}\\
+&=&
+\E{\R \sim \state(i)}{\Bias(i,\R)
+    \frac{\upperpotb(i,\R+2)-\upperpotb(i,\R-2)}{2}}\\
+  &-& \ell(i) \E{\R \sim \state(i)}{
+    \frac{\upperpotb(i,\R+2)-\upperpotb(i,\R-2)}{2}}\\
+  &=& 0
+\end{eqnarray}
+\end{enumerate}
+\end{proof}
+
+Repeating the induction steps of Lemma~\ref{lemma:first-order-bound}
+from $i=T$ to $i=1$ yields the proof of the theorem.
+
+
+\section{Divided differences of a function} \label{sec:divdiff}
+
+\begin{lemma} \label{lemma:differences}
+Let $f$ be a function in $\SP{4}$, let $x$ be any real and $s$ be a positive real. Define
+\begin{equation}
+  h(x,s) =  \frac{1}{24s^4} \paren{f(x)- 4f(x+s)+ 6f(x+2s)-
+    4f(x+3s)+ f(x+4s)}
+\end{equation}
+Then $h(x,s)>0$.
+\end{lemma}
+
+The function $h(x,s)$ has a special form called ``divided difference''
+that has been extensively studied ~\cite{popoviciu1965certaines,butt2016generalization, de2005divided}.
+and is closely related to to derivatives of different orders. properties of divided difference are at the core of the proof of lemma~\ref{lemma:differences}
+
+\iffalse
+We conclude that if $\pot(t',\R)$ has a strictly positive fourth
+derivative then $\pot_{k+1}(t,\R) > \pot_{k}(t,\R)$ for all $\R$, proving
+the first part of the lemma.
+
+The second part of the lemma follows from the fact that
+both $\pot_{k+1}(t,\R)$ and $\pot_{k}(t,\R)$ are convex combinations of
+$\pot(t,\R)$ and therefor retain their continuity and convexity properties.
+
+A function $\finalPot{}$ that satisfies
+inequality~\ref{eqn:4thOrderConvex} is said to be {\em 4'th order convex}
+(see details in in~\cite{butt2016generalization}).
+\fi
+
+Following\cite{butt2016generalization} we give a brief review of
+divided differences and of $n$-convexity.
+
+Let $f:[a,b] \to \reals$ be a function from the segment $[a,b]$ to the
+reals.
+
+\begin{definition}[$n$'th order divided difference of a function] \label{def:recurse-divided-difference}
+  The $n$'th order divided different of a function $f:[a,b] \to
+  \reals$ at mutually distinct and ordered points $a \leq x_0 < x_1
+  < \cdots < x_n \leq b$
+  defined recursively by
+  \[ [x_i; f] = f(x_i), \; i \in 0,\ldots n,\]
+  \[ [x_0,\ldots,x_n;f] =
+    \frac{[x_1,\ldots,x_n;f]-[x_0,\ldots,x_{n-1};f]}{x_n-x_0} \]
+\end{definition}
+
+\begin{definition}[$n$-convexity]
+ A function $f:[a,b] \to \reals$ is said to be $n$-convex  $n \geq 0$
+ if and only if for all choices of $n+1$ distinct points: $a \leq x_0 < x_1
+  < \cdots < x_n \leq b$, $[x_0,\ldots,x_n;f]\geq 0$ holds.
+\end{definition}
+$n$-convexity is has a close connection to the sign of $f^{(n)}$ - the $n$'th
+derivative of $f$, this connection was proved in 1965 by
+popoviciu~\cite{popoviciu1965certaines}.
+\begin{theorem} \label{thm:popo}
+If $f^{(n)}$ exists then f is $n$-convex if and only if $f^{(n)}\geq 0$.
+\end{theorem}
+
+The next lemma states that the function $g(\R)>0$ as defined in
+Equation~(\ref{eqn:divdiff}).
+
+\begin{proof} {\bf of Lemma~(\ref{lemma:differences})}
+
+All we need to do is show that the function $h$ is a fourth order divided difference.
+define $(x_0,x_1,x_2,x_3,x_4) = (x,x+a,x+2a,x+3a,x+4a)$ and apply Definition~\ref{def:recurse-divided-difference} five times.
+
+\begin{enumerate}
+\item
+$$[x_i;f] = f(x_i)$$
+\item
+  $$[x_i,x_{i+1};f]=\frac{f(x_{i+1})-f(x_i)}{s}$$
+\item
+  $$[x_i,x_{i+1},x_{i+2};f] =
+  \frac{\frac{f(x_{i+2})-f(x_{i+1})}{s}-\frac{f(x_{i+1})-f(x_i)}{s}}{2s}
+  =\frac{f(x_{i+2})-2f(x_{i+1})+f(x_i)}{2 s^2}
+  $$
+\item
+  \begin{eqnarray*}
+    [x_i,x_{i+1},x_{i+2},x_{i+3};f]& = &
+    \frac{\frac{f(x_{i+3})-2f(x_{i+2})+f(x_{i+1})}{2
+    s^2}-\frac{f(x_{i+2})-2f(x_{i+1})+f(x_i)}{2
+    s^2}}{3s}\\
+    &=& \frac{f(x_{i+3}) -3f(x_{i+2})+3f(x_{i+1})-f(x_i)   }{6 s^3}
+  \end{eqnarray*}
+\item
+  \begin{eqnarray*}
+    [x_i,x_{i+1},x_{i+2},x_{i+3},x_{i+4};f]& = &
+    \frac{\frac{f(x_{i+4}) -3f(x_{i+3})+3f(x_{i+2})-f(x_{i+1})   }{6 s^3}
+    - \frac{f(x_{i+3}) -3f(x_{i+2})+3f(x_{i+1})-f(x_i)   }{6 s^3}}
+    {4s}\\
+    &=& \frac{f(x_{i+4})-4f(x_{i+3})+6f(x_{i+2})-4f(x_{i+1})+f(x_i)}{24s^4}
+  \end{eqnarray*}
+\end{enumerate}
+We have shown that $h=f^{(4)}$. The statement of the Lemma follows from the fact that $f \in SP{4}$ together with Theorem~\ref{thm:popo}.
+\end{proof}
+  
+
+\section{Proof of Theorem~\ref{thm:variancebound}}
+
+We start with two technical lemmas
+\begin{lemma} \label{lemma:infiniteexpectations}
+Let $f(x) \in \SP{2}$, i.e. $f(x), f'(x),f''(x) >0$ for all $x \in
+\reals$, let $h(x)$ be a uniformly bounded function: $\forall x,\;\; |h(x)|<1$.
+Let $\state$ be a distribution over $\reals$.
+If $\E{x \sim \state}{f(x)}$ is well-defined (and finite) , then 
+$\E{x \sim \state}{h(x) f'(x)}$ is well defined (and finite) as well.
+\end{lemma}
+\begin{proof}
+Assume by contradiction that $\E{x \sim \state}{h(x) f'(x)}$ is
+undefined. Define $h^+(x) = \max(0,h(x))$.
+As $f'(x)>0$, this implies that either $\E{x \sim \state}{h^+(x)
+  f'(x)}=\infty$ or $\E{x \sim \state}{(-h)^+(x) f'(x)}=\infty$ (or both). 
+
+Assue wlog that $\E{x \sim \state}{h^+(x) f'(x)}=\infty$. As
+$f'(x)>0$ and $0 \leq h^+(x) \leq 1$ we get that $\E{x \sim
+  \state}{f'(x)}=\infty$.
+As $f(x+1) \geq f'(x)$ we get that $\E{x \sim
+  \state}{f(x)}=\infty$ which is a contradiction.
+\end{proof}
+
+\iffalse
+$\epsilon>0$ such that
+for any $v>0$ there exists $|h_v(x)| < v$ such that 
+$|\E{x \sim \state}{h_v(x) f'(x)}|>\epsilon$. Define $h'_v =
+\frac{h_v}{v}$. Clearly $|h'_v(x)|<1$ and we have that
+$$|\E{x \sim \state}{h'_v(x) f'(x)}|>\frac{\epsilon}{v}$$
+
+Define the positive parts of $h_v$ to be $h_v^+(x) = \max(0,h'_v(x))$
+and $h_v^-(x) = \max(0,-h'_v(x))$. As $f'(x)>0$ we that either
+\[
+  \E{x \sim \state}{h^+_v(x) f'(x)}>\frac{\epsilon}{v}
+\]
+or 
+\[
+  \E{x \sim \state}{h^-_v(x) f'(x)}>\frac{\epsilon}{v}
+\]
+Wlog assume the first. As $f \in \SP{2}$, we have that $f(x+1) \geq f'(x)$. Therefore
+ $\E{x \sim \state}{f(x+1)|h_v^(x)>0)}=\infty$. As $f(x)>0$ for all $x$ we
+ find that $\E{x \sim \state}{f(x)}=\infty$ which contradicts the
+ Lemma's assumption.
+\end{proof}
+\fi
+
+\newcommand{\Dx}{\Delta x}
+\newcommand{\Dy}{\Delta y}
+\begin{lemma} \label{lemma:Taylor2D}
+Let $f(x,y)$ be a differentiable function with continuous derivatives
+up to degree three. Then
+\begin{eqnarray}
+  &&f(x_0+\Dx,y_0+\Dy) = f(x_0,y_0)
+  + \atI{\frac{\partial}{\partial x}} \Dx 
+  + \atI{\frac{\partial}{\partial y}} \Dy \\
+  &+&\frac{1}{2} \atI{\frac{\partial^2}{\partial x^2}} \Dx^2
+      +\atI{\frac{\partial^2}{\partial x\partial y}} \Dx\Dy
+      +\frac{1}{2} \atI{\frac{\partial^2}{\partial y^2}} \Dy^2\\
+  &+&\frac{1}{6} \atII{\frac{\partial^3}{\partial x^3}} \Dx^3
+      +\frac{1}{2} \atII{\frac{\partial^3}{\partial x^2 \partial y}} \Dx^2\Dy\\
+  &&+ \frac{1}{2} \atII{\frac{\partial^3}{\partial x \partial y^2}} \Dx\Dy^2
+    + \frac{1}{6} \atII{\frac{\partial^3}{\partial y^3}} \Dy^3
+\end{eqnarray}
+for some $0\leq t \leq 1$.
+\end{lemma}
+\begin{proof} {\em of Lemma~\ref{lemma:Taylor2D}} 
+Let $F:[0,1] \to \reals$ be defined as  $F(t)=f(x(t),y(t))$ where
+$x(t) = x_0+t\Dx$ and $y(t)=y_0+t\Dy$. Then $F(0)=f(x_0,y_0)$ and
+$F(1)=f(x_0+\Dx,y_0+\Dy)$. It is easy to verify that
+$$ \frac{d}{dt}F(t)
+=\frac{\partial}{\partial x} f(x(t),y(t))\Dx
++ \frac{\partial}{\partial y} f(x(t),y(t))\Dy
+$$
+and that in general:
+\begin{equation} \label{eqn:d.dn.F}
+\frac{d^n}{d t^n} F(t) = \sum_{m=1}^n {n \choose m}
+\frac{\partial^n}{\partial x^m \partial y^{n-m}} f(x_0+t \Dx,y_0+t\Dy)
+\Dx^m \Dy^{n-m}
+\end{equation}
+As $f$ has partial derivatives up to degree 3, so does $F$. Using the
+Taylor expansion of $F$ and the intermediate point theorem we get that
+\begin{equation} \label{eqn:Taylor.F}
+  f(x_0+\Dx,y_0+\Dy) = F(1) = F(0)+\frac{d}{dt}F(0)
+  +\frac{1}{2}\frac{d^2}{dt^2}F(0)
+  +\frac{1}{6}\frac{d^3}{dt^3}F(t')
+\end{equation}
+Where $0 \leq t' \leq 1$. Using Eqn~(\ref{eqn:d.dn.F}) to expand each
+term in Eqn.~(\ref{eqn:Taylor.F}) completes the proof.
+\end{proof}
+
+
+\begin{proof} {\em of Theorem~\ref{thm:variancebound}}\\
+We prove the claim by an upper bound on the increase of potential that holds for any iteration $1 \leq i \leq n$:
+\begin{equation} \label{proof:onestep}
+\score(\state(t_{i+1})) \leq \score(\state(t_i)) + a s_i^3 \mbox{ for some constant } a>0
+\end{equation}
+Summing inequality~(\ref{proof:onestep}) over all iterations we get that 
+\begin{equation} \label{proof:allsteps}
+\score(\state(T)) \leq \score(\state(0)) + c \sum_{i=1}^n s_i^3 \leq 
+\score(\state(0)) + a s \sum_{i=1}^n s_i^2 = 
+\score(\state(0)) + a s T
+\end{equation}
+From which the statement of the theorem follows.
+
+We now prove inequality~(\ref{proof:onestep}). 
+We use the notation $r=y -\ell(i)$ to denote the instantaneous regret at iteration $i$. 
+
+
+Applying Lemma~\ref{lemma:Taylor2D} to
+$\pot(t_{i+1},\R_{i+1})=\pot(t_i+\deltat_i,\R_i+r_i)$  we get
+\begin{eqnarray} 
+    \pot(t_i+\deltat_i,\R_i+r_i) & =&  
+    \pot(t_i,\R_i)\\
+    &+&\at{\frac{\partial}{\partial \rho}} r_i \\
+    &+&\at{\frac{\partial}{\partial \tau}}  \deltat_i \\
+    &+& \frac{1}{2} \at{\frac{\partial^2}{\partial \rho^2}} r_i^2 \\
+    &+& \at{\frac{\partial^2}{\partial r \partial \tau}} r_i \deltat_i \label{term:Taylor_rdt}\\
+    &+& \frac{1}{2} \at{\frac{\partial^2}{\partial \tau^2}} \deltat_i^2 \label{term:Taylor_dtsquare}\\
+    &+& \frac{1}{6} \att{\frac{\partial^3}{\partial \rho^3}} r_i^3 \label{term:Taylor_r3}\\
+    &+& \frac{1}{2} \att{\frac{\partial^3}{\partial \rho^2 \partial \tau}} r_i^2\deltat_i \label{term:Taylor_r2t}\\
+    &+& \frac{1}{2} \att{\frac{\partial^3}{\partial \rho \partial \tau^2}} r_i\deltat_i^2 \label{term:Taylor_rt2}\\
+    &+& \frac{1}{6} \att{\frac{\partial^3}{\partial \tau^3}} \deltat_i^3 \label{term:Taylor_t3}
+\end{eqnarray}
+for some $0 \leq g \leq 1$.
+
+By assumption $\pot$ satisfies the Kolmogorov backward equation:
+\begin{equation*} 
+  \frac{\partial}{\partial \tau} \pot(\tau,\rho)
+  = -\frac{1}{2} \frac{\partial^2}{\partial r^2} \pot(\tau,\rho)
+\end{equation*}
+Combining this equation with the exchangability of the order of
+partial derivative (Clairiaut's Theorem) we can substitute all
+partial derivatives with respect to $\tau$ with partial derivatives
+with respect to $\rho$ using the following equation.
+\[
+  \frac{\partial^{n+m}}{\partial \rho^n \partial \tau^m} \pot(\tau,\rho)=
+  (-1)^m \frac{\partial^{n+2m}}{\partial \rho^{n+2m}} \pot(\tau,\rho)
+\]
+Which yields
+\begin{eqnarray}
+      \pot(t_i+\deltat_i,\R_i+r_i) & =&  
+    \pot(t_i,\R_i)\\
+    &+& \at{\frac{\partial}{\partial \rho}} r_i \label{term:coll1}\\
+    &+& \at{\frac{\partial^2}{\partial \rho^2}} \paren{\frac{r_i^2}{2}-\deltat_i} \label{term:coll2}\\
+    &-& \at{\frac{\partial^3}{\partial \rho^3}} r_i \deltat_i \label{term:coll3}\\
+    &+& \frac{1}{2} \at{\frac{\partial^4}{\partial \rho^4}} \deltat_i^2 \label{term:coll4}\\
+    &+& \frac{1}{6} \att{\frac{\partial^3}{\partial \rho^3}} r_i^3 \label{term:coll5}\\
+    &-& \frac{1}{2} \att{\frac{\partial^4}{\partial \rho^4}} r_i^2\deltat_i \label{term:coll6}\\
+    &+& \frac{1}{2} \att{\frac{\partial^5}{\partial \rho^5}} r_i\deltat_i^2 \label{term:coll7}\\
+    &-& \frac{1}{6} \att{\frac{\partial^6}{\partial \rho^6}} \deltat_i^3 \label{term:coll8}
+\end{eqnarray}
+
+  From the assumption that the game is $(n,s,T)$-bounded we get that 
+  \begin{enumerate}
+  \item $|r_i| \leq s_i +c s_i^2 \leq 2 s_i$
+  \item $\deltat_i = s_i^2 \leq s^2$
+    % \item $\sum_i \deltat_i=T$
+  \end{enumerate}
+
+  given these inequalities we can rewrite the second factor in each
+  term as follows, where $|h_i(\cdot)|\leq 1$
+  \begin{itemize}
+  \item {\bf For~(\ref{term:coll1}):}
+    $r_i=2s_i\frac{r_i}{2s_i}=2s_ih_1(r_i)$.
+  \item {\bf For~(\ref{term:coll2}):}
+    $r_i^2 - \frac{1}{2}\deltat_i = 4s_i^2\frac{r_i^2 -
+      \frac{1}{2}\deltat_i}{4s_i^2} = 4s_i^2 h_2(r_i,\deltat_i)$
+  \item {\bf For~(\ref{term:coll3}):} $r_i \deltat_i = 2s_i^3
+    \frac{r_i \deltat_i}{2s_i^3} = 2s_i^3 h_3(r_i,\deltat_i)$
+  \item {\bf For~(\ref{term:coll4}):} $\deltat_i^2 =
+    s_i^4\frac{\deltat_i^2}{s_i^4} = s_i^3 h_4(\deltat_i)$
+  \item {\bf For~(\ref{term:coll5}):} $r_i^3 = 8s_i^3
+    \frac{r_i^3}{8s_i^3} = 8s_i^3 h_5(r_i,\deltat_i)$
+  \item {\bf For~(\ref{term:coll6}):} $r_i^2 \deltat_i = 4s_i^4
+    \frac{r_i^2 \deltat_i}{4s_i^4} = 4s_i^3 h_6(r_i,\deltat_i)$
+  \item {\bf For~(\ref{term:coll7}):} $r_i \deltat_i^2 = 2s_i^5
+    \frac{r_i \deltat_i^2}{2s_i^5}$
+  \item {\bf For~(\ref{term:coll8}):} $\deltat_i^3 = s_i^6 \frac{\deltat_i^3}{s_i^6}$
+\end{itemize}
+  We therefor get the simplified equation
+  
+  \begin{eqnarray*} 
+     \pot(t_i+\deltat_i,\R_i+r_i) & =&  \pot(t,\R)+\at{\frac{\partial}{\partial r}} r
+    + \at{\frac{\partial}{\partial t}} \deltat \\
+                                  &+& 
+                                      \frac{1}{2}  \at{\frac{\partial^2}{\partial r^2}} r^2\\
+                                  &+& \at{\frac{\partial^2}{\partial r \partial t}} r_i \deltat_i \label{term:Taylor_collected_rdt}\\
+                                  &+& \frac{1}{6} \at{\frac{\partial^3}{\partial r^3}} r_i^3 \label{term:Taylor_collected_r3}
+                                      + O(s^4)
+\end{eqnarray*}
+
+and therefor
+  \begin{eqnarray} 
+     \pot(t_i+\deltat_i,\R+r) &=& \pot(t_i,\R) +
+                                  \at{\frac{\partial}{\partial r}} r
+                                  \nonumber \\
+    &+& \at{\frac{\partial^2}{\partial r^2}} (r^2 - \deltat_i) +
+        O(s^3) \label{eqn:Taylor}
+\end{eqnarray}
+
+Our next step is to consider the expected value of~(\ref{eqn:Taylor}) wrt $\R \sim \state(t_i)$,
+$y \sim \adversM(t_i,\R)$ for an arbitrary adversarial strategy
+$\adversM$.
+
+We will show that the expected potential does not increase:
+\begin{equation} \label{eqn:deltatislargeenough}
+     \E{\R \sim \state(t_i)}{ \E{y \sim \adversM(t_i,\R)}{\pot(t_i+\deltat_i,\R+y-\ell(t_i))}} \leq \E{\R \sim \state(t_i)}{\pot(t_i,\R)}
+\end{equation}
+
+Plugging Eqn~(\ref{eqn:Taylor}) into the LHS of
+Eqn~(\ref{eqn:deltatislargeenough}) we get
+\begin{eqnarray}
+  \lefteqn{\E{\R \sim \state(t_i)}{\E{y \sim \adversM(t_i,\R)}{\pot(t_i+\deltat_i,\R+y-\ell(t_i))}}} \\
+  &=& \E{\R \sim \state(t_i)}{\pot(t_i,\R)} \label{eqn:contin0}\\
+  &+& \E{\R \sim \state(t_i)}{\E{y \sim \adversM(t_i,\R)}{\at{\frac{\partial}{\partial r}} (y-\ell(t_i))}} \label{eqn:contin1}\\
+  &+& \E{\R \sim \state(t_i)}{\E{y \sim
+      \adversM(t_i,\R)}{\at{\frac{\partial^2}{\partial r^2}}
+      ((y-\ell(t_i))^2 - \deltat_i)}}
+  \label{eqn:contin2}\\
+  &+& O(s^3) \label{eqn:contin3}
+\end{eqnarray}
+Some care is needed here. we need to show that the expected value
+are all finite. We assume that the expected potential
+(Eqn~({eqn:contin0}) is finite. Using
+Lemma~\ref{lemma:infiniteexpectations} this implies that the expected
+value of higher derivatives of $\frac{\partial}{\partial \R} \pot(\R)$
+are also finite.\footnote{I need to clean this up and find an argument
+  that the expected value for mixed derivatives is also finite.}
+
+
+To prove inequality~(\ref{proof:onestep}), we need to show that the
+terms~\ref{eqn:contin1} and \ref{eqn:contin2} are smaller or equal to
+zero.
+~\\~\\~\\
+{\bf Term~(\ref{eqn:contin1}) is equal to zero:}\\
+As $\ell(t_i)$ is a constant
+relative to $\R$ and $y$, and $\at{\frac{\partial}{\partial r}}$ is a
+constant with respect to $y$ we can rewrite~(\ref{eqn:contin1}) as
+\begin{equation} \label{eqnterm1.1}
+  \E{\R \sim \state(t_i)}{\at{\frac{\partial}{\partial r}}
+    \E{y \sim \adversM(t_i,\R)}{y} }
+- \ell(t_i) \E{\R \sim \state(t_i)}{\at{\frac{\partial}{\partial r}}}
+\end{equation}
+
+Combining the definitions of $\ell(t)$~(\ref{eqn:ell-discrete}) and~
+and the learner's strategy
+$\learnerM^{cc}$~(\ref{eqn:learner-strat-cc}) we get that
+\begin{eqnarray}
+\ell(t_i) &=& \E{\R \sim \state{t_i}}{\frac{1}{Z}
+              \at{\frac{\partial}{\partial r}}
+              \E{y \sim \adversM(i,\R)}{y}} \mbox{ where }
+              Z=\E{\R \sim \state{t_i}}{\frac{1}{Z}
+              \at{\frac{\partial}{\partial r}}}
+              \label{eqnterm1.2}
+\end{eqnarray}
+
+Plugging~(\ref{eqnterm1.2}) into (\ref{eqnterm1.1}) and recalling the
+requirement that $\ell(t_i)<\infty$ we find that
+term~(\ref{eqn:contin1}) is equal to zero.
+
+
+~\\~\\~\\
+{\bf Term~(\ref{eqn:contin2}) is equal to zero:}\\
+As $\deltat_i$ is a constant relative to $y$, we can take it
+outside the expectaation to give 
+\begin{equation} \label{eqn:term2.1}
+  \E{\R \sim \state(t_i)}{\E{y \sim
+      \adversM(t_i,\R)}{\at{\frac{\partial^2}{\partial r^2}}
+      (y-\ell(t_i))^2}}
+  - \deltat_i  \;  \E{\R \sim \state(t_i)}{\at{\frac{\partial^2}{\partial r^2}}}
+\end{equation}
+On the other hand, from the choice of $\deltat_i$ given in
+Eqn~(\ref{eqn:deltat}) we get
+\begin{equation} \label{eqn:term2.2}
+  \deltat_i \; \E{\R \sim \state(t_i)}{\at{\frac{\partial^2}{\partial r^2}}} = 
+  \E{\R \sim \state(t_i)}{\E{y \sim \adversM(t_i,R)}{
+      \at{\frac{\partial^2}{\partial r^2}} (y-\ell(t_i))^2}}
+\end{equation}
+Combining~(\label{eqn:term2.1}) and~(\ref{eqn:term2.2}) we
+find that (\ref{eqn:contin2}) is zero.
+
+Finally (\ref{eqn:contin3}) is negligible relative to the other terms
+as $s \to 0$.
+\end{proof} 
+
+
+\end{document}
+
+%% deleted stuff
+
+
+The next Lemma is the main part of the proof of
+Theorem~(\ref{thm:IntegerGameBounds}). We use the backward induction
+from Theorem~(\ref{thm:backward-recursion}) To compute upper and lower
+potentials (Equations~(\ref{eqn:upperPotentials},\ref{eqn:lowerPotentials})) for
+Strategies~(\ref{eqn:adv-strat-p}) and~(\ref{eqn:learner-strat-1})
+
+The last iteration of the game: $i=T$ is the first step of the
+backward induction. The upper and lower bounds are both set equal to
+the first step in the backward induction we define
+$$  \lowerpotb(T,\R) = \upperpotb(T,\R) = \pot(T,\R) $$
+
+\iffalse
+\begin{lemma} \label{lemma:first-order-bound}
+  If $\pot(i,\R) \in \SP{2}$
+  \begin{enumerate}
+    \item The adversarial strategy~(Eq~(\ref{eqn:adv-strat-p}))
+    guarantees the lower potential
+ \begin{equation} \label{eqn:backward-iteration-lower}
+   \lowerpotb(i, \R) = \frac{\lowerpotb(i,\R+1) + \lowerpotb(i,\R-1)}{2}
+ \end{equation}
+   
+    \item The learner strategy~(Eq~(\ref{eqn:learner-strat-1}))
+      guarantees the upper potential 
+      \begin{equation} \label{eqn:backward-iteration-upper-recursion}
+        \upperpotb(i, \R) = \frac{\upperpotb(i,\R+2) + \upperpotb(i,\R-2)}{2}
+      \end{equation}
+    \end{enumerate}
+\end{lemma}
+\fi
+
+
+  \begin{eqnarray}
+  \upperpotd(t_i,\R)&=&\E{\R \sim \state(i)}{\E{y \sim \adversM(t_i,\R)}{\upperpotd(t_i,\R+y-\ell(t_i))}}\\
+  &\leq & \E{\R \sim \state(t_i)}{\frac{\upperpotd(i,\R+s_k(1+s_k))+\upperpotd(i,\R-s_k(1+s_k))}{2}}\\
+  &+&
+      \E{\R \sim \state(i)}{\E{y \sim \adversM(i)(\R)}{(y-\ell(i))
+      \frac{\upperpotd(i,\R+s_k+s_k^2)+\upperpotd(i,\R-s_k-s_k^2)}{2}}}
+  \end{eqnarray}
+
+
+(Eq~\ref{eqn:learner-strat-1}). We follow the same line of argument as the second part of the proof of
+Lemma~\ref{lemma:first-order-bound} to give a recursion for the upper
+potential. The critical difference between the integer game is and the
+discrete game is that in the discrete game $\ell(t_i)\leq s_i^2$ which
+implies that $(y-\ell(t_i)) \in [-s_k(1+s_k),s_k(1+s_k)]$. This yields 
+
+
+  Following the same line of argument as the first part of the proof of
+Lemma~\ref{lemma:first-order-bound} we consider the time points:
+$t_i=i s_k^2=i 2^{-2k}\realT$ for $i=0,1,\ldots,2^{2k}$.
+
+  \begin{equation} \label{eqn:lower-discrete}
+    \lowerpotd(t_{i-1},\R) = \frac{\lowerpotd(t_i,\R-s_k)+\lowerpotd(t_i,\R+s_k)}{2}
+  \end{equation}
+
+
+  %%%%%
+
+  
+Follow the proof of
+  Lemma~\ref{lemma:first-order-bound}.Derive upper and lower scores
+  for the two strategies. Show that they converge to the same thing as
+  $k \to \infty$.
+
+
+
+
+We start with the high-level idea. Consider iteration $i$ of the
+continuous time game. We know that the adversary prefers $s_i$ to be
+as small as possible. On the other hand, the adversary has to choose
+some $s_i>0$. This means that the adversary always plays
+sub-optimally. Based on $s_i$ the learner makes a choice and the
+adversary makes a choice. As a result the current state $\state(t_{i})$
+is transformed to $\state(t_i)$. To choose it's strategy, the learner
+needs to assign value possible states $\state(t_i)$. How can she do
+that? By assuming that in the future the adversary will play
+optimally, i.e. setting $s_i$ arbitrarily small. While the adversary
+cannot be optimal, it can get arbitrarily close to optimal, which is
+Brownian motion.
+
+Note that the learner chooses a distribution {\em after} the adversary
+set the value of $s_i$. The discrete time version of $\learnerM^1$
+
+In the discrete time game the adversary has an additional choice, the
+choice of $s_i$. Thus the adversary's strategy includes that choice.
+There are two constraints on this choice: $s_i \geq 0$ and
+$\sum_{i=1}^n s_i^2 = T$. Note that even that by setting $s_i$
+arbitrarily small, the adversary can make the number of steps - $n$ -
+arbitrarily large. We will therefor not identify a single adversarial
+strategy but instead consider the supremum over an infinite sequence
+of strategies.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+\iffalse
+  We study two particular potential functions which achieve good simultanous regret bounds.
+
+\subsection{Min/Max solution}
+
+Theorem~\label{thm:simulBoundAveragePot} shows a one-to-one relationship between a simultanous regret bound
+$B(\R)$ and the average potential function $\phi(\R)=B(\R)^{-1}$. We therefor ask what is the smallest possible $B(\R)$. Recall that the brownian motion adversary forces a cumulative loss of zero on any learner. The SBR for Brownian motion is the tail of the normal distribution:
+\newcommand{\erf}{\mbox{erf}}
+\begin{equation}
+  B^*(\R) = \frac{1}{\sqrt{2 \pi}}  \int_{\R}^\infty e^{-\frac{x^2}{2\realT}}dx
+  = \frac{1}{2} \paren{1-\erf\paren{\frac{R}{\sqrt{2\realT}}}}
+\end{equation}
+The final potential function that correspond to
+\begin{equation}
+  \finalPotR^*(\R) = (B^*(\R))^{-1} = \frac{2}{1-\erf\paren{\frac{\R}{\sqrt{2\realT}}}}
+\end{equation}
+One can check that $\finalPotR^* \in \SP{4}$ and therefor Brownian motion is the optimal strategy and
+$$\pot^*(t,\R)= \E{\rho \sim {\cal N}(\R,\realT-t)}{\frac{2}{1-\erf\paren{\frac{\rho}{\sqrt{2\realT}}}}}$$
+The bound on the final potential is:
+\[
+  \pot^*(0,0) =  \E{\rho \sim {\cal N}(0,\realT)}{\frac{2}{1-\erf\paren{\frac{\rho}{\sqrt{2\realT}}}}}
+\]
+
+\fi
+
+\subsection{Anytime Potentials} \label{sec:stable}
+
+
+
+\iffalse
+\begin{itemize}
+\item We provide min-max analysis for potential and quantile based online
+  algorithms with a finite known horizon and a potential function with
+  four strictly positive derivativs. In particular, we show that
+  Brownian motion is the optimal adversarial strategy for any such
+  potential function.
+\item We show how to remove the finite horizon assumption and derive
+  both exponential weights and NormalHedge potentials.
+\item We provide second order bounds on the parameter-free normal-Hedge algorithm
+  that depend only on the percentile $\epsilon$ and a variant of the cumulative
+  variance. We show that this bound is the optimal bound for any
+  potential based algorithm.
+\item We construct a lower bound that holds for any online algorithm
+  and is very close to the normal hedge upper bound.
+\end{itemize}
+
+We start with the bounded horizon case. Fixing a potential function at
+the end of the game $\pot(T,\R)$ and the strategies used by the
+learner and the adversary, we define potential functions $\pot(i,\R)$
+for iterations $i = T-1,T-2,\ldots,0$ such that the score $\score(t)$ is guaranteed to 
+be equal for all of the iterations.
+\[
+  \score^T = \score(T-1)=\cdots=\score(0)
+\]
+This allows us to analyze the game one iteration at a time and
+construct good strategies for both sides. We name this potential based
+game the {\em Integer Time Game}, the analysis of this game is given
+in Section~\ref{sec:int-time-game}. The analysis assumes only that the
+final potential $\pot(T,\R)$ is strictly positive and has strictly positive
+first and second derivatives (We denote the set
+of functions that have $0,\ldots,k$ strictly positive derivatives by $\SP{k}$,
+the formal definition is given in Section~\ref{sec:preliminaries})
+
+The strategies yielded by the analysis guarantee bounds on the final
+score. The adversarial strategy guarantees
+$\lowerscore{} \leq \score^T$, while the learner's strategy
+guarantees $\score^T \leq \upperscore{}$. Unfortunately, these bounds
+don't match, i.e. $\lowerscore{}<\upperscore{}$. In other words our
+proposed strategies are not min-max optimal. The question of whether
+there exist min/max strategies for the integer time game is open.
+
+To find min/max strategies we expand the game. We call the expanded
+game the {\em discrete time game}. The expansion involves giving the
+more options to the adversary, but not to the learner. As a result,
+any upper bound $\upperscore{}$ that holds for a learner strategy in
+the discrete time game also holds in the integer time game.
+
+The added option for the adversary is to declare, at the beginning of
+each iteration, the range of values of the instantanous losses. In the
+integer time game this range is set to $[-1,+1]$. In the discrete time
+game the range is chosen by the adversary on iteration $i$ to be
+$[-s_i,+s_i]$ for $1\geq s_i >0$. To keep the game balanced between
+the adversary and the learner we replace the iteration number $i$ with
+real valued {\em time} parameter and let $t_{i+1}=t_i+s_i^2$. this and
+another necessary adjustment are described in
+Section~\ref{sec:discrete}. Section~\ref{sec:disc-game-strategies}
+describes strategies used for the discrete game which are scaled
+versions of the strategies for the integer time game.
+
+We fix the potential at the end of the game $\finalPotR \in \SP{4}$
+and consider a sequence of adversarial and learner strategies indexed
+by $k$: $\adversMdk,\learnerMdk$, where
+$\forall i,\; s^k_i = \frac{\sqrt{\realT}}{2^k}$ for some constant
+$\realT$. We prove two facts regarding the limit $k \to \infty$.  The
+first (Thm.~\ref{thm:seq-of-adv-strategies}) is that
+$\lim_{k \to \infty}\upperpotMdk - \lowerpotMdk \to 0$.  The second
+(Thm.~\ref{thm:smallerSteps}) is that, if $\pot(T,\R)$
+$$\forall k, \forall 0\leq i \leq 2^{2k},t_i=i 2^{-2k} \realT,\; \forall\R,\;\;\;
+,\lowerpotMdkpar{k+1}\left(t_i,R\right) >
+\lowerpotMdk\left(t_i,R\right)$$ Taken together these facts imply
+that, if the fixed potential function for the end of the game
+$\finalPotR$ is in $\SP{4}$, then there exists a potential function
+$\pot(t,\R)$. The adversarial strategy corresponding to this potential
+function corresponds to Brownian motion.  The backwards recursion used
+to computer the potential for $t \leq \realT$ is a partial
+differential equation known as the Kolmogorov Backward equation.
+
+The main result of this paper is that a {\em single} adversarial
+strategy, i.e. Brownian motion, is optimal for any
+sufficiently convex potential functions.
+
+The discrete time game presents the adversary with a dilemma.  On the
+one hand, The adversary has to declare, on each iteration, an upper bound on the
+range of the losses $[-s_i,s_i]$ where $s_i>0$. On the other hand, it
+wants to set $s_i$ as small as possible.~\footnote{The situation is
+  similar to a folklore game in which each player writes down a number
+  on a piece of paper and the player with the largest number wins.}
+
+We introduce a variant of the game called the {\em continuous time
+  game} to alleviate this dilemma. In this came the adversary does not
+announce the step size and the learner behaves as if
+the step size is infinitesimally small. In this case time is advanced according
+to the variance of the actual losses. This much more natural algorithm yields
+a regret bound that depends on the cumulative variance and is smaller
+for easy, low variance sequences.
+
+Until this point our theory holds for any final potential function in $\SP{4}$. We conclude by analyzing two specific potentials.
+\begin{enumerate}
+\item We derive a potential function and a corresponding learning algorithm
+  that is min/max optimal for a given time horizon $\realT$.
+  The optimality is in the sense that the
+  simultanous regret bound for time $\realT$ has a matching
+  simultanous lower bound.
+\item By finding solutions to the Kolmogorov Backward equation that
+  hold for all $t>0$ we eliminate the need to define a final
+  potential. As a result we get an ``anytime'' learning algorithm that
+  can be stopped at any time. The specific potential we analyze is
+  Normal-Hedge~\cite{}. NormalHedge is not min/max optimal for any
+  time, but it is almost optimal for all times.
+\end{enumerate}
+
+
+
+
+\section{Main Results}
+
+\fi
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+
+\section{Upper and lower bounds on the simultanous regret}
+Plan: (1) first order bound with Variable $\nu$ to show optimality.
+(2) Second order bound with $\nu=1$
+
+We now combine Theorems \ref{thm:simulBoundAveragePot} and~\ref{thm:variancebound} with
+the Normal-Hedge potential~(\ref{eqn:NormalHedge}) to derive a second order bound on the regret of NormalHedge.
+\begin{equation}
+  \R_{\mbox{\tiny NH$(\nu)$}}(\epsilon) \leq \sqrt{(t_i+\nu) \left(2 \ln \frac{1}{2\epsilon}+
+      \ln (t_i+\nu)\right)}
+\end{equation}
+Where $t_i = \nu+\sum_{j=1}^{i}\deltat_j$
+\begin{equation}
+  \deltat_i=
+  \E{\R \sim \state(i)}{H(t_i,\R) \;\; \E{y \sim \adversM(t_i,\R)}{(y-\ell_i)^2}}
+\end{equation}
+and 
+\begin{eqnarray}
+  W(t_i,\R)&=& e^{\frac{R^2}{2t_i}} \left(\frac{1}{t^{3/2}} + \frac{R^2}{t^{5/2}} \right)\\
+  H(t_i,\R)&=& \frac{W(t_i,R)}{\E{\rho \sim \state(i)}{W(t_i,\rho)}}
+\end{eqnarray}
+
+The initial potential is $1/\sqrt{\nu}$ and it remains this way in the continuous case. In the discrete case it is $1/\nu + O(1/n)$ where $n$ is the number of steps We can upper bound the potential by
+$1/\nu+1$
+
+\iffalse
+\section{The concept of state and  a critique of quadratic variation}
+Central to our analysis is the concept of the {\em state} of the DTOL
+game described in figure~\ref{fig:DTOL}. A state is a function of
+history that is minimally sufficient to compute the future of the
+game.  Clearly, a sufficient state of the game at time $t$ is the
+vector of $N$ cumulative regrets: $(R_1^t,\ldots,R_N^t)$. As the
+indexing of the experts is immaterial we can replace the vector with
+a distribution of regrets at time $t$ which we denote $\state(t)$.
+
+This definition of state is sufficient in two senses. First, the
+regret bounds at time $t$ depend only on $\state(t)$. Second, given
+$\state(t)$ and the experts of the learner and the adversary at time
+$t$ uniquely defines $\state(t)$. Other information about individual
+experts, such as the quadratic variation of individual experts, do not
+effect the progression of the states.
+
+To sharpen this argument consider an example depicted in
+Figure~\ref{fig:counterExample}~\footnote{This example appeared in an
+  open problem in COLT2016} We compare two loss histories, each
+involving two experts. The first consists of the the blue and the red
+lines, the second consists of the blue and the green line. In both
+cases the total loss of both expert at the end of phase 3 are
+equal. In other words, the state at the end of phase 3 is identical
+for the two examples. An algorithm that depends on quadratic variation
+would give different weights to the high and the low variation expert
+even though the states are identical.~\footnote{One can argue for a
+  different game in which the state includes the quadratic
+  variation. However, we can't see a natural Way to define a game that
+  requires the expanded state.}
+\begin{figure*}[th] \label{fig:counterExample}
+\includegraphics[width=\columnwidth,height=3in]{OpenProblemFigure.pdf}
+\end{figure*}
+\fi
+\section{Integer time game}
+\label{sec:int-time-game}
+The integer time game is described in
+Figure~\ref{fig:integerTimeGame}.  The integer time game generalizes
+the decision theoretic online learning problem~\cite{FreundSc97} in
+the following ways:
+\begin{enumerate}
+\item The goal of the learner in DTOL is to guarantee an upper bounds
+  on the regret. The learner's goal in the integer time game is to
+  minimize the final score. From theorem~\ref{thm:simulBoundAveragePot} we know that if
+  we set the final potential as $\finalPotT(\R) = \frac{1}{G(\R)}$ then the two
+  conditions are equivalent, allowing us to focus on the score.
+\item The number of iterations $T$ is given as input, as is the
+  potential function at the end: $\finalPotT(\R)$.
+\item The experts are assumed to be {\em divisible}. For our purposes
+it is enough to assume that any expert can be split into two equal
+weight parts.
+\end{enumerate}
+
+The key to the potential based analysis is that using the predefined
+final potential we can define potential functions and scores for all
+iterations $1,\ldots,T-1$. This is explained in the next subsection.
+
+The final score is calculated: $\score^T=\state(T) \odot
+\finalPotT$.
+
+The goal of the learner is to minimize this score, the goal
+of the adversary is to maximize it.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \end{minipage}}                                             %
+% \caption{The integer time game \label{fig:integerTimeGame}} %
+% \end{figure}                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Proof of Theorem~\ref{thm:simulBoundAveragePot} \label{proof:simulBoundAveragePot}}
+\begin{proof}
+~\\
+\begin{itemize}
+  \item
+  {\bf A distribution $\state$ satisfies SRB for $G$ if it satisfies APB
+  for $\pot(R) = G(R)^{-1}$}\\
+Assume by contradiction that $\state$ does not satisfy the simultaneous bound. In
+other words there exists $a \in \reals$ such that
+$\P{\R \sim \state}{\R > a} > B(a)$. From Markov inequality and the fact
+that $\phi$ is non decreasing we get
+\[
+  \E{\R \sim \state}{\pot(\R)} \geq \phi(a) \P{\R \sim \state}{\R > a} >
+  \phi(a) B(a) = \frac{B(a)}{B(a)}=1
+\]
+but $ \E{\R \sim \state}{\pot(\R)} >1$ contradicts the average potential
+assumption for the potential $\phi(\R) = B(\R)^{-1}$
+\item {\bf A distribution $\state$ satisfies an
+    APB for $\pot$ if it satisfies SRB for $G$ and $\int_{-\infty}^{\infty}\pot(\R) G(\R) d\R \leq 1$}\\
+  From the SRB condition we have
+  $$\forall R, \P{\rho \sim \state}{\rho \geq \R} \leq G(\R)$$
+  From the condition  $\int_{-\infty}^{\infty}\pot(\R) G(\R) d\R \leq 1$ we get
+  $$1 \geq \int_{-\infty}^{\infty}\pot(\R) G(\R) d\R \geq
+  \int_{-\infty}^{\infty}\pot(\R) \P{\rho \sim \state}{\rho\geq \R}
+  d\R = \E{\R \sim \state}{\pot(\R)}$$
+\end{itemize}
+\end{proof}
+
+\iffalse
+memory-less adversaries. In other words
+adversaries to not depend on history. In other words: for any $1 \leq i \leq T$:
+\begin{eqnarray}
+  && \P{\omega \sim \D}{L^i(\omega)=b_i \left|
+  P^i(\omega)=a_i\wedge (P^{i-1}(\omega)=a_{i-1} \wedge L^{i-1}(\omega)=b_{i-1})
+     \wedge \ldots \wedge (P^{1}(\omega)=a_{1} \wedge L^1(\omega)=b_1) \right.} \nonumber\\
+     &=&   \P{\omega \sim \D}{L^i(\omega)=b_i}
+\end{eqnarray}
+\fi
+
+
+\subsection{Potential-based analysis of DTOL}
+
+
+Central to our analysis is the notion of a {\em game state}. From the game
+state at the end of the game $i=T$ the outcome of the game can be calculated.
+
+
+
+$i$, deonted $\state_i$ is a representation of the game at iteration $i$ from which (1) any quantity relevant to iteration $i$ can be calculated.
+
+
+
+DTOL is a full information deterministicc game, if the strategies for
+both sides are also deterministic then the game determines a single history:
+\[
+  \{P^1_1,P^1_2,\ldots,P^1_N\},\{l^1_1,l^1_2,\ldots,l_N^1\},
+  \{P^2_1,P^2_2,\ldots,P^2_N\},\{l^2_1,l^2_2,\ldots,l_N^2\},\ldots 
+\]
+each player deterministically selects their expert according to a
+prefix the history which is then appended to the end of the history
+and the other side takes their turn.  It is not hard to verify that
+the vector $\left\langle L^i_\ell,R_1^i,\ldots,R_N^i \right\rangle$
+contains all of the information in the prefix of history up to
+iteration $i$. Moreover, the information does not change if we relabel
+the experts.  We therefor define the {\em state} of the game as
+$\left\langle L^i_\ell, \{R_1^i,\ldots,R_N^i\} \right\rangle$ where the curly brackets define a {\em bag} or a {\em point-mass distribution}.
+
+The first step in extending DTOL to EDTOL is allowing {\em any}
+distribution over the regrets.
+
+and also fix as well as
+the final potential $\finalPotT$, we can calculate the conditional
+expectation of the potential at time $T$ given the that the regret at
+time $ti<T$ is R.  It is natural to define this conditional expected
+value as the potential at $i,R$.
+
+
+
+
+
+Central to our model is the concept of {\em state}. Roughly speaking,
+the state of the game is a summary of the history which holds all of
+the relevant past information. From Figure~\ref{fig:DTOL} it is clear
+that the state on iteration $i$ can be defined as the combination of
+the cumulative loss of the algorithm $L_\ell^i$ and the cumulative
+regret of the $N$ experts:
+$\left\langle L^i_\ell,R_1^i,\ldots,R_N^i \right\rangle$. As the
+indices of the experts can be arbitrarily permuted, the cumulative
+losses of the experts can be represented as a {\em bag} which can also
+be thought of as a point-mass distribution over $\reals$. Here we
+allow arbitrary distribution over the cumulative loss of the
+expert.~\footnote{More precisely, an Borel-Meaure on $\reals$.} This
+does not substrantially expand the setup with $N$ acctions as any
+Borel-measure can approximated by letting $N \to \infty$. We use the
+term {\em state} at time $i$, denoted $\state(i)$, to represent
+distribution or measure, over regrets at iteration $i$.  The full
+state at time $i$ is
+$\fstate(i) \doteq \left\langle L^i_\ell,\state(i)
+\right\rangle$.~\footnote{Note that according to our definitions the
+  state is unchanged when exchanging the indices $i \neq j$ when
+  $L_i^i=L_j^i$.  On the other hand, algorithms that depend on
+  quadrative variation, depend also on a quadratic expression for each
+  expert, which is problem with second order algorithms on quadratic
+  variation, as these depend on information outside
+  $\left\langle L^i_\ell,\state(t) \right\rangle$, namely, the
+  quadratic variation of each expert.{\bf to be completed}}
+
+Using this generalized definition of state we define a variant of the
+DTOL game (Figure~\ref{fig:DTOL}) that we call the discrete time game (DTG)
+(Figure~\ref{fig:discrete-Time-Game}). DTG generalizes DTOL and strengthens the adversary,
+but not the learner. Thus any upper bound on the regret that holds for DTG holds also for DTOL. 
+
+We now explain the elements of DGT in Figure~\ref{fig:discrete-Time-Game}
+\begin{itemize}
+\item the loss $l_j^i$ associated with expert is generalized to a measureble function that maps 
+\item At the beginning of iteration $i$ the adversary chooses a
+  step-size $1 \geq s_i \geq 0$ which sets the range of instatanous
+  losss/gains to $[-s_i,+s_i]$
+\item We replace the iteration number $i$ with $U_i$ that is an upper
+  bound on the cumulative variance that is updated according to the recursion:
+  $U_i = U_{i-1}+s_i^2$.
+\item  
+\end{itemize}
+
+
+The DTOL game progresses from the full state $\fstate(t)$ to $\fstate(t+1)$ according to the strategies of the learner and the adversary:
+\begin{enumerate}
+\item The learner chooses a weighting $P(t,R)$ as a function of $\fstate(t)$
+\item The adversary assigns a loss to each expert. $\adversM(t,\cdot): \reals \to \Delta^{[-s_i,+s_i]}$
+  \item ,,
+\end{enumerate}
+
+
+
+
+$\left\langle L^i_\ell,\state(t) \right\rangle$ to
+$\left\langle L^{t+1}_\ell,\state(t+1) \right\rangle$
+
+
+a sequence of
+states $s_0,s_1,s_2,\ldots,s_t$, and a strategy for the adversary
+(potentially randomized) $A: S \times \Omega \to \vec{l}_t$, a
+strategy for the learner $L:S,\Omega \to \vec{P}$.
+
+such as DTOL described in figure~\ref{fig:DTOL}. 
+
+\subsection{State symmetries}
+
+
+Intuitively, the state of a
+game captures all of the information about the game history that is
+relevant to the game's future. More formally, a state is a function of
+history that such that the future is independent of the history given
+the state. One can define the state of the DTOL game at time $t$ as
+the vector consisting of the $N$ cumulative regrets:
+$(R_1^i,\ldots,R_N^i)$. Note also that the regret (relative to the
+best expert or a percentile) as well as the potential are conserved
+under permutation of the regrets. Therefor, a smaller definition of
+the state is the {\em distribution} of the cumulative regrets.
+
+When the set of experts is finite, this distribution is a point mass
+distribution where the probability of a single point corresponds to
+the number of experts with the cumulative regret.
+
+We allow countable and uncountable sets of experts, however, for most of our analysis it sufficies to consider 
+finite expert sets that double in size at each step.
+
+Specifically we assume that the adversary chooses a step size $1 \leq s \leq 0$. At time $t$ the adversary
+associates $2^t$ experts with the $2^t$ loss sequences of the form $\{\pm s\}^t$.
+
+Thee set of ``divisible'' experts is somewhat larger. Here we allow
+the adversary to split each expert at each stage into two, each expert
+can have a different weight, but the weights have to sum that of the
+expert before it is split.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We define {\em the potential game} to be identical to DTOL with the
+only difference being that the goal of the learner is to minimize the
+final score and the goal of the adversary is to maximize it.
+
+To simplify our initial analysis we assume that $T$, the number of
+iterations in game (also called the {\em horizon} of the game) is
+fixed and known a priori.  We will later remove this assumption.
+
+We also assume that the final potential $\finalPotT$ is
+fixed. Intuitively, we want $\finalPotT(R)$ to increase fast with $R$
+so that $\alpha$ decreases quickly with $R$. However, at this point we
+assume only that $\finalPotT(R)$ is in $\SP{2}$.
+
+For our analysis we extend the game by giving the adversary additional
+abilities which we shall refer to as {\em super powers}. These super
+powers will simplify the analysis and allow us to prove min/max
+optimality. As super-powers are given only to the adversary, any
+learner strategy that achieves an upper bound on the final score in
+the extended game will guarantee the same bound or better in the
+original game (without super-powers).
+
+Ultimately, we will show that the potential defined in the NormalHedge
+algorithm is the {\em optimal} potential function that increases in
+the fastest rate without resulting infinite expected values.
+
+\paragraph*{full information game}
+The potential game is a full information, deterministic, iterative,
+finite horizon game between a learner and an adversary. The strategies
+for the player and adverssary are mappings from the history of the
+game: $\Pvec{1},\Lvec{1},\Pvec{2},\Lvec{2},\ldots$ to the next
+choices: $\Pvec{i}$ for the learner and $\Lvec{i}$ for the learner.
+The history implies a distribution over the regrets. In turn, the
+distribution of the regrets determines the tail probability and the
+average potential. There the distribution of the regret is the only
+information we need to determine the result at the {\em end} of the
+game. We will now show that the distribution of the regret at any time
+point holds all of the relevant information about the history up to
+that time point.
+
+\paragraph*{The divisibility super-power}
+The first super-power we give to the adversary is the ability to {\em
+  split} experts. Suppose we have $N$ experts with non-negative
+weights: $\omega_1,\ldots,\omega_N$ that sum to one.  The splitting
+adversary can split any expert $j$ into $N_j$ ``sub-experts'' with
+weights $\omega_{j,1},\ldots,\omega_{j,N_j}$ whose sum is
+$\omega_j$.~\footnote{Thes $\omega_j$ are the a-priori or base weights
+  associated with the experts, in particular, they do {\em not}
+  incorporate the weighting by the learner $\Pvec{i}$}
+Clearly, the non-splitting adversary is a special case of the
+splitting adversary. Also, it is not hard to show that any splitting
+adversary can be approximated as a non-splitting adversary by letting
+$N \to \infty$ and using subsets of the experts to represent the
+splitted expert.
+
+\paragraph{The divisibility super-power allows the adversary to
+  remove dependense on history}
+As described above, the learner choses $\Pvec{i}$ at iteration $i$, 
+as an arbitrary function of the history before iteration $i$
+$\Pvec{1},\Lvec{1},\Pvec{i-1},\Lvec{i-1}$. Following this choice, the adversary chooses $\Lvec{i}$.
+Let $\Rvec{i-1}$ be the distribution of the regrets before iteration $i$ and $\Rvec{i}$
+be the distribution after iteration $i$. It is not hard to show that $\Rvec{i}$ is a function of
+$\Rvec{i-1}, \Pvec{i}$ and $\Lvec{i}$. However, the full history might be used in the choices
+made by the learner and the adversary.
+
+We will not show that if the adversary has the divisibility super
+power she can always replace $\Lvec{i}$ with $\Lvec{i}$ in a way that
+the dependence on history reduces to a dependence on $\Rvec{i-1}$ and
+$\Rvec{i}$ remains unchanged. Consider the finite experts case (the
+general case holds under appropriate measurability constraints). Focus
+on
+
+
+\paragraph*{A Splitting adversary reduces history to distribution of experts}
+Suppose that the regrets of the $N$ experts at iteration $T$ is
+$\{R_1^T,\ldots,R_N^T\}$, and the corresponding weights are $\{\omega^T\}$
+
+The final score, defined in Equation~(\ref{eqn:potential-bound}) is
+only a function of the values .  As the
+indices of the experts can be arbitrarily permuted, we can represent
+the collection of values as a bag, or a point-mass distribution over
+$\reals$. We will denote distribution by $\state(T)$, and for reasons justified in the following lemma, we call $\state(i)$ the {\em state} at iteration $i$. 
+
+\begin{lemma}
+  Assuming that the adversary has divisibility super power, For every
+  iteration $1\leq i \leq T-1$, every history
+  $\Pvec{1},\Lvec{1},\ldots,\Pvec{i}$ and any $\Lvec{i}$ resulting in
+  distribution $\state(i+1)$ there is an alternative adversarial
+  strategy $\Lvec{i'}$ that results in the same state $\state(i+1)$
+  and in addition, $\state(i+1)$ is a function of
+  $\state(i),\Pvec{i},\Lvec{i'}$
+\end{lemma}
+
+\begin{proof}
+\end{proof}
+
+This excludes second order alg based on quadratic variation.
+
+
+The adversary in DTOL chooses a loss $l_j^i \in [-1,+1]$ for each expert $i$ at
+iteration $j$ as a function of the game so far. We use a probabilistic
+representation of the choice of the adversary, that is ..
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
