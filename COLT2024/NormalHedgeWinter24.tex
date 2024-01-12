@@ -24,7 +24,6 @@
 %  \Name{Author Name3} \Email{an3@sample.com}\\
 %  \addr Address}
 
-
 % Authors with different addresses:
 \coltauthor{%
  \Name{Author Name1} \Email{abc@sample.com}\\
@@ -217,7 +216,7 @@ to bounds on $R(V^T({\cal H}),\epsilon)$.
  
 Our main result is that NormalHedge is a parameter free
 stop-anytime algorithm with the following regret bound that holds simultanously for all $T,R$
-\begin{theorem}
+\begin{theorem} \label{thm:NormalHedge}
 
 Let $V^T$ be the ${\cal H}$-cumulative variance 
 for ${\cal H}$ defined in line 3 of~(\ref{eqn:HNormalHedge})
@@ -303,46 +302,11 @@ NormalHedge, that can be stopped at any iteration.
 
 We formalize the notion of the {\em state} of the game $\state$, which
 allows us to separately analyze each iteration. In
-Section{sec:potentialRecursion} we show how, for a fixed pair of
+Section~\cite{sec:potentialRecursion} we show how, for a fixed pair of
 learner and adversarial strategies, we can extend the potential at the
 horizon to a potential for any earlier iteration.
 
 In Section~\ref{sec:disc-game-strategies} we describe strategies for the adversary and for the learner.
-
-\section{Preliminaries}
-
-A definition and two notations used in this paper:
-\begin{definition}
-A function $f:\reals \to \reals$ is strictly positive of degree $k$, 
-denoted $f \in \SP{k}$ if the derivatives of orders 0 to $k$:  
-$f(x), \frac{d}{dx}f(x), \ldots, \frac{d^k}{dx^k}f(x)$ exist and are strictly positive.
-\end{definition}
-
-Let $\vec{x}=(x_1,\ldots,x_n)$, and $f:R \to \R$, we define the {\em convolution} symbol $\odot$ as follows:
-$$\vec{x} \odot f \doteq \frac{1}{n}\sum_{i=1}^{n} f(x_i)$$
-
-Let $f : \reals \to \reals$ then
-\[\pospart{f(x)}{x\geq 0} \doteq
-  \begin{cases}
-    f(x) & \mbox{ if } x \geq 0\\
-    0    & \mbox{ otherwise }
-  \end{cases}
-\]
-
-
-\newcommand{\finalpot}{\pot^{\mbox{\tiny final}}}
-
-\section{The NormalHedge  Algorithm} \label{sec:NormalHedgeAlg}
-Figure~\ref{fig:normalhedge2} describes a variant of the NormalHedge
-algorithm~\cite{chaudhuri2009parameter} which satisfies the regret
-bound given in Theorem~\ref{eqn:upper-bound}
-
-In fact, the original algorithm can be used. The only difference is in
-the way the time (here - the cumulative variance) is updated. While
-the original version requires solving a system of two non-linear
-equations with two unknowns, the method here is simple averaging.
-This simpler update lends itself to the second order analysis which is
-obscured in~\cite{chaudhuri2009parameter}.
 
 
 \begin{figure}[ht!]
@@ -383,18 +347,54 @@ For $t=0,1,2,\ldots$
 \caption{NormalHedge.2 \label{fig:normalhedge2}}
 \end{figure}
 
-\section{The potential game}
+\section{Preliminaries}
+
+A few definitions and notations used in this paper:
+\begin{definition}
+A function $f:\reals \to \reals$ is strictly positive of degree $k$, 
+denoted $f \in \SP{k}$ if the derivatives of orders 0 to $k$:  
+$f(x), \frac{d}{dx}f(x), \ldots, \frac{d^k}{dx^k}f(x)$ exist and are strictly positive.
+\end{definition}
+
+Let $\vec{x}=(x_1,\ldots,x_n)$, and $f:R \to \R$, we define the {\em convolution} symbol $\odot$ as follows:
+$$\vec{x} \odot f \doteq \frac{1}{n}\sum_{i=1}^{n} f(x_i)$$
+
+Let $f : \reals \to \reals$ then
+\[\pospart{f(x)}{x\geq 0} \doteq
+  \begin{cases}
+    f(x) & \mbox{ if } x \geq 0\\
+    0    & \mbox{ otherwise }
+  \end{cases}
+\]
+
+Let ${\cal N}(\mu,\sigma^2)$ be the normal distribution with mean $\mu$ and variance $\sigma^2$.
+
+\newcommand{\finalpot}{\pot^{\mbox{\tiny final}}}
+
+\section{The NormalHedge  Algorithm} \label{sec:NormalHedgeAlg}
+Figure~\ref{fig:normalhedge2} describes a variant of the NormalHedge
+algorithm~\cite{chaudhuri2009parameter} which satisfies the regret
+bound given in Theorem~\ref{thm:NormalHedge}.
+
+% In fact, the original algorithm can be used. The only difference is in
+% the way the time (here - the cumulative variance) is updated. While
+% the original version requires solving a system of two non-linear
+% equations with two unknowns, the method here is simple averaging.
+% This simpler update lends itself to the second order analysis which is
+% obscured in~\cite{chaudhuri2009parameter}.
+
+
 
 \begin{figure}[ht!]
 \framebox{
 \begin{minipage}[t]{6.4in}
   {\bf Initialization:} set initial regrets $R^0_j\geq 0$ for $j=1,\ldots,N$, a natural number $S$ \\
-  and $\finalpot(\cdot)$, a positive, increasing and convex function.\\
-  {\bf The adversary chooses} step size $s=1/k$ for some natural number $k$.
-  $T=Sk^2$
+  and a final potential $\finalpot(\cdot) \in \SP{4}$\\
+  {\bf The adversary chooses} step size $s=2^{-k}$ for some natural number $k$.
+  $T=S/s^2$
 ~\\
   
-  For $i=0,1,\ldots,T$
+  For $i=0,1,\ldots,T-1$:
 \begin{enumerate}
 \item The number of experts is $M^i=N 2^i$, They are indexed $1,\ldots,M^i$
 \item The learner chooses a distribution function $P_j^i$ over the experts
@@ -410,7 +410,7 @@ For $j \in \{1,\ldots,M^i\}$: $l_{j1}^i, l_{j2}^i,\in [-s,+s]$
   expert $j1$ is $\R_{j1}^{i+1} = R_{j1} +l_{j1}^i -\ell^i$,\\
   and for expert $j2$ is $\R_{j2}^{i+1} = R_{j2} +l_{j2}^i -\ell^i$,\\
   $\Rvec{i+1}$ is regret vector at iteration $i+1$, it has $2M^i$
-  components in a non-decreasing order.
+  components. %in a non-decreasing order.
    % $\vec{L}^{i+1}$ is the vector whose components are
    % $\{L_{11},L_{12},\ldots,L_{M^i1},L_{M^i2}\}$ ordered in as the
    % corresponding elements of $\Rvec{i+1}$
@@ -420,6 +420,7 @@ The goal of the algorithm is to minimize the final score $\score^T=\frac{1}{M^T}
 \caption{The potential game \label{fig:PotentialGame}}
 \end{figure}
 
+\section{The potential game}
 In order to prove upper bounds on the regret we focus on
 potential-based learning algorithms. 
 We define a new game which we call
@@ -755,14 +756,22 @@ From Theorem~\ref{thm:smallerSteps} we know that the small step limit maximizes 
 Together these theorems show that the the min/max optimal potential function is $ {\cal N}(\R_0,\realT-t) \odot \finalPotR$.
 \end{proof}
 
+There seems to be a paradox: the adversary prefers to set $s_i$ as
+small as possible but larger than zero. But there is no smallest positive (real) number,
+whatever values the adversary chooses for $s^i$ it regrets not choosing a smaller value!
+
+Luckily, this paradox does not bother the learner. The learner wants
+to protect itself from an adversary with an arbitrarily small step
+size it therefor uses the limit $s \to 0$ of the recursion.
+
 \section{Characterizing the limit $s \to 0$}
 \label{sec:continuous}
+ We now charactrize this limit  $k \to \infty, s_k \to 0$.
 
-We have shown that in min/max potential is achieved by taking the
-limit $s_k \to 0$ in either the lower bound
-(Eqn~(\ref{eqn:backward-iteration-lower-discrete})) or upper bound
-potential:
-(Eqn~(\ref{eqn:backward-iteration-upper-recursion-discrete})).
+%in both the lower bound
+%(Eqn~(\ref{eqn:backward-iteration-lower-discrete})) or upper bound
+%potential:
+%(Eqn~(\ref{eqn:backward-iteration-upper-recursion-discrete})).
 
 Consider the recursive equation for the lower potential:
  \begin{equation}
@@ -786,42 +795,40 @@ Consider the recursive equation for the lower potential:
 \label{eqn:ddR2}
  \end{equation}
 
-Combining Equations~\ref{eqn:difference},\ref{eqn:dt} and \ref{eqn:ddR2} we arrive at the  
- celebrated Backwards Kolmogorov Equation:
+Combining Equations~\ref{eqn:difference},\ref{eqn:dt} and \ref{eqn:ddR2} we arrive at the Kolmogorov Backwards Equation:
 \begin{equation} \label{eqn:Kolmogorov}
   \frac{\partial}{\partial t} \pot(t,\R)
   + \frac{1}{2} \frac{\partial^2}{\partial \R^2} \pot(t,\R)=0
 \end{equation}
 
-the upper and lower
-potential functions defined in
+Repeating the same steps for the upper potential
+\begin{equation}
+   \frac{\pot(t, \R)  - \pot(t+s^2,R)}{s^2} =  \frac{\pot(t+s^2,\R+s(1+s)) - 2\pot(t+s^2,R)+\pot(t+s^2,\R-s(1+s))}{2s^2} \label{eqn:difference}
+ \end{equation}
+One finds that the limit is Eqn~\ref{eqn:Kolmogorov} as well.
 
-Consider the distribution of regret sequences generated by the adversaryf we index these sequences by $V_t = ts^2$ and let $s \to 0$ we arrive at the well known Brownian or Wiener process
+
+The adversarial strategy corressponds to the distribution of sequences generated by a random walk.
+The limit of random walk under the scaling $\Delta t = (\Delta R)^2$
+the well known Brownian or Wiener process
 (see~\cite{kac1947random}).
 
-The backwards recursion that defines the min-max potential function
-for intermediate steps is the 
-Given a final value function with a strictly positive fourth
-derivative we can use Equation~(\ref{eqn:Kolmogorov}) to compute the
-value function for all $0 \leq t \leq T$. 
+The min-max potential function $\phi(t,R)$ is a solution of the
+differential Equation~(\ref{eqn:Kolmogorov}) with the boundary
+condition $\finalpot =\pot(T,\cdot) \in \SP{4}$.
 
-There seems to be a paradox: the adversary prefers to set $s_i>0$ as
-small as possible. On the other hand, there is no minimal strictly
-positive number. Whatever step size the adversary chooses, it regrets
-not choosing an even smaller step!
-
-Luckily, this paradox does not bother the learner. The learner wants
-to protect itself from an adversary with an arbitrarily small step
-size. To achieve that, it just needs to use the limit potential function for $s \to 0$.
-
-The results up to this point hold for any potential function in
-$\SP{4}$. Given a final potential function $\finalPotR \in \SP{4}$ we
-can compute the potential for any $0 \leq t \leq \realT$ and any $R$ using the equation 
+Alternatively, we can compute the potential for any
+$0 \leq t \leq T$ and any $R$ using the equation
 \begin{equation} \label{eqn:convol-with-normal}
-\pot(t,\R)={\cal N}(\R_0,\realT-t) \odot \finalPotR
+\pot(t,\R)={\cal N}(\R,T-t) \odot \finalpot
 \end{equation}
-By using uses the $\R$-derivative of this potential function to define
-the weights the learner guarantees that the final average score is at
+
+\section{Need to move back to $s_i$}
+because learner's response to finite $s^i$ is not the limit.
+
+It is not hard to verify that, in the limit $s_i \to 0$ the learner uses the distribution
+$$P(t,R') = \left. \frac{\partial}{\partial R} \pot(t,R)  \right|_{R=R'}$$
+This guarantees that the final average score is at
 most $\pot(0,0)$.
 
 A major limition of this result is that the horizon $\realT$ is set in
