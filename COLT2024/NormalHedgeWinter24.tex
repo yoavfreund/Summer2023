@@ -312,8 +312,8 @@ In Section~\ref{sec:disc-game-strategies} we describe strategies for the adversa
 \begin{figure}[ht!]
 \framebox{
 \begin{minipage}[t]{6.4in}
-Set $V_0=1$ \\
-For $t=0,1,2,\ldots$
+Set $V^0=1$ \\
+For $i=0,1,2,\ldots$ adversary decides when to stop
 
 \begin{enumerate}
 \item The learner chooses the distribution
@@ -321,24 +321,25 @@ For $t=0,1,2,\ldots$
   P^i_j =  \frac{1}{Z^i} \pospart{R_j^i \exp\paren{\frac{(R_j^i)^2}{2V^i}}}{R_j^i \geq 0}
   \mbox{ where } Z^i = \sum_{j=1}^N \pospart{R_j^i \exp\paren{\frac{(R_j^i)^2}{2V^i}}}{R_j^i \geq 0}
 \end{equation}
-
-\item Calculate the Learner's loss:
+\item The adverssary chooses the losses $|l^i_j|\leq 1$
+\item The earner's loss is calculated:
   \begin{equation} %\label{eqn:ell-discrete}
-    \ell^i=\sum_{j=1}^N P_j^i l_j^t,
+    \ell^i=\sum_{j=1}^N P_j^i l_j^i,
   \end{equation}
   
 \item  Update cumulative variance $V^{i+1}=V^i +v^i$ where
 \begin{equation} \label{eqn:deltat}
   v^i=  \sum_{j=1}^N H(V^i,\R_j^i)(l_j^i-\ell^i)^2
 \end{equation}
-
-\begin{equation}  \label{eqn:HNormalHedge}
+and 
+\begin{eqnarray}  \label{eqn:HNormalHedge}
   W(V,\R) =
   \pospart{
     \exp\paren{\frac{R^2}{2V}} \left(\frac{1}{2V^{3/2}} + \frac{R^2}{V^{5/2}} \right)}
-  {R\geq 0},\;
-  H(V,\R) = \frac{W(V,R+1)}{\sum_{j=1}^N W(V,R_j+1)}
-\end{equation}
+  {R\geq 0},
+  H(V,\R) =\frac{W(V,R+1)}{\sum_{j=1}^N W(V+1,R_j-1)}
+%              \frac{\sum_{j=1}^N W(V,R_j+1)}{\sum_{j=1}^N W(V+1,R_j-1)}
+\end{eqnarray}
 
 \item Update regrets $\forall j=1,\ldots N,\;\;\; R_j^{i+1} = R_j^i -l_j^t +\ell^i$
 
@@ -389,23 +390,25 @@ bound given in Theorem~\ref{thm:NormalHedge}.
 \framebox{
 \begin{minipage}[t]{6.4in}
   {\bf Initialization:} set initial regrets $R^0_j\geq 0$ for $j=1,\ldots,N$, a natural number $S$ \\
-  and a final potential $\finalpot(\cdot) \in \SP{4}$\\
-  {\bf The adversary chooses} step size $s=2^{-k}$ for some natural number $k$.
-  $T=S/s^2$
+  and a final potential $\finalpot(\cdot) \in \SP{4}$, horizon $\realT>0$, initial time $t^0=0$
 ~\\
   
-  For $i=0,1,\ldots,T-1$:
-\begin{enumerate}
-\item The number of experts is $M^i=N 2^i$, They are indexed $1,\ldots,M^i$
-\item The learner chooses a distribution function $P_j^i$ over the experts
+  For $i=0,1,\ldots$:
+  \begin{enumerate}
+   \item if $t^i=\realT$, let $T=i$ and exit loop
+  \item The number of experts is $M^i=N 2^i$, They are indexed $1,\ldots,M^i$
+  \item The adversary chooses a non-negative integer $k^i$ which defined the
+    step size $s^i = 2^{-k_i} \leq \sqrt{\realT-t^i}$
+  \item Time is updated $t^{i+1} = t^i + (s^i)^2$.
+  \item The learner chooses a distribution function $P_j^i$ over the experts
   $j \in \{1,\ldots,M^i\}$ \\
   such that $\sum_{j=1}^{M^i} P_j^i=1$. We
   denote the distribution by $\Pvec{i} =  \{P_1^i,\ldots,P_{M^i}^i\}$.
 \item The adversary splits each expert into two equal parts and assigns a loss to each part.\\
-For $j \in \{1,\ldots,M^i\}$: $l_{j1}^i, l_{j2}^i,\in [-s,+s]$
+For $j \in \{1,\ldots,M^i\}$: $l_{j1}^i, l_{j2}^i,\in [-s^i,+s^i]$
 \item The {\em instantaneous loss of the learner} is
   $\ell^i = \sum_{j=1}^i P^i_j \frac{l_{j1}^i + l_{j2}^i}{2}$. The
-  adversary is restricted choose the losses so as to keep $|\ell^i|\leq s^2$.
+  adversary is restricted to chosing the losses so that $|\ell^i|\leq (s^i)^2$.
 \item The {\em cumulative regret} of the learner with respect to
   expert $j1$ is $\R_{j1}^{i+1} = R_{j1} +l_{j1}^i -\ell^i$,\\
   and for expert $j2$ is $\R_{j2}^{i+1} = R_{j2} +l_{j2}^i -\ell^i$,\\
@@ -415,8 +418,10 @@ For $j \in \{1,\ldots,M^i\}$: $l_{j1}^i, l_{j2}^i,\in [-s,+s]$
    % $\{L_{11},L_{12},\ldots,L_{M^i1},L_{M^i2}\}$ ordered in as the
    % corresponding elements of $\Rvec{i+1}$
 \end{enumerate}
-The goal of the algorithm is to minimize the final score $\score^T=\frac{1}{M^T}\sum_{j=1}^{M^T} \finalpot(R_j^T) = \vec{R}^T \odot \finalpot$
-\end{minipage}}
+The goal of the algorithm is to minimize the final score
+$\score^T=\frac{1}{M^T}\sum_{j=1}^{M^T} \finalpot(R_j^T) = \vec{R}^T \odot \finalpot$
+\end{minipage}
+}
 \caption{The potential game \label{fig:PotentialGame}}
 \end{figure}
 
@@ -427,25 +432,26 @@ We define a new game which we call
 the {\em potential game}~ (Fig.\ref{fig:PotentialGame}).
 
 
+Consider potential based algorithm for DTOL in which the horizon is pre-defined.
+
 The potential game is similar to DTOL, with the following differences:
 \begin{enumerate}
-\item In DTOL, the range of the losses is always $[-1,+1]$,, in the
-  potential game the adversary set the range of losses to $[-s,+s]$
-  for $s = \frac{1}{k}$ where $k$ is a natural number.
-\item The goal in DTOL is to bound the regret, the goal in the
-  potential game is to minimize the score function.
+\item In DTOL, the range of the losses is always $[-1,+1]$, in the
+  potential game the adversary sets the range of losses on iteration $i$ to $[-s^i,+s^i]$
+  for $s^i = 2^{-2k_i}$ where $k_i$ is a natural number.
+\item The goal in DTOL is to bound the maximal regret (or regret wrt the top $\epsilon$-percentile) at time $T$.
+  the goal in the potential game is to minimize the final average potential.
+\item In the potential game the horizon is a real value $\realT>0$
+  defined in advance and the game ends when $\sum_i (s^i)^2 = \realT$
 \item In the potential game, a pre-specified potential function
-  $\finalpot(\cdot)$ is evaluated at an a-priori specified horizon
-  $T=S k^2$.
+  $\finalpot(\cdot)$ is evaluated when the game ends.
 \item At each iteration, the adversary splits each expert into two
   experts with equal weight and and assigns to each a loss in the
-  range $[-s,+s]$.
+  range $[-s^i,s^i]$.
 \end{enumerate}
-Note that the adversarial choice of $k$ plays two roles in the
-the potential game. First, the range of losses is
-$[-\frac{1}{k},+\frac{1}{k}]$.  Second, the number of iterations is
-$Sk^2$. We will later explain why this particular choices make sense.
 
+
+***************** Till Here  *********************
 
 
 \newcommand{\Ndist}{{\cal N}}
@@ -453,37 +459,51 @@ $Sk^2$. We will later explain why this particular choices make sense.
 \subsection{Upper bound on Potential game implies regret bound on DTOL}
 
 We show that an upper bound on $\score^T$ in the potential game
-implies upper bounds on regret of the $\epsilon$ percentile in the bounded horizon DTOL.
+implies upper bounds on regret relative to the $\epsilon$ percentile in the bounded horizon DTOL.
 
-Let DTOL$(T)$ denote the DTOL game with an a-priori known horizon $T$. Then
 \begin{theorem}
-  Let $\pot^T$ be a strictly convex function of degree 2.
-  If a learner algorithm guarantees $\Theta > \score^T$ in the potential game, then the same algorithm guarantees
-  $\epsilon(R) \leq \frac{\theta}{\finalpot(R)}$ in DTOL$(T)$ for all $R$
+  Let $\pot^T$ be a strictly convex function of degree 2.  If a
+  learner algorithm guarantees $\Theta > \score^T$ in the potential
+  game, then the same algorithm guarantees
+  $\epsilon(R) \leq \frac{\theta}{\finalpot(R)}$ in DTOL$(T)$ for all
+  $R$
 \end{theorem}
-\begin{proof} We show that the adversary can make choices that make the
-potential game identical to DTOL$(T)$. First, $k=s=1$, consequentially $S=T$, finally the experts split is eliminated by
-setting $l_{j1}^i = l_{j2}^i$ for all $i,j$. As these choices are
-controlled by the adversary, this means that the adversary in the
-potential game is stronger than the adversary in DTOL$(T)$. In other
-words, a learner which guarantees an upper bound $\theta\geq\score^T$
-guaranteees the same upper bound for DTOL$(T)$. Finally we use the
-standard relationship between a potential that is convex of degree 2 and the regret.
-Let $\epsilon(R)$ be the fraction of the coordinates of $\vec{R}^T$  that are larger or equal to $R$. Then
-$\theta \geq \score^T \geq \epsilon(R) \finalpot(R)$ which implies the statement of the theorem.
+\begin{proof}
+  We show that the adversary in the potential game is stronger than the adversary in
+  DTOL. We do that by showing that any adversarial strategy for DTOL is also a valid strategy for the potential game.
+
+  We show that the adversary for the potential game can simulate any
+  adversary for DTOL.  First, we have the adversary set $k^i=s^i=1$
+  for all iterations $i$, and $\realT = T$.  As a result, the number
+  of game iterations is $T$, and $s^i = (s^i)^2 = 1$ for all $i$.
+  Therefor also $|\ell^i|\leq 1$ holds because $|l^i_j| \leq s^i = 1$.
+
+  Assume that an in the DTOL game expert $j$ suffers losses
+  $l_j^1,l_j^2,\ldots$. In the potential game expert $j$ has $2^i$
+  sub-experts on step $i$. We collapse all of these experts to a
+  single expert by these experts the loses $l^i_{k1}=l^i_{k2}=l^i_j$
+
+  A learner strategy that guarantees an upper bound
+  $\theta\geq\score^T$ guaranteees the same upper bound for
+  DTOL$(T)$. Finally we use the standard relationship between a
+  potential that is convex of degree 2 and the regret.  Let
+  $\epsilon(R)$ be the fraction of the coordinates of $\vec{R}^T$ that
+  are larger or equal to $R$. Then
+  $\theta \geq \score^T \geq \epsilon(R) \finalpot(R)$ which implies
+  the statement of the theorem.
 \end{proof}
 
 \subsection{Strategies and Potentials}
 \newcommand{\CA}{$\cal A$~}
 \newcommand{\CL}{$\cal L$~}
 
-Keeping the step size $s$ fixed, we describe strategies and
+Keeping the step size $s^i$ fixed, we describe strategies and
 for the the adversary and for the learner, denoted \CA and \CL respectively. We focus on a single iteration $i$ and allow an arbitrary
 $\vec{R}^i$ 
 
 The strategy \CA is very simple: on iteration $i$ the losses for the two parts are set to
-$l^i_{j1}=-s$, $l^i_{j2}=-s$. It is easy to see that if $\vec{R}^i=\{R^i_1,\ldots R^i_M\}$
-then $\vec{R}^{i+1}=\{R^i_1-s,R_1^i+s,\ldots R^i_M-s,R^i_M+s\}$ regardless of the learner
+$l^i_{j1}=+s^i$, $l^i_{j2}=-s^i$. It is easy to see that if $\vec{R}^i=\{R^i_1,\ldots R^i_M\}$
+then $\vec{R}^{i+1}=\{R^i_1-s^i,R_1^i+s^i,\ldots R^i_M-s^i,R^i_M+s^i\}$ regardless of the learner
 choice of $\vec{P}^i$.
 
 For \CA, and given the final potential $\finalpot$ we use
@@ -491,7 +511,7 @@ backward induction to associate a {\em lower potential} $\lowerpot^i$ with
 iterations $T-1,T-2,\ldots,1$. The base step is $\lowerpot^T =
 \finalpot$. Fixing $\lowerpot^{i+1}$, we define
 \begin{equation} \label{eqn:lowerpot}
-\forall x \in \reals, \lowerpot^i(x) = \frac{\lowerpot^{i+1}(x-s)+\lowerpot^{i+1}(x+s)}{2}
+\forall x \in \reals, \lowerpot^i(x) = \frac{\lowerpot^{i+1}(x-s^i)+\lowerpot^{i+1}(x+s^i)}{2}
 \end{equation}
   
 
@@ -510,11 +530,11 @@ The base case is $\upperpot^T=\finalpot$.
 
 Given $\upperpot^{i+1}$ We define $\upperpot^i$ as follows
 \begin{equation}
-\forall x \in \reals, \upperpot^i(x) = \frac{\upperpot^{i+1}(x+s(1+s))+\upperpot^{i+1}(x-s(1+s))}{2}
+\forall x \in \reals, \upperpot^i(x) = \frac{\upperpot^{i+1}(x+s^i(1+s^i))+\upperpot^{i+1}(x-s^i(1+s^i))}{2}
 \end{equation}
 The strategy \CA is to set the learner's distribution function to
 \begin{equation} \label{eqn:Pij}
-P^i_j = \frac{1}{Z^i}(\upperpot^{i+1}(R_j^i+s(1+s)) - \upperpot^{i+1}(R_j^i-s(1+s)))
+P^i_j = \frac{1}{Z^i}(\upperpot^{i+1}(R_j^i+s^i(1+s^i)) - \upperpot^{i+1}(R_j^i-s^i(1+s^i)))
 \end{equation}
 where $Z^i$ is a normalization factor defined so that $\sum_j P^i_j =1$.
 
@@ -533,33 +553,31 @@ The proof is done by backward induction from $i=T$ to $i=0$. The base case is by
 $\vec{R}^T \odot \upperpot^T = \vec{R}^T \odot \finalpot = \score^T$
 
 For general $i$, show that $\vec{R}^i \odot \pot^i \geq \vec{R}^{i+1} \odot \pot^{i+1}$.
-As $\pot^{i+1}$ is convex we have that for all $j,k$, $-s-s^2 \leq l^i_{jk}-\ell^i \leq s +s^2$
+As $\pot^{i+1}$ is convex we have that for all $j,k$, $-s^i-(s^i)^2 \leq l^i_{jk}-\ell^i \leq s^i +(s^i)^2$
 \begin{eqnarray} 
   \upperpot^{i+1}(R^i_{j}+l^i_{jk}-\ell^i)
-  & \leq & \frac{\upperpot^{i+1}(R^i_j+s(1+s))+\upperpot^{i+1}(R^i_j-s(1+s))}{2} \label{eqn:upper-convex}\\
+  & \leq & \frac{\upperpot^{i+1}(R^i_j+s^i(1+s^i))+\upperpot^{i+1}(R^i_j-s^i(1+s^i))}{2} \label{eqn:upper-convex}\\
   &+&
-      \left(l^i_{jk} - \ell^i\right) \frac{\upperpot^{i+1}(R^i_j+s(1+s))-\upperpot^{i+1}(R^i_j-s(1+s))}{2} \nonumber \\
-  &=& \frac{\upperpot^{i+1}(R^i_j+s(1+s))+\upperpot^{i+1}(R^i_j-s(1+s))}{2} + \frac{\left(l^i_{jk} - \ell^i\right) Z^i P^i_j}{2} \label{eqn:using_def_upperpot}
+      \left(l^i_{jk} - \ell^i\right) \frac{\upperpot^{i+1}(R^i_j+s^i(1+s^i))-\upperpot^{i+1}(R^i_j-s^i(1+s^i))}{2} \nonumber \\
+  &=& \frac{\upperpot^{i+1}(R^i_j+s^i(1+s^i))+\upperpot^{i+1}(R^i_j-s^i(1+s^i))}{2} + \frac{\left(l^i_{jk} - \ell^i\right) Z^i P^i_j}{2} \label{eqn:using_def_upperpot}
 \end{eqnarray}
 Where~(\ref{eqn:upper-convex}) follows from convexity
 and~(\ref{eqn:using_def_upperpot}) follows from the definition of
 $P^i_j$ in Eqn.~(\ref{eqn:Pij})
-
 Summing over the experts at iteration $i+1$ we get 
 \begin{eqnarray} \label{eqn:upper-aver}
   \lefteqn{ \vec{R}^{i+1} \odot \upperpot^{i+1} = \sum_{j=1}^{M^i} \sum_{k=1}^2
   \upperpot^{i+1}(R^i_{j}+l^i_{jk}-\ell^i)}
   && \label{eqn:upperpot1}\\
-  & \leq &  \sum_{j=1}^{M^i} \frac{\upperpot^{i+1}(R^i_j+s(1+s))+\upperpot^{i+1}(R^i_j-s(1+s))}{2} \label{eqn:upperpot2} \\
+  & \leq &  \sum_{j=1}^{M^i} \frac{\upperpot^{i+1}(R^i_j+s^i(1+s^i))+\upperpot^{i+1}(R^i_j-s^i(1+s^i))}{2} \label{eqn:upperpot2} \\
   & + & \sum_{j=1}^{M^i} \frac{\left(l^i_{j1} -\ell^i +l^i_{j2}- \ell^i\right) Z^i P^i_j}{2} \label{eqn:upperpot3}\\
   & = & \sum_{j=1}^{M^i}
-        \frac{\upperpot^{i+1}(R^i_j+s(1+s))+\upperpot^{i+1}(R^i_j-s(1+s))}{2} \label{eqn:upperpot4} \\
+        \frac{\upperpot^{i+1}(R^i_j+s^i(1+s^i))+\upperpot^{i+1}(R^i_j-s^i(1+s^i))}{2} \label{eqn:upperpot4} \\
         & = & \sum_{j=1}^{M^i} \pot^i(R_j^i) = \vec{R}^i \odot \pot^i \label{eqn:upperpot5}\\
 \end{eqnarray}
 Line (\ref{eqn:upperpot2}) follows from line (\ref{eqn:upperpot1}) and
-Eqn. (\ref{eqn:using_def_upperpot}.
-
-line (\ref{eqn:upperpot4}) follows from lines (\ref{eqn:upperpot2})
+Eqn. (\ref{eqn:using_def_upperpot}).
+Line (\ref{eqn:upperpot4}) follows from lines (\ref{eqn:upperpot2})
 and (\ref{eqn:upperpot3}) because the expression in line
 (\ref{eqn:upperpot3}) is equal to zero, which follows from the plugging in the definition of $\ell^i$ (line 4. of Figure~\ref{fig:PotentialGame})
 `\[
@@ -568,52 +586,53 @@ and (\ref{eqn:upperpot3}) because the expression in line
 =0  \]
 \end{proof}
 
-Note that 
-  the upper and lower potentials $lowerpot^i,\upperpot^i$ depend only
-  on the final potential $\finalpot$ and on the iteration number
-  $i$. In particular they do not depend on the strategies of the
-  learner and the adversary. Moreover, the upper and lower bounds on
-  the same depend only on the convolutions
-  $\vec{R}^i \odot \lowerpot^i, \vec{R}^i \odot \upperpot^i$. This
-  means that, as far as our upper and lower bounds are concerned, all
-  of the information relevant to future of the game beyond iteration
-  $i$ is in the regret vector $\vec{R}^i$. This suggests calling $R^i$
-  the {\em state} of the game. Which, similarly to the state of a
-  chess board, contains all of the relevant information and makes past
-  states irrelevant.
+Note that the upper and lower potentials $\lowerpot^i,\upperpot^i$
+depend only on the final potential $\finalpot$ and on the iteration
+number $i$. In particular they do not depend on the actions of the
+learner (for $\lowerpot$) or the adversary (for
+$\upperpot$). Moreover, the upper and lower bounds on the same depend
+only on the convolutions
+$\vec{R}^i \odot \lowerpot^i, \vec{R}^i \odot \upperpot^i$. This means
+that, as far as our upper and lower bounds are concerned, all of the
+information relevant to future of the game beyond iteration $i$ is in
+the regret vector $\vec{R}^i$. This suggests calling $R^i$ the {\em
+  state} of the game. Which, similarly to the state of a chess board,
+contains all of the relevant information and makes past states
+irrelevant.
 
 \subsection{The adversary prefers smaller steps} \label{sec:smallsteps}
 
-Equation~(\ref{eqn:lowerpot}) is an inductive definition of $\lowerpot$
-given $\finalpot$, $s$ and $T=S/s^2$. We now answer
-the question, ``how should the adversary choose $s$?''
-We will show that, under appropriate conditions, the
-adversary prefers $s$ that is as small as possible, but not zero.
+Equation~(\ref{eqn:lowerpot}) defines $\lowerpot^{i}$ in terms of $\lowerpot^{i+1}$ and $s_i$.
+To better understand the choice of $s_i$ we re-index the iteration count $i$ with the cumulative time
+$t^i = \sum{k=0}^i (s^k)^2$. We make the corresponding change in notation : $\lowerpot^i(R) = \lowerpot(t^i,R)$.
+We now consider the question ``how should the adversary choose $s^i$?''
+
+We phrase the question as follows: given two times $t^a$ and $t^b$,
+and the potential function $\lowerpot(t^b,R)$, what is the sequence of
+step sizes $s^i$ such that $\sum_i (s^i)^2 = t^b-t^a$ that would maximize $\lowerpot(t^a,R)$
 
 To simplify the argument (which is generalized in the appendix)
-we fix $\finalpot$, $x in \reals$ and $S=1$ and compare $\lowerpot^i(x)$
-between$s=1$ and $s=1/2$.
+we fix $t^a=0$,$t^b=\realT$,$\lowerpot(t^b,R) \in \SP{4}$ and compare $\lowerpot(t^a,R)$ for $s^0=1$ to
+$s^0=s^1=s^2=s^3=1/2$
 
-When $s=1$, $T=1$ and The recursion is simple:
+for the case $s=1$, the recursion is simple:
 \begin{equation}
-  \lowerpot^{0,1}(x) = \frac{\finalpot(x-s)+\finalpot(x+s)}{2}
+  \lowerpot^{1}(0,R) = \frac{\lowerpot(1,R-1)+\lowerpot(1,R+1)}{2}
 \end{equation}
-When $s=1/2$, $t=4$ and unfolding the recurion for 4 steps we get
+In the case $s=1/2$, $\Delta t = 1/4$ so there are four iterations, unfolding the recurion for these four steps we get
 \begin{equation}
-  \lowerpot^{0,s/1}(x) = \frac{1}{16}
-  \left(\finalpot(x-2s) + 4  \finalpot(x-s)+ 6 \finalpot(x)
-  +4 \finalpot(x+s) + \finalpot(x+2s) \right)
+  \lowerpot^{1/2}(0,R) = \frac{1}{16}
+  \left(\lowerpot(1,R-2s) + 4  \lowerpot(1,R-s)+ 6 \lowerpot(1,R)
+  +4 \lowerpot(1,R+s) + \lowerpot(1,R+2s) \right)
 \end{equation}
 To see which one is larger we consider the difference:
 \begin{equation}
-  \lowerpot^{0,1/2}(x) -\lowerpot^{0,1} = \frac{1}{16}
-  \left(\finalpot(x-2s) - 4  \finalpot(x-s)+ 6 \finalpot(x)
-  -4 \finalpot(x+s) + \finalpot(x+2s) \right)
+  \lowerpot^{1/2}(0,R) -\lowerpot^{1}(0,R) = \frac{1}{16}
+  \left(\lowerpot(1,R-2s) - 4  \lowerpot(1,R-s)+ 6 \lowerpot(1,R)
+  -4 \lowerpot(1,R+s) + \lowerpot(1,R+2s) \right)
 \end{equation}
 
 As it turns out this expression is positive if $\finalpot \in \SP{4}$
-
-
 
 Theorem~\ref{eqn:conergence-for-k} characterizes the limits of the
 upper and lower potentials, as $k \to \infty$ are equal to each
